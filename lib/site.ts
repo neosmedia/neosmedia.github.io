@@ -67,11 +67,11 @@ export const CTA_STATUS = "Booking new projects — Nov ’26";
 export const WORK_LINKS: { title: string; subtitle?: string; url: string }[] = [
   { title: "Aurora", subtitle: "AI microchip analytics", url: "https://pdf.com" },
   { title: "Cimetrix", subtitle: "Industrial equipment software", url: "https://www.pdf.com/products/cimetrix" },
-  { title: "secureWISE", subtitle: "Product design", url: "https://www.pdf.com/products/securewise/" },
+  { title: "secureWISE", subtitle: "Remote Equipment Monitoring", url: "https://www.pdf.com/products/securewise/" },
   { title: "Tilt Rips", subtitle: "Rip Pokémon & Sports Card Packs", url: "https://tiltrips.com" },
   { title: "Fobi AI", subtitle: "Infrastructure for the AI Era", url: "https://www.fobi.ai/" },
-  { title: "AgExpert", subtitle: "Product design", url: "https://agexpert.ca/en" },
-  { title: "micro1 AI", subtitle: "Product design", url: "https://www.micro1.ai/experts/opportunities" },
-  { title: "TerraZero", subtitle: "Product design", url: "https://terrazero.com" },
-  { title: "Ajna Labs", subtitle: "Product design", url: "https://grants.ajnafi.com/overview" },
+  { title: "AgExpert", subtitle: "Formerly Bio Smart Agriculture", url: "https://agexpert.ca/en" },
+  { title: "micro1 AI", subtitle: "AI Product Design", url: "https://www.micro1.ai/experts/opportunities" },
+  { title: "TerraZero", subtitle: "Bringing Brands into the Intraverse", url: "https://terrazero.com" },
+  { title: "Ajna Labs", subtitle: "A protocol for lending and borrowing", url: "https://grants.ajnafi.com/overview" },
 ];

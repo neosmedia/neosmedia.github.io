@@ -1844,3 +1844,12 @@ ul {
 .fx .exp-cta {
   max-width: 720px;
 }
+
+/* About card text uses the same style as the Selected work subtitles */
+.fx .pillar p {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
