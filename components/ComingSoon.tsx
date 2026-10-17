@@ -72,7 +72,7 @@ export default function ComingSoon() {
     <main>
       <div className="screen">
       <h1 className="sr-only">Tyler Lange — Freelance Product Designer and UX Designer in Vancouver</h1>
-      <p className="sr-only">Freelance product designer and UX designer with over 18 years of experience, based in Vancouver, BC. Currently designing AI analytics for the semiconductor industry at PDF.com.</p>
+      <p className="sr-only">Freelance product designer and UX designer with over 18 years of experience, based in Vancouver, BC. Currently designing AI workflows and analytics for the microchip industry at PDF.com.</p>
       <BalloonName clearing={open} onGrab={() => setDragged(true)} />
       <noscript>
         <p className="noscript">Tyler Lange</p>
@@ -96,7 +96,7 @@ export default function ComingSoon() {
           <a href="https://www.pdf.com" target="_blank" rel="noopener noreferrer">
             PDF.com
           </a>{" "}
-          on AI Analytics for the Semiconductor industry. Formerly at{" "}
+          on AI workflows and analytics for the microchip industry. Formerly at{" "}
           <a href="https://www.ea.com/sports" target="_blank" rel="noopener noreferrer">
             EA Sports
           </a>

@@ -59,7 +59,7 @@ const JSON_LD = {
       worksFor: { "@type": "Organization", name: "PDF.com" },
       address: { "@type": "PostalAddress", addressLocality: "Vancouver", addressRegion: "BC", addressCountry: "CA" },
       sameAs: [LINKEDIN_URL],
-      knowsAbout: ["Product design", "UX design", "Design systems", "UX engineering", "AI analytics"],
+      knowsAbout: ["Product design", "UX design", "Design systems", "UX engineering", "AI workflows and analytics"],
     },
     {
       "@type": "ProfessionalService",
