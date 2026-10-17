@@ -1,3 +1,11 @@
+/**
+ * Home page sections below the hero (shared by Home and ComingSoon):
+ * SelectedWork, AboutSection, ExperienceSection, LetsBuild. Content comes from lib/site.ts.
+ * Styles: the scoped `.fx` block in app/globals.css (colour vars --bg/--ink/--muted/--line/--surface).
+ *
+ * TODO: link SelectedWork cards to /work/<slug> case-study pages once they exist
+ * (they currently open the live product URLs).
+ */
 import type { ReactNode } from "react";
 import ShaderText from "./ShaderText";
 import Link from "next/link";

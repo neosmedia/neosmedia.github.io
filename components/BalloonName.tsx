@@ -1,5 +1,19 @@
 "use client";
 
+/**
+ * BalloonName: the interactive TYLER LANGE hero.
+ *
+ * Owns the <canvas>, pointer handling and the render loop; physics lives in lib/softbody.ts
+ * and the colour shader in lib/rainbow.ts.
+ *
+ * Frame flow: stepWorld() -> (skip paint if the scene is at rest, see `needsPaint`)
+ *   -> draw halo + body to the 2D canvas -> draw the body mask -> WebGL shader overlay.
+ *
+ * Tuning: GROW_*, SHADER_*, CLEAR_SHRINK*, EDGE_PX below; physics constants are in softbody.ts.
+ * TODO: pause the loop entirely when the hero is scrolled off-screen (IntersectionObserver).
+ * TODO: keyboard alternative for dragging (letters are pointer-only today).
+ */
+
 import { useEffect, useRef } from "react";
 import {
   buildWorld,
@@ -16,7 +30,7 @@ type Props = {
    * "fullscreen": fixed behind the page (coming soon).
    * "hero": sits in the page flow and keeps normal touch scrolling.
    */
-  mode?: "fullscreen" | "hero" | "wordmark";
+  mode?: "fullscreen" | "hero";
   /** Push the letters aside to open a clearing in the middle (fullscreen only). */
   clearing?: boolean;
   /** Called when a letter is first grabbed. */
@@ -71,13 +85,14 @@ function trace(ctx: CanvasRenderingContext2D, L: Letter, sc: number, step: numbe
   const X = (p: { x: number }) => cx + (p.x - cx) * sc;
   const Y = (p: { y: number }) => cy + (p.y - cy) * sc;
 
+  const P = L.particles;
   for (const chain of L.chains) {
-    const pts = chain.map((i) => L.particles[i]);
-    for (let i = 0; i < pts.length - 1; i++) {
-      const p0 = pts[Math.max(0, i - 1)];
-      const p1 = pts[i];
-      const p2 = pts[i + 1];
-      const p3 = pts[Math.min(pts.length - 1, i + 2)];
+    const last = chain.length - 1;
+    for (let i = 0; i < last; i++) {
+      const p0 = P[chain[i > 0 ? i - 1 : 0]];
+      const p1 = P[chain[i]];
+      const p2 = P[chain[i + 1]];
+      const p3 = P[chain[i + 2 <= last ? i + 2 : last]];
       const x0 = X(p0), y0 = Y(p0), x1 = X(p1), y1 = Y(p1);
       const x2 = X(p2), y2 = Y(p2), x3 = X(p3), y3 = Y(p3);
       const n = Math.max(1, Math.ceil(Math.hypot(x2 - x1, y2 - y1) / step));
@@ -144,16 +159,27 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
     if (!ctx) return;
 
     const hero = mode === "hero";
-    const wordmark = mode === "wordmark";
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    // Rainbow shader overlay (a transparent WebGL canvas on top of the letters)
-    const rb: Rainbow | null = wordmark ? null : createRainbow();
-    const maskCanvas = document.createElement("canvas");
+    // Shader overlay (a transparent WebGL canvas on top of the letters). It is created
+    // lazily, the first time someone drags a letter, so page load pays nothing for it.
+    let rb: Rainbow | null = null;
+    let rbTried = false;
+    const ensureRainbow = () => {
+      if (!rbTried) {
+        rbTried = true;
+        rb = createRainbow();
+        if (rb) {
+          stage.appendChild(rb.canvas);
+          rb.resize(world.W, world.H, Math.min(dpr, 1.5));
+        }
+      }
+      return rb;
+    };
+    const maskCanvas = document.createElement("canvas"); // stencil of the letter bodies
     const mctx = maskCanvas.getContext("2d");
-    if (rb) stage.appendChild(rb.canvas);
 
     let world: World;
     let dpr = 1;
@@ -169,17 +195,13 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
       const H = stage.clientHeight;
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
-      maskCanvas.width = canvas.width;
-      maskCanvas.height = canvas.height;
-      rb?.resize(W, H, Math.min(dpr, 1.5));
+      (rb as Rainbow | null)?.resize(W, H, Math.min(dpr, 1.5));
       // lay out smaller by HERO_SCALE, with room to inflate by GROW_BY
       const headroom = (1 + GROW_BY) / HERO_SCALE;
       world = buildWorld(
         W,
         H,
-        wordmark
-          ? { lines: [10], wordGap: { after: 4, units: 34 }, top: 0, bottom: 0, margin: Math.max(4, W * 0.01) }
-          : hero
+        hero
           ? { top: 0, bottom: 0, margin: EDGE_PX, headroom }
           : { top: 64, bottom: 72, margin: EDGE_PX, headroom }
       );
@@ -198,28 +220,10 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
     };
     setup();
 
-    // Wordmark: a still picture of the name on one line. No physics, no pointer.
-    if (wordmark) {
-      const render = () => {
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        ctx.clearRect(0, 0, world.W, world.H);
-        draw(ctx, world, 1e6, document.documentElement.dataset.theme === "dark", 0);
-      };
-      render();
-      const onResizeWm = () => {
-        setup();
-        render();
-      };
-      window.addEventListener("resize", onResizeWm);
-      const mo = new MutationObserver(render);
-      mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-      return () => {
-        window.removeEventListener("resize", onResizeWm);
-        mo.disconnect();
-      };
-    }
-
     let rainbowOn = false;
+    let forcePaint = true; // paint at least once, and again after a resize
+    let lastGrowth = -1;
+    let lastDark: boolean | null = null;
     let shaderMix = 0; // 0 = plain ink, 1 = full shader (rises while dragging)
     const isDark = () => document.documentElement.dataset.theme === "dark";
     const smooth = (x: number) => {
@@ -232,23 +236,27 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, world.W, world.H);
       draw(ctx, world, now - start, isDark());
-      if (!rb || !mctx) return;
+      if (!mctx) return;
       const since = now - growStart;
       const mixAmt = reduceMotion ? 0 : smooth(shaderMix);
       if (mixAmt <= 0.001) {
         if (rainbowOn) {
-          rb.clear();
+          (rb as Rainbow | null)?.clear();
           rainbowOn = false;
         }
         return;
       }
+      const shader = ensureRainbow();
+      if (!shader) return;
       rainbowOn = true;
-      {
-        mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        mctx.clearRect(0, 0, world.W, world.H);
-        draw(mctx, world, now - start, isDark(), 0, true);
-        rb.render(maskCanvas, mixAmt, since / 1000, 1.5, Math.max(8, world.baseR * 1.1));
+      if (maskCanvas.width !== canvas.width || maskCanvas.height !== canvas.height) {
+        maskCanvas.width = canvas.width;
+        maskCanvas.height = canvas.height;
       }
+      mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      mctx.clearRect(0, 0, world.W, world.H);
+      draw(mctx, world, now - start, isDark(), 0, true);
+      shader.render(maskCanvas, mixAmt, since / 1000, 1.5, Math.max(8, world.baseR * 1.1));
     };
 
     const frame = (now: number) => {
@@ -268,7 +276,25 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
         shaderMix = world.grab
           ? Math.min(1, shaderMix + dtc / SHADER_RISE_S)
           : Math.max(0, shaderMix - dtc / SHADER_FALL_S);
-        paint(now);
+        // Repaint only when something visibly changed. A resting scene costs no drawing.
+        const dark = isDark();
+        const needsPaint =
+          forcePaint ||
+          world.moved > 0.005 ||
+          world.dirty ||
+          world.grab !== null ||
+          shaderMix > 0.001 ||
+          rainbowOn ||
+          world.growth !== lastGrowth ||
+          dark !== lastDark ||
+          now - start < 2600; // the pop-in animation
+        if (needsPaint) {
+          paint(now);
+          forcePaint = false;
+          lastGrowth = world.growth;
+          lastDark = dark;
+          world.dirty = false;
+        }
       }
       raf = requestAnimationFrame(frame);
     };
@@ -342,6 +368,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
         start = performance.now() - 2000; // skip intro on resize
         if (!reduceMotion) setGrowth(world, 1 + GROW_BY * Math.min(1, (performance.now() - growStart) / GROW_MS));
         // setting the canvas size clears it, so repaint straight away (no white flash)
+        forcePaint = true;
         paint(performance.now());
       });
     };
@@ -350,7 +377,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
     return () => {
       cancelAnimationFrame(raf);
       cancelAnimationFrame(resizeRaf);
-      rb?.destroy();
+      (rb as Rainbow | null)?.destroy();
       io?.disconnect();
       window.removeEventListener("resize", onResize);
       stage.removeEventListener("pointerdown", onDown);
@@ -365,7 +392,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
   return (
     <div
       ref={stageRef}
-      className={`stage ${mode === "hero" ? "stage-hero" : mode === "wordmark" ? "stage-wordmark" : "stage-full"}`}
+      className={`stage ${mode === "hero" ? "stage-hero" : "stage-full"}`}
       aria-hidden="true"
     >
       <canvas ref={canvasRef} />

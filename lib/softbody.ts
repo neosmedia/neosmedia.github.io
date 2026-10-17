@@ -75,6 +75,10 @@ export type World = {
   hoverLetter: number;
   /** world.time at which the next random jiggle fires */
   nextJiggle: number;
+  /** Biggest distance any point moved in the last step (px). ~0 means the scene is at rest. */
+  moved: number;
+  /** Set when something visible changed without particle velocity (e.g. hover nudge). */
+  dirty: boolean;
 };
 
 export type Clearing = { cx: number; cy: number; rx: number; ry: number };
@@ -190,17 +194,13 @@ export type LayoutOpts = {
   margin?: number;
   /** Lay letters out this much smaller, leaving room to inflate (e.g. 1.1). */
   headroom?: number;
-  /** Custom line breakdown (letters per line), e.g. [10] for one line. */
-  lines?: number[];
-  /** Extra space (glyph units) after the letter at this index of a line, e.g. between two words. */
-  wordGap?: { after: number; units: number };
 };
 
 export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
   const reserveTop = opts.top ?? 0;
   const reserveBottom = opts.bottom ?? 0;
   const tall = W < 700 || H > W * 1.1;
-  const counts = opts.lines ?? (tall ? TALL_LINES : WIDE_LINES);
+  const counts = tall ? TALL_LINES : WIDE_LINES;
 
   let cursor = 0;
   const lines = counts.map((n) => {
@@ -208,11 +208,9 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
     cursor += n;
     return line;
   });
-  const lk = opts.lines ? opts.lines.map(() => 1) : tall ? TALL_LINE_SCALE : WIDE_LINE_SCALE; // per-line size
+  const lk = tall ? TALL_LINE_SCALE : WIDE_LINE_SCALE; // per-line size
   const sumW = lines.map((l) => l.reduce((a, ch) => a + GLYPHS[ch].w, 0));
-  const wg = opts.wordGap;
-  const extraFor = (l: string[]) => (wg && l.length > wg.after + 1 ? wg.units : 0);
-  const natural = lines.map((l, i) => (sumW[i] + GAP * (l.length - 1) + extraFor(l)) * lk[i]);
+  const natural = lines.map((l, i) => (sumW[i] + GAP * (l.length - 1)) * lk[i]);
   const target = Math.max(...natural);
   const totalH =
     lk.reduce((a, k) => a + CAP * k, 0) + (lines.length - 1) * LINE_GAP;
@@ -247,6 +245,8 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
     growCy: top + (totalH * s) / 2,
     hoverLetter: -1,
     nextJiggle: IDLE_SECONDS + nextGap(),
+    moved: 0,
+    dirty: false,
   };
 
   let k = 0;
@@ -256,9 +256,9 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
     const sl = s * kk; // px per glyph unit on this line
     const gap =
       line.length > 1
-        ? Math.min((target / kk - lineSum - extraFor(line)) / (line.length - 1), GAP * 2.2)
+        ? Math.min((target / kk - lineSum) / (line.length - 1), GAP * 2.2)
         : 0;
-    const lineW = lineSum + gap * (line.length - 1) + extraFor(line);
+    const lineW = lineSum + gap * (line.length - 1);
     let ox = (W - lineW * sl) / 2;
     let above = 0;
     for (let j = 0; j < li; j++) above += CAP * lk[j] + LINE_GAP;
@@ -269,7 +269,6 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
     );
     const msum = mults.slice(0, line.length - 1).reduce((a, b) => a + b, 0) || 1;
     const gaps = mults.map((m) => (gap * m * (line.length - 1)) / msum);
-    if (wg && extraFor(line)) gaps[wg.after] += wg.units;
 
     line.forEach((ch, idx) => {
       const g = GLYPHS[ch];
@@ -521,27 +520,54 @@ function solveConstraints(L: Letter) {
   }
 }
 
+// scratch buffer for collide(): 4 numbers (minX, minY, maxX, maxY) per letter, reused every call
+const bounds: number[] = new Array(64).fill(0);
+
 function collide(world: World) {
-  const all = world.all;
-  const n = all.length;
+  const ls = world.letters;
+  const n = ls.length;
+
+  // Cheap broad phase: a bounding box per letter (grown by the tube radius).
+  // Only letter pairs whose boxes overlap get the point-by-point check.
+  const b = bounds;
   for (let i = 0; i < n; i++) {
-    const a = all[i];
+    let x0 = Infinity;
+    let y0 = Infinity;
+    let x1 = -Infinity;
+    let y1 = -Infinity;
+    for (const p of ls[i].particles) {
+      if (p.x - p.r < x0) x0 = p.x - p.r;
+      if (p.y - p.r < y0) y0 = p.y - p.r;
+      if (p.x + p.r > x1) x1 = p.x + p.r;
+      if (p.y + p.r > y1) y1 = p.y + p.r;
+    }
+    b[i * 4] = x0;
+    b[i * 4 + 1] = y0;
+    b[i * 4 + 2] = x1;
+    b[i * 4 + 3] = y1;
+  }
+
+  for (let i = 0; i < n; i++) {
     for (let j = i + 1; j < n; j++) {
-      const b = all[j];
-      if (a.letter === b.letter) continue;
-      const min = a.r + b.r;
-      const dx = b.x - a.x;
-      if (dx > min || dx < -min) continue;
-      const dy = b.y - a.y;
-      if (dy > min || dy < -min) continue;
-      const d2 = dx * dx + dy * dy;
-      if (d2 >= min * min || d2 === 0) continue;
-      const d = Math.sqrt(d2);
-      const push = ((min - d) / d) * 0.5 * 0.85;
-      a.x -= dx * push;
-      a.y -= dy * push;
-      b.x += dx * push;
-      b.y += dy * push;
+      if (b[i * 4 + 2] < b[j * 4] || b[j * 4 + 2] < b[i * 4]) continue;
+      if (b[i * 4 + 3] < b[j * 4 + 1] || b[j * 4 + 3] < b[i * 4 + 1]) continue;
+      for (const a of ls[i].particles) {
+        for (const c of ls[j].particles) {
+          const min = a.r + c.r;
+          const dx = c.x - a.x;
+          if (dx > min || dx < -min) continue;
+          const dy = c.y - a.y;
+          if (dy > min || dy < -min) continue;
+          const d2 = dx * dx + dy * dy;
+          if (d2 >= min * min || d2 === 0) continue;
+          const d = Math.sqrt(d2);
+          const push = ((min - d) / d) * 0.5 * 0.85;
+          a.x -= dx * push;
+          a.y -= dy * push;
+          c.x += dx * push;
+          c.y += dy * push;
+        }
+      }
     }
   }
 }
@@ -602,6 +628,7 @@ function hoverNudge(world: World, grabbed: Letter | null) {
     }
     L.hov.x += dx;
     L.hov.y += dy;
+    world.dirty = true; // a hover nudge moves points without velocity, so flag it for repaint
   }
 }
 
@@ -776,11 +803,31 @@ function step(world: World, dt: number) {
   world.time += dt;
 }
 
+// scratch buffer for stepWorld(): point positions at the start of the frame
+let snap = new Float64Array(0);
+
 export function stepWorld(world: World, dtSeconds: number) {
   if (world.prevTarget === 1 && world.clearTarget === 0) world.boost = 3.5;
   world.prevTarget = world.clearTarget;
   const dt = Math.min(dtSeconds, 1 / 30) / SUBSTEPS;
+
+  // remember where everything was, so we can tell how far it really moved this frame
+  // (constraints can push points back and forth without a net change, which costs no repaint)
+  const all = world.all;
+  if (snap.length < all.length * 2) snap = new Float64Array(all.length * 2);
+  for (let i = 0; i < all.length; i++) {
+    snap[2 * i] = all[i].x;
+    snap[2 * i + 1] = all[i].y;
+  }
+
   for (let i = 0; i < SUBSTEPS; i++) step(world, dt);
+
+  let moved = 0;
+  for (let i = 0; i < all.length; i++) {
+    const m = Math.abs(all[i].x - snap[2 * i]) + Math.abs(all[i].y - snap[2 * i + 1]);
+    if (m > moved) moved = m;
+  }
+  world.moved = moved;
 }
 
 /* ---------- interaction ---------- */

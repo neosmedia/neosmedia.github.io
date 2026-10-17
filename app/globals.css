@@ -76,10 +76,6 @@ ul {
   padding-inline: var(--pad);
 }
 
-.muted {
-  color: var(--muted);
-}
-
 .label {
   font-size: 12px;
   color: var(--muted);
@@ -111,16 +107,6 @@ ul {
   justify-items: center;
   gap: 88px;
   padding: 72px 0 calc(40px + env(safe-area-inset-bottom));
-}
-
-.bottom-note {
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  text-align: center;
-  padding-inline: var(--pad);
 }
 
 .stage-hero {
@@ -408,13 +394,6 @@ ul {
   border-bottom: 1px solid var(--line);
   margin-inline: var(--pad);
   padding-inline: 0;
-}
-
-.section-head {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  padding: 18px 0 20px;
 }
 
 .page-head {
@@ -1164,23 +1143,6 @@ ul {
   background: var(--bg);
 }
 
-.exp-badge {
-  display: grid;
-  place-items: center;
-  width: 92px;
-  height: 92px;
-  border-radius: 22px;
-  background: #1a1917;
-  color: #f4f2ee;
-  font-family: var(--serif);
-  font-size: 34px;
-}
-
-:root[data-theme="dark"] .fx .exp-badge {
-  background: #f4f2ee;
-  color: #1a1917;
-}
-
 .exp-main {
   display: flex;
   flex-direction: column;
@@ -1355,12 +1317,7 @@ ul {
     padding: 22px 18px;
     gap: 8px 16px;
   }
-  .exp-badge {
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
-    font-size: 24px;
-  }
+  
   .exp-years {
     grid-column: 2;
     justify-self: start;
@@ -1454,13 +1411,6 @@ ul {
   border-radius: 20px;
 }
 
-.fx .exp-badge {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  font-size: 20px;
-}
-
 .fx .exp-company {
   font-size: clamp(22px, 2.4vw, 28px);
 }
@@ -1489,11 +1439,7 @@ ul {
     padding: 14px;
     gap: 4px 12px;
   }
-  .fx .exp-badge {
-    width: 44px;
-    height: 44px;
-    font-size: 16px;
-  }
+  
 }
 
 /* experience: capped width */

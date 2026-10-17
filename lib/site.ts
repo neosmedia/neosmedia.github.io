@@ -23,11 +23,14 @@ export const LINKEDIN_URL = "https://www.linkedin.com/in/tylerlange/";
 export const LAUNCHED = process.env.NEXT_PUBLIC_LAUNCHED === "true";
 
 /** Formspree form ID (see .env.example). Empty = form falls back to mailto. */
+// TODO: create a Formspree form and set NEXT_PUBLIC_FORMSPREE_ID, otherwise the contact form uses mailto.
 export const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID ?? "";
 
+// TODO: set NEXT_PUBLIC_BOOKING_URL to a real scheduler (Cal.com / Calendly); falls back to email.
 export const BOOKING_URL =
   process.env.NEXT_PUBLIC_BOOKING_URL || `mailto:${EMAIL}?subject=Let%27s%20chat`;
 
+// TODO: TOOLS (about page/footer) overlaps lib/toolbox.ts; consolidate into one list.
 export const TOOLS = ["Figma", "Framer", "Claude", "Cursor", "React", "TypeScript", "CSS"];
 
 export const SERVICES = [
@@ -36,6 +39,7 @@ export const SERVICES = [
   { name: "Design systems", blurb: "Shared language and components that help teams move faster." },
 ];
 
+// TODO: replace About headline/pillar copy (still adapted from the reference site) with Tyler's own words.
 /** About copy: placeholder from the reference site (tyl.framer.website). Experience below is from LinkedIn. */
 export const ABOUT_HEADLINE =
   "I’m a UX Design Engineer. I design products and build them myself — minor handoff, nothing lost in between.";
@@ -63,6 +67,7 @@ export const EXPERIENCE = [
 
 export const CTA_STATUS = "Booking new projects — Nov ’26";
 
+// TODO: add case-study pages (8 project sub-pages per project brief) and point `url` at them.
 /** Selected work: a simple list of links for now. Replace these placeholders with real URLs. */
 export const WORK_LINKS: { title: string; subtitle?: string; url: string }[] = [
   { title: "Aurora", subtitle: "AI microchip analytics", url: "https://pdf.com" },
