@@ -1,7 +1,7 @@
 import ProjectGrid from "@/components/ProjectGrid";
 import SiteFooter from "@/components/SiteFooter";
 
-export const metadata = { title: "Work — Tyler Lange" };
+export const metadata = { title: "Work" };
 
 export default function WorkPage() {
   return (

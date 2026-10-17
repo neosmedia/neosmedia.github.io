@@ -62,7 +62,8 @@ export default function ComingSoon() {
   return (
     <main>
       <div className="screen">
-      <h1 className="sr-only">Tyler Lange</h1>
+      <h1 className="sr-only">Tyler Lange — Freelance Product Designer and UX Designer in Vancouver</h1>
+      <p className="sr-only">Freelance product designer and UX designer with over 18 years of experience, based in Vancouver, BC. Currently designing AI analytics for the semiconductor industry at PDF.com.</p>
       <BalloonName clearing={open} />
       <noscript>
         <p className="noscript">Tyler Lange</p>
@@ -98,7 +99,7 @@ export default function ComingSoon() {
           <a href="https://www.gevernova.com/software" target="_blank" rel="noopener noreferrer">
             GE Digital
           </a>
-          . Living with family in Vancouver, BC.
+          . He lives with family in Vancouver, BC.
         </p>
       </div>
 

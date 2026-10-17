@@ -1,7 +1,7 @@
 import Home from "@/components/Home";
 
 export const metadata = {
-  title: "Tyler Lange — Preview",
+  title: "Preview",
   robots: { index: false, follow: false },
 };
 

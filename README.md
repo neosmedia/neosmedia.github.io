@@ -166,7 +166,7 @@ Layout, size and feel — top of `lib/softbody.ts`
 | `TALL_LINE_SCALE` | Per-line size on phones (`[1.1, 1.1, 0.8]` = top two rows 10% larger, bottom row 20% smaller) |
 | `GAP` / `LINE_GAP` | Space between letters / lines |
 | `UNEVEN_GAP` / `UNEVEN_Y` | How unevenly letters are spaced (random gap multipliers) and how far each sits above / below its neighbours |
-| `HERO_SCALE` (in `BalloonName.tsx`) | Overall lettering size (`1` = fills the screen, `0.9` = 10% smaller) |
+| `HERO_SCALE` (in `BalloonName.tsx`) | Overall lettering size (`1` = fills the screen, `0.9` = 10% smaller; now 1.0) |
 | `SIZE_MIN` / `SIZE_MAX` / `FIRST_SIZE` / `LAST_SIZE` | Random per-letter size range; fixed sizes for the first and last letter |
 | `TILT` | Resting rotation of each letter (degrees) |
 | `SHAPE_K` | How firmly letters keep their shape (lower = floppier) |
@@ -174,7 +174,7 @@ Layout, size and feel — top of `lib/softbody.ts`
 | `DAMPING` | Air drag (higher = more glide) |
 | `HOVER_FOLLOW` / `HOVER_MAX` / `HOVER_EASE` | Hover lean strength, limit and smoothness |
 | `IDLE_SECONDS` | How long the opening jiggle takes to fade to rest |
-| `JIGGLE_STRENGTH` / `JIGGLE_KICK` / `JIGGLE_SECONDS` / `JIGGLE_LETTERS` | The random 5 / 10 second jiggle |
+| `JIGGLE_STRENGTH` / `JIGGLE_KICK` / `JIGGLE_SECONDS` / `JIGGLE_STAGGER` | The random 5 / 10 second jiggle |
 
 The hand-drawn marker feel (line wobble `A1` / `A2`, thickness variation `rA`, per-stroke thickness
 `strokeK`) is set where letters are built in `buildWorld`.

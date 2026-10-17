@@ -4,7 +4,7 @@ import ContactSection from "@/components/ContactSection";
 import SiteFooter from "@/components/SiteFooter";
 import { SERVICES, TOOLS } from "@/lib/site";
 
-export const metadata = { title: "About — Tyler Lange" };
+export const metadata = { title: "About" };
 
 export default function AboutPage() {
   return (

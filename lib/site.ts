@@ -1,4 +1,20 @@
 export const NAME = "Tyler Lange";
+export const SITE_URL = "https://tylerlange.ca";
+export const SITE_TAGLINE = "Freelance Product Designer & UX Designer in Vancouver";
+export const SITE_DESCRIPTION =
+  "Tyler Lange is a freelance product designer and UX designer in Vancouver, BC with 18+ years of experience in product design, UX strategy, design systems and AI-powered analytics. Available for freelance projects.";
+export const KEYWORDS = [
+  "freelance product designer",
+  "freelance UX designer",
+  "product designer Vancouver",
+  "UX designer Vancouver",
+  "UX engineer",
+  "UX design consultant",
+  "design systems",
+  "AI product design",
+  "SaaS product design",
+  "Tyler Lange",
+];
 export const EMAIL = "tylerlangebc@gmail.com";
 export const PHONE_TEL = "tel:+16047878130";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/tylerlange/";

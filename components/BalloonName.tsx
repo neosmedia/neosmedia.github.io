@@ -21,11 +21,15 @@ type Props = {
 };
 
 // A slow "inflating" effect: letters swell by GROW_BY over GROW_MS, then hold.
-const GROW_BY = 0.1; // +10%
-const GROW_MS = 60_000; // over one minute
+const GROW_BY = 0.15; // +15%
+const GROW_MS = 15_000; // over 15 seconds
+
+// How much the letters shrink while the Info clearing is open (0.3 = 30% smaller).
+const CLEAR_SHRINK = 0.2;
+const CLEAR_SHRINK_MOBILE = 0.32;
 
 // Overall lettering size: 1 = fills the screen as laid out, 0.9 = 10% smaller.
-const HERO_SCALE = 0.9;
+const HERO_SCALE = 1.1;
 
 const easeOutBack = (t: number) => {
   const c1 = 1.9;
@@ -139,10 +143,21 @@ export default function BalloonName({ mode = "fullscreen", clearing = false }: P
         W,
         H,
         hero
-          ? { top: 0, bottom: 0, margin: Math.max(12, Math.min(W, H) * 0.03), headroom }
+          ? { top: 0, bottom: 0, margin: Math.max(12, Math.min(W, H) * 0.02), headroom }
           : { top: 64, bottom: 72, headroom }
       );
       world.calm = reduceMotion;
+      // keep the letters clear of the nav photo (top left)
+      const av = document.querySelector(".nav .nav-avatar");
+      if (!hero && av) {
+        const a = av.getBoundingClientRect();
+        const b = stage.getBoundingClientRect();
+        world.keepOut.push({
+          cx: a.left + a.width / 2 - b.left,
+          cy: a.top + a.height / 2 - b.top,
+          r: a.width / 2 + 10,
+        });
+      }
     };
     setup();
 
@@ -151,9 +166,11 @@ export default function BalloonName({ mode = "fullscreen", clearing = false }: P
       last = now;
       if (visible) {
         world.clearTarget = clearingRef.current ? 1 : 0;
-        if (!reduceMotion) {
-          const gt = Math.min(1, (now - growStart) / GROW_MS);
-          setGrowth(world, 1 + GROW_BY * gt);
+        if (!world.grab || world.clearT > 0.001) {
+          const gt = reduceMotion ? 0 : Math.min(1, (now - growStart) / GROW_MS);
+          // letters shrink as the Info clearing opens, so they tuck neatly around it
+          const shrink = world.W < 700 ? CLEAR_SHRINK_MOBILE : CLEAR_SHRINK;
+          setGrowth(world, (1 + GROW_BY * gt) * (1 - shrink * world.clearT));
         }
         stepWorld(world, dt);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

@@ -38,6 +38,13 @@ export type Letter = {
   hov: { x: number; y: number };
   /** start time (world.time) of this letter's current random jiggle, or -1 */
   jigStart: number;
+  /** drag stretch: current length factor along (sdx, sdy), 1 = relaxed */
+  stretch: number;
+  sdx: number;
+  sdy: number;
+  stretched: boolean; // constraints currently hold stretched rest lengths
+  ang: number; // last fitted rotation of the letter
+  sq: number[]; // scratch: stretched rest offsets (x, y pairs)
 };
 
 export type Grab = { letter: number; particle: number; ox: number; oy: number };
@@ -58,6 +65,8 @@ export type World = {
   clearT: number; // eased 0..1
   prevTarget: 0 | 1;
   boost: number; // seconds of faster return-home after closing
+  /** Circles letters can't enter (e.g. the nav photo). Set by the renderer. */
+  keepOut: { cx: number; cy: number; r: number }[];
   /** Slow "inflating" effect: everything scales about (growCx, growCy). */
   growth: number; // current scale, 1 = as laid out
   growCx: number;
@@ -76,7 +85,7 @@ export function clearingFor(W: number, H: number): Clearing {
   return {
     cx: W / 2,
     cy: H / 2,
-    rx: narrow ? W * 0.42 : Math.min(W * 0.25, 380),
+    rx: narrow ? W * 0.36 : Math.min(W * 0.25, 380),
     ry: Math.min(Math.max(H * 0.24, 140), 240),
   };
 }
@@ -87,11 +96,11 @@ const WIDE_LINES = [5, 5]; // TYLER / LANGE
 const TALL_LINES = [3, 3, 4]; // mobile: TYL / ERL / ANGE
 const WIDE_LINE_SCALE = [1, 1];
 const TALL_LINE_SCALE = [1.1, 1.1, 0.8]; // mobile: top two rows 10% larger, bottom row 20% smaller
-const GAP = 5;
+const GAP = 6;
 const LINE_GAP = 10;
 // Deliberately uneven: each gap is randomly tighter or looser (the line width is kept),
 // and each letter sits a little higher or lower than its neighbours.
-const UNEVEN_GAP = [0.55, 1.6]; // multiplier range for each gap
+const UNEVEN_GAP = [0.8, 1.4]; // multiplier range for each gap
 const UNEVEN_Y = 3; // max vertical offset (glyph units)
 const SIZE_MIN = 0.88; // each letter is randomly a touch smaller / bigger
 const SIZE_MAX = 1.08;
@@ -100,19 +109,24 @@ const LAST_SIZE = 0.9; // the closing E is a touch smaller
 // The first E (index 3) is a bit smaller and not as fat as the other letters.
 const FIRST_E = { index: 3, size: 0.91, thickness: 0.87 };
 
+// Dragging pulls a letter longer, along the direction of the pull.
+const STRETCH_MAX = 0.55; // up to +55% longer
+const STRETCH_REF = 10; // pull distance (in tube radii) that gives the full stretch
+const STRETCH_EASE = 0.1; // how quickly it stretches out / springs back
+
 const HOVER_FOLLOW = 0.06; // hovered letter drifts this fraction toward the cursor...
 const HOVER_MAX = 0.18; // ...up to this many tube-radii
 const HOVER_EASE = 0.12; // how quickly it follows / returns
 const IDLE_SECONDS = 3; // the idle jiggle fades out and letters come to rest by now
 // Every 5 or 10 seconds a few random letters jiggle for a moment.
 const nextGap = () => (Math.random() < 0.5 ? 5 : 10);
-const JIGGLE_SECONDS = 1.6;
-const JIGGLE_STRENGTH = 0.96; // wobble amplitude of a random jiggle
-const JIGGLE_KICK = 0.03; // little shove, in tube radii
-const JIGGLE_LETTERS = [2, 5]; // how many letters jiggle each time (min, max)
-const SHAPE_K = 0.045; // how hard letters try to keep their shape (lower = floppier)
-const HOME_K = 0.005; // slow drift back to place (0 = stay where dropped)
-const DAMPING = 0.955; // air drag per substep (higher = more glide)
+const JIGGLE_SECONDS = 2.6; // each letter's jiggle swells in and eases out over this long
+const JIGGLE_STAGGER = 0.7; // letters start up to this many seconds apart (a soft ripple)
+const JIGGLE_STRENGTH = 0.42; // wobble amplitude of a random jiggle
+const JIGGLE_KICK = 0; // optional little shove, in tube radii (0 = none, just a soft wobble)
+const SHAPE_K = 0.03; // how hard letters try to keep their shape (lower = floppier)
+const HOME_K = 0.0007; // soft spring back to place: lower = slower, floppier (0 = stay where dropped)
+const DAMPING = 0.96; // air drag per substep (higher = more glide)
 const SUBSTEPS = 2;
 const ITER = 3;
 const MAX_V = 46;
@@ -215,6 +229,7 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
     calm: false,
     clear: clearingFor(W, H),
     clearTarget: 0,
+    keepOut: [],
     clearT: 0,
     prevTarget: 0,
     boost: 0,
@@ -260,6 +275,12 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
         phase: rand() * 6.28,
         hov: { x: 0, y: 0 },
         jigStart: -1,
+        stretch: 1,
+        sdx: 0,
+        sdy: 1,
+        stretched: false,
+        ang: 0,
+        sq: [],
       };
 
       const sizeRand = rng(5000 + k * 131);
@@ -385,16 +406,65 @@ function shapeMatch(world: World, L: Letter) {
   cx /= n;
   cy /= n;
 
+  // ---- drag stretch ----
+  const g = world.grab;
+  let target = 1;
+  if (g && g.letter === L.index) {
+    const gp = ps[g.particle];
+    // how far the held point has been pulled from its resting place
+    const ex = world.pointer.x - g.ox - gp.hx;
+    const ey = world.pointer.y - g.oy - gp.hy;
+    const m = Math.hypot(ex, ey);
+    if (m > 1e-3) {
+      const nx = L.sdx + (ex / m - L.sdx) * 0.25;
+      const ny = L.sdy + (ey / m - L.sdy) * 0.25;
+      const nn = Math.hypot(nx, ny) || 1;
+      L.sdx = nx / nn;
+      L.sdy = ny / nn;
+    }
+    const f = Math.min(1, m / (world.baseR * STRETCH_REF));
+    target = 1 + STRETCH_MAX * f * f * (3 - 2 * f);
+  }
+  L.stretch += (target - L.stretch) * STRETCH_EASE;
+  if (target === 1 && Math.abs(L.stretch - 1) < 0.002) L.stretch = 1;
+
+  const sq = L.sq;
+  if (L.stretch !== 1 || L.stretched) {
+    // stretch the rest shape along the pull direction (in the letter's own frame)
+    const c0 = Math.cos(L.ang);
+    const s0 = Math.sin(L.ang);
+    const ulx = c0 * L.sdx + s0 * L.sdy;
+    const uly = -s0 * L.sdx + c0 * L.sdy;
+    const K1 = L.stretch - 1;
+    for (let i = 0; i < n; i++) {
+      const p = ps[i];
+      const dp = p.qx * ulx + p.qy * uly;
+      sq[2 * i] = p.qx + K1 * dp * ulx;
+      sq[2 * i + 1] = p.qy + K1 * dp * uly;
+    }
+    for (const cn of L.constraints) {
+      cn.rest = Math.hypot(sq[2 * cn.b] - sq[2 * cn.a], sq[2 * cn.b + 1] - sq[2 * cn.a + 1]);
+    }
+    L.stretched = L.stretch !== 1;
+  } else {
+    for (let i = 0; i < n; i++) {
+      sq[2 * i] = ps[i].qx;
+      sq[2 * i + 1] = ps[i].qy;
+    }
+  }
+
   let dotS = 0;
   let crossS = 0;
-  for (const p of ps) {
+  for (let i = 0; i < n; i++) {
+    const p = ps[i];
     const dx = p.x - cx;
     const dy = p.y - cy;
-    dotS += p.qx * dx + p.qy * dy;
-    crossS += p.qx * dy - p.qy * dx;
+    dotS += sq[2 * i] * dx + sq[2 * i + 1] * dy;
+    crossS += sq[2 * i] * dy - sq[2 * i + 1] * dx;
   }
   const t = world.time;
   const ang = Math.atan2(crossS, dotS);
+  L.ang = ang;
   // Idle jiggle fades out smoothly over IDLE_SECONDS, then letters sit still.
   const u = Math.min(1, world.time / IDLE_SECONDS);
   const idle = 1 - u * u * (3 - 2 * u);
@@ -402,7 +472,7 @@ function shapeMatch(world: World, L: Letter) {
   if (L.jigStart >= 0) {
     const ju = (world.time - L.jigStart) / JIGGLE_SECONDS;
     if (ju >= 1) L.jigStart = -1;
-    else pulse = Math.sin(Math.PI * ju) ** 2;
+    else if (ju > 0) pulse = Math.sin(Math.PI * ju) ** 2;
   }
   const jiggle = world.calm ? 0 : Math.max(idle, pulse * JIGGLE_STRENGTH);
   const sc = 1 + 0.02 * jiggle * Math.sin(t * 1.3 + L.phase * 2);
@@ -410,9 +480,12 @@ function shapeMatch(world: World, L: Letter) {
   const s = Math.sin(ang) * sc;
   const wob = world.baseR * 0.06 * jiggle;
 
-  for (const p of ps) {
-    let gx = cx + p.qx * c - p.qy * s;
-    let gy = cy + p.qx * s + p.qy * c;
+  for (let i = 0; i < n; i++) {
+    const p = ps[i];
+    const qx = sq[2 * i];
+    const qy = sq[2 * i + 1];
+    let gx = cx + qx * c - qy * s;
+    let gy = cy + qx * s + qy * c;
     if (wob) {
       gx += wob * Math.sin(t * 1.7 + p.phase);
       gy += wob * Math.cos(t * 1.4 + p.phase * 1.3);
@@ -467,12 +540,10 @@ function collide(world: World) {
 function triggerJiggle(world: World) {
   if (world.calm || world.clearTarget === 1 || world.time < world.nextJiggle) return;
   world.nextJiggle = world.time + nextGap();
-  const n = JIGGLE_LETTERS[0] + Math.floor(Math.random() * (JIGGLE_LETTERS[1] - JIGGLE_LETTERS[0] + 1));
-  const order = world.letters.map((L) => L.index).sort(() => Math.random() - 0.5);
-  for (const idx of order.slice(0, n)) {
+  for (const idx of world.letters.map((L) => L.index)) {
     const L = world.letters[idx];
     if (world.grab && world.grab.letter === idx) continue;
-    L.jigStart = world.time;
+    L.jigStart = world.time + Math.random() * JIGGLE_STAGGER;
     // a small random shove so it visibly wobbles even when the pulse is subtle
     const a = Math.random() * Math.PI * 2;
     const kick = world.baseR * JIGGLE_KICK;
@@ -524,6 +595,62 @@ function hoverNudge(world: World, grabbed: Letter | null) {
   }
 }
 
+/**
+ * Move whole letters out of the clearing (rigidly, so they keep their shape instead of
+ * smearing around the edge of the ellipse into a ring).
+ */
+function shoveLettersOut(world: World) {
+  const t = world.clearT;
+  if (t < 0.01) return;
+  const c = world.clear;
+  const rx = c.rx * t;
+  const ry = c.ry * t;
+  for (const L of world.letters) {
+    if (world.grab && world.grab.letter === L.index) continue;
+    let cx = 0;
+    let cy = 0;
+    for (const p of L.particles) {
+      cx += p.x;
+      cy += p.y;
+    }
+    cx /= L.particles.length;
+    cy /= L.particles.length;
+
+    // deepest point inside the ellipse
+    let qMin = Infinity;
+    let er = 0;
+    for (const p of L.particles) {
+      const ex = rx + p.r;
+      const ey = ry + p.r;
+      const q = ((p.x - c.cx) / ex) ** 2 + ((p.y - c.cy) / ey) ** 2;
+      if (q < qMin) {
+        qMin = q;
+        er = (ex + ey) / 2;
+      }
+    }
+    if (qMin >= 1) continue;
+
+    // push straight away from the middle (letters sitting dead centre go up or down)
+    let ux = cx - c.cx;
+    let uy = cy - c.cy;
+    const m = Math.hypot(ux, uy);
+    if (m < 6) {
+      ux = 0;
+      uy = 1;
+    } else {
+      ux /= m;
+      uy /= m;
+    }
+    const d = (1 - Math.sqrt(qMin)) * er * 0.1;
+    for (const p of L.particles) {
+      p.x += ux * d;
+      p.y += uy * d;
+      p.px += ux * d * 0.85; // a little carried momentum, so it glides
+      p.py += uy * d * 0.85;
+    }
+  }
+}
+
 /** Keep the middle clearing free: shove any tube point outside the ellipse. */
 function pushOut(world: World) {
   const t = world.clearT;
@@ -544,8 +671,25 @@ function pushOut(world: World) {
       q = (dx / ex) ** 2 + (dy / ey) ** 2;
     }
     const k = 1 / Math.sqrt(q);
-    p.x += (c.cx + dx * k - p.x) * 0.4;
-    p.y += (c.cy + dy * k - p.y) * 0.4;
+    p.x += (c.cx + dx * k - p.x) * 0.1;
+    p.y += (c.cy + dy * k - p.y) * 0.1;
+  }
+}
+
+/** Gently shove tube points out of the keep-out circles (the nav photo). */
+function pushOutCircles(world: World) {
+  for (const o of world.keepOut) {
+    for (const p of world.all) {
+      const min = o.r + p.r;
+      const dx = p.x - o.cx;
+      const dy = p.y - o.cy;
+      const d2 = dx * dx + dy * dy;
+      if (d2 >= min * min) continue;
+      const d = Math.sqrt(d2) || 1e-3;
+      const k = (min - d) / d;
+      p.x += dx * k * 0.35;
+      p.y += dy * k * 0.35;
+    }
   }
 }
 
@@ -571,14 +715,19 @@ function step(world: World, dt: number) {
 
   // gentle drift home (not while being held)
   const homeK =
-    world.clearTarget === 1 ? 0 : world.boost > 0 ? HOME_K * 5 : HOME_K;
+    world.clearTarget === 1 ? 0 : world.boost > 0 ? HOME_K * 3 : HOME_K;
   if (homeK > 0) {
     for (const L of world.letters) {
       if (L === grabbed) continue;
       for (const p of L.particles) {
         // home plus the current hover nudge, so the pull doesn't fight it
-        p.x += (p.hx + L.hov.x - p.x) * homeK;
-        p.y += (p.hy + L.hov.y - p.y) * homeK;
+        // a spring (acceleration, not a snap): eases in, glides, overshoots a touch, settles
+        const ax = (p.hx + L.hov.x - p.x) * homeK;
+        const ay = (p.hy + L.hov.y - p.y) * homeK;
+        p.x += ax;
+        p.y += ay;
+        p.px -= ax;
+        p.py -= ay;
       }
     }
   }
@@ -594,11 +743,13 @@ function step(world: World, dt: number) {
     // the held point follows the pointer, dragging the tube behind it
     if (g && grabbed) {
       const p = grabbed.particles[g.particle];
-      p.x += (world.pointer.x - g.ox - p.x) * 0.55;
-      p.y += (world.pointer.y - g.oy - p.y) * 0.55;
+      p.x += (world.pointer.x - g.ox - p.x) * 0.7;
+      p.y += (world.pointer.y - g.oy - p.y) * 0.7;
     }
     collide(world);
+    shoveLettersOut(world);
     pushOut(world);
+    pushOutCircles(world);
   }
 
   // walls
