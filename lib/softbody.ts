@@ -96,12 +96,15 @@ const WIDE_LINES = [5, 5]; // TYLER / LANGE
 const TALL_LINES = [3, 3, 4]; // mobile: TYL / ERL / ANGE
 const WIDE_LINE_SCALE = [1, 1];
 const TALL_LINE_SCALE = [1.1, 1.1, 0.8]; // mobile: top two rows 10% larger, bottom row 20% smaller
-const GAP = 6;
-const LINE_GAP = 10;
+const GAP = 4;
+const LINE_GAP = 8;
 // Deliberately uneven: each gap is randomly tighter or looser (the line width is kept),
 // and each letter sits a little higher or lower than its neighbours.
 const UNEVEN_GAP = [0.8, 1.4]; // multiplier range for each gap
 const UNEVEN_Y = 3; // max vertical offset (glyph units)
+// Letters never touch the screen edge: they keep this many px clear, even after growing.
+const EDGE = 16;
+
 const SIZE_MIN = 0.88; // each letter is randomly a touch smaller / bigger
 const SIZE_MAX = 1.08;
 const FIRST_SIZE = 1.14; // the opening T is always the biggest letter
@@ -187,13 +190,17 @@ export type LayoutOpts = {
   margin?: number;
   /** Lay letters out this much smaller, leaving room to inflate (e.g. 1.1). */
   headroom?: number;
+  /** Custom line breakdown (letters per line), e.g. [10] for one line. */
+  lines?: number[];
+  /** Extra space (glyph units) after the letter at this index of a line, e.g. between two words. */
+  wordGap?: { after: number; units: number };
 };
 
 export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
   const reserveTop = opts.top ?? 0;
   const reserveBottom = opts.bottom ?? 0;
   const tall = W < 700 || H > W * 1.1;
-  const counts = tall ? TALL_LINES : WIDE_LINES;
+  const counts = opts.lines ?? (tall ? TALL_LINES : WIDE_LINES);
 
   let cursor = 0;
   const lines = counts.map((n) => {
@@ -201,9 +208,11 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
     cursor += n;
     return line;
   });
-  const lk = tall ? TALL_LINE_SCALE : WIDE_LINE_SCALE; // per-line size
+  const lk = opts.lines ? opts.lines.map(() => 1) : tall ? TALL_LINE_SCALE : WIDE_LINE_SCALE; // per-line size
   const sumW = lines.map((l) => l.reduce((a, ch) => a + GLYPHS[ch].w, 0));
-  const natural = lines.map((l, i) => (sumW[i] + GAP * (l.length - 1)) * lk[i]);
+  const wg = opts.wordGap;
+  const extraFor = (l: string[]) => (wg && l.length > wg.after + 1 ? wg.units : 0);
+  const natural = lines.map((l, i) => (sumW[i] + GAP * (l.length - 1) + extraFor(l)) * lk[i]);
   const target = Math.max(...natural);
   const totalH =
     lk.reduce((a, k) => a + CAP * k, 0) + (lines.length - 1) * LINE_GAP;
@@ -247,9 +256,9 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
     const sl = s * kk; // px per glyph unit on this line
     const gap =
       line.length > 1
-        ? Math.min((target / kk - lineSum) / (line.length - 1), GAP * 2.2)
+        ? Math.min((target / kk - lineSum - extraFor(line)) / (line.length - 1), GAP * 2.2)
         : 0;
-    const lineW = lineSum + gap * (line.length - 1);
+    const lineW = lineSum + gap * (line.length - 1) + extraFor(line);
     let ox = (W - lineW * sl) / 2;
     let above = 0;
     for (let j = 0; j < li; j++) above += CAP * lk[j] + LINE_GAP;
@@ -260,6 +269,7 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
     );
     const msum = mults.slice(0, line.length - 1).reduce((a, b) => a + b, 0) || 1;
     const gaps = mults.map((m) => (gap * m * (line.length - 1)) / msum);
+    if (wg && extraFor(line)) gaps[wg.after] += wg.units;
 
     line.forEach((ch, idx) => {
       const g = GLYPHS[ch];
@@ -754,10 +764,11 @@ function step(world: World, dt: number) {
 
   // walls
   for (const p of world.all) {
-    if (p.x < p.r) p.x = p.r;
-    else if (p.x > W - p.r) p.x = W - p.r;
-    if (p.y < p.r) p.y = p.r;
-    else if (p.y > H - p.r) p.y = H - p.r;
+    const m = p.r + EDGE;
+    if (p.x < m) p.x = m;
+    else if (p.x > W - m) p.x = W - m;
+    if (p.y < m) p.y = m;
+    else if (p.y > H - m) p.y = H - m;
   }
 
   world.clearT += (world.clearTarget - world.clearT) * 0.07;

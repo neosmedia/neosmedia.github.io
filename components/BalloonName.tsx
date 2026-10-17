@@ -9,27 +9,42 @@ import {
   type Letter,
   type World,
 } from "@/lib/softbody";
+import { createRainbow, type Rainbow } from "@/lib/rainbow";
 
 type Props = {
   /**
    * "fullscreen": fixed behind the page (coming soon).
    * "hero": sits in the page flow and keeps normal touch scrolling.
    */
-  mode?: "fullscreen" | "hero";
+  mode?: "fullscreen" | "hero" | "wordmark";
   /** Push the letters aside to open a clearing in the middle (fullscreen only). */
   clearing?: boolean;
+  /** Called when a letter is first grabbed. */
+  onGrab?: () => void;
 };
 
 // A slow "inflating" effect: letters swell by GROW_BY over GROW_MS, then hold.
 const GROW_BY = 0.15; // +15%
 const GROW_MS = 15_000; // over 15 seconds
 
+// The shader (rainbow, or blue bubble) is driven by dragging: while a letter is held it
+// slowly turns up, and when let go it fades back to the original black / white ink.
+const SHADER_RISE_S = 3.5; // seconds of dragging to reach full strength
+const SHADER_FALL_S = 2.5; // seconds to fade back after letting go
+
 // How much the letters shrink while the Info clearing is open (0.3 = 30% smaller).
 const CLEAR_SHRINK = 0.2;
 const CLEAR_SHRINK_MOBILE = 0.32;
 
+// Clear space kept around the letters (also after they have grown).
+const EDGE_PX = 16;
+
+// Big 4-way "move" cursors (28px) for hovering and dragging the letters.
+const CURSOR_GRAB = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 56 56'%3E%3Cg transform='translate(28 28) scale(1.0) translate(-28 -28)'%3E%3Ccircle cx='28' cy='28' r='27' fill='rgba(255,255,255,0.35)'/%3E%3Cpath d='M28 14 V42 M14 28 H42' stroke='white' stroke-width='7' stroke-linecap='round' fill='none'/%3E%3Cpath d='M28 5 L20 15 H36 Z M28 51 L20 41 H36 Z M5 28 L15 20 V36 Z M51 28 L41 20 V36 Z' fill='white' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M28 14 V42 M14 28 H42' stroke='black' stroke-width='3' stroke-linecap='round' fill='none'/%3E%3Cpath d='M28 5 L20 15 H36 Z M28 51 L20 41 H36 Z M5 28 L15 20 V36 Z M51 28 L41 20 V36 Z' fill='black' stroke='black' stroke-width='1' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E") 14 14, move`;
+const CURSOR_GRABBING = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 56 56'%3E%3Cg transform='translate(28 28) scale(0.78) translate(-28 -28)'%3E%3Ccircle cx='28' cy='28' r='27' fill='rgba(255,255,255,0.65)'/%3E%3Cpath d='M28 14 V42 M14 28 H42' stroke='white' stroke-width='7' stroke-linecap='round' fill='none'/%3E%3Cpath d='M28 5 L20 15 H36 Z M28 51 L20 41 H36 Z M5 28 L15 20 V36 Z M51 28 L41 20 V36 Z' fill='white' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M28 14 V42 M14 28 H42' stroke='black' stroke-width='3' stroke-linecap='round' fill='none'/%3E%3Cpath d='M28 5 L20 15 H36 Z M28 51 L20 41 H36 Z M5 28 L15 20 V36 Z M51 28 L41 20 V36 Z' fill='black' stroke='black' stroke-width='1' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E") 14 14, move`;
+
 // Overall lettering size: 1 = fills the screen as laid out, 0.9 = 10% smaller.
-const HERO_SCALE = 1.1;
+const HERO_SCALE = 1.0;
 
 const easeOutBack = (t: number) => {
   const c1 = 1.9;
@@ -82,7 +97,14 @@ function trace(ctx: CanvasRenderingContext2D, L: Letter, sc: number, step: numbe
 }
 
 /** Draw every letter: a white halo first, then the black body, so each letter has its own border. */
-function draw(ctx: CanvasRenderingContext2D, world: World, now: number, dark: boolean) {
+function draw(
+  ctx: CanvasRenderingContext2D,
+  world: World,
+  now: number,
+  dark: boolean,
+  borderPx = BORDER_PX,
+  maskOnly = false // body shapes only, opaque black: the stencil for the rainbow shader
+) {
   const mode = dark ? "dark" : "light";
   const step = Math.max(2, world.baseR * 0.11);
 
@@ -92,23 +114,27 @@ function draw(ctx: CanvasRenderingContext2D, world: World, now: number, dark: bo
     if (t <= 0) continue;
     const sc = easeOutBack(t);
 
-    ctx.beginPath();
-    trace(ctx, L, sc, step, BORDER_PX * Math.min(1, sc));
-    ctx.fillStyle = BORDER[mode];
-    ctx.fill();
+    if (!maskOnly) {
+      ctx.beginPath();
+      trace(ctx, L, sc, step, borderPx * Math.min(1, sc));
+      ctx.fillStyle = BORDER[mode];
+      ctx.fill();
+    }
 
     ctx.beginPath();
     trace(ctx, L, sc, step, 0);
-    ctx.fillStyle = FILL[mode];
+    ctx.fillStyle = maskOnly ? "#000" : FILL[mode];
     ctx.fill();
   }
 }
 
-export default function BalloonName({ mode = "fullscreen", clearing = false }: Props) {
+export default function BalloonName({ mode = "fullscreen", clearing = false, onGrab }: Props) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const clearingRef = useRef(clearing);
   clearingRef.current = clearing;
+  const onGrabRef = useRef(onGrab);
+  onGrabRef.current = onGrab;
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -118,9 +144,16 @@ export default function BalloonName({ mode = "fullscreen", clearing = false }: P
     if (!ctx) return;
 
     const hero = mode === "hero";
+    const wordmark = mode === "wordmark";
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
+
+    // Rainbow shader overlay (a transparent WebGL canvas on top of the letters)
+    const rb: Rainbow | null = wordmark ? null : createRainbow();
+    const maskCanvas = document.createElement("canvas");
+    const mctx = maskCanvas.getContext("2d");
+    if (rb) stage.appendChild(rb.canvas);
 
     let world: World;
     let dpr = 1;
@@ -129,7 +162,6 @@ export default function BalloonName({ mode = "fullscreen", clearing = false }: P
     let start = last;
     const growStart = last;
     let visible = true;
-    let resizeTimer: ReturnType<typeof setTimeout>;
 
     const setup = () => {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -137,14 +169,19 @@ export default function BalloonName({ mode = "fullscreen", clearing = false }: P
       const H = stage.clientHeight;
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
+      maskCanvas.width = canvas.width;
+      maskCanvas.height = canvas.height;
+      rb?.resize(W, H, Math.min(dpr, 1.5));
       // lay out smaller by HERO_SCALE, with room to inflate by GROW_BY
       const headroom = (1 + GROW_BY) / HERO_SCALE;
       world = buildWorld(
         W,
         H,
-        hero
-          ? { top: 0, bottom: 0, margin: Math.max(12, Math.min(W, H) * 0.02), headroom }
-          : { top: 64, bottom: 72, headroom }
+        wordmark
+          ? { lines: [10], wordGap: { after: 4, units: 34 }, top: 0, bottom: 0, margin: Math.max(4, W * 0.01) }
+          : hero
+          ? { top: 0, bottom: 0, margin: EDGE_PX, headroom }
+          : { top: 64, bottom: 72, margin: EDGE_PX, headroom }
       );
       world.calm = reduceMotion;
       // keep the letters clear of the nav photo (top left)
@@ -161,6 +198,59 @@ export default function BalloonName({ mode = "fullscreen", clearing = false }: P
     };
     setup();
 
+    // Wordmark: a still picture of the name on one line. No physics, no pointer.
+    if (wordmark) {
+      const render = () => {
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, world.W, world.H);
+        draw(ctx, world, 1e6, document.documentElement.dataset.theme === "dark", 0);
+      };
+      render();
+      const onResizeWm = () => {
+        setup();
+        render();
+      };
+      window.addEventListener("resize", onResizeWm);
+      const mo = new MutationObserver(render);
+      mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+      return () => {
+        window.removeEventListener("resize", onResizeWm);
+        mo.disconnect();
+      };
+    }
+
+    let rainbowOn = false;
+    let shaderMix = 0; // 0 = plain ink, 1 = full shader (rises while dragging)
+    const isDark = () => document.documentElement.dataset.theme === "dark";
+    const smooth = (x: number) => {
+      const t = Math.min(1, Math.max(0, x));
+      return t * t * (3 - 2 * t);
+    };
+
+    /** Draw the letters, then (once it has faded in) the rainbow on top of them. */
+    const paint = (now: number) => {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, world.W, world.H);
+      draw(ctx, world, now - start, isDark());
+      if (!rb || !mctx) return;
+      const since = now - growStart;
+      const mixAmt = reduceMotion ? 0 : smooth(shaderMix);
+      if (mixAmt <= 0.001) {
+        if (rainbowOn) {
+          rb.clear();
+          rainbowOn = false;
+        }
+        return;
+      }
+      rainbowOn = true;
+      {
+        mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        mctx.clearRect(0, 0, world.W, world.H);
+        draw(mctx, world, now - start, isDark(), 0, true);
+        rb.render(maskCanvas, mixAmt, since / 1000, 1.5, Math.max(8, world.baseR * 1.1));
+      }
+    };
+
     const frame = (now: number) => {
       const dt = (now - last) / 1000;
       last = now;
@@ -173,9 +263,12 @@ export default function BalloonName({ mode = "fullscreen", clearing = false }: P
           setGrowth(world, (1 + GROW_BY * gt) * (1 - shrink * world.clearT));
         }
         stepWorld(world, dt);
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        ctx.clearRect(0, 0, world.W, world.H);
-        draw(ctx, world, now - start, document.documentElement.dataset.theme === "dark");
+        // turn the shader up slowly while a letter is held; fade back when let go
+        const dtc = Math.min(dt, 0.05);
+        shaderMix = world.grab
+          ? Math.min(1, shaderMix + dtc / SHADER_RISE_S)
+          : Math.max(0, shaderMix - dtc / SHADER_FALL_S);
+        paint(now);
       }
       raf = requestAnimationFrame(frame);
     };
@@ -202,9 +295,10 @@ export default function BalloonName({ mode = "fullscreen", clearing = false }: P
       const hit = hitTest(world, p.x, p.y);
       if (!hit) return;
       world.grab = hit;
+      onGrabRef.current?.();
       world.hoverLetter = -1;
       stage.setPointerCapture(e.pointerId);
-      stage.style.cursor = "grabbing";
+      stage.style.cursor = CURSOR_GRABBING;
       if (!hero) e.preventDefault();
     };
     const onMove = (e: PointerEvent) => {
@@ -213,7 +307,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false }: P
       if (!world.grab && e.pointerType === "mouse") {
         const hit = hitTest(world, p.x, p.y);
         world.hoverLetter = hit ? hit.letter : -1;
-        stage.style.cursor = hit ? "grab" : "default";
+        stage.style.cursor = hit ? CURSOR_GRAB : "default";
       }
     };
     const onUp = (e: PointerEvent) => {
@@ -237,18 +331,26 @@ export default function BalloonName({ mode = "fullscreen", clearing = false }: P
     stage.addEventListener("pointerleave", onLeave);
     stage.addEventListener("touchstart", onTouchStart, { passive: false });
 
+    // Rebuild right away on every resize (once per frame) so the canvas never gets
+    // stretched: the letters are re-laid-out at the new size with their true proportions.
+    let resizeRaf = 0;
     const onResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
+      if (resizeRaf) return;
+      resizeRaf = requestAnimationFrame(() => {
+        resizeRaf = 0;
         setup();
         start = performance.now() - 2000; // skip intro on resize
-      }, 150);
+        if (!reduceMotion) setGrowth(world, 1 + GROW_BY * Math.min(1, (performance.now() - growStart) / GROW_MS));
+        // setting the canvas size clears it, so repaint straight away (no white flash)
+        paint(performance.now());
+      });
     };
     window.addEventListener("resize", onResize);
 
     return () => {
       cancelAnimationFrame(raf);
-      clearTimeout(resizeTimer);
+      cancelAnimationFrame(resizeRaf);
+      rb?.destroy();
       io?.disconnect();
       window.removeEventListener("resize", onResize);
       stage.removeEventListener("pointerdown", onDown);
@@ -263,7 +365,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false }: P
   return (
     <div
       ref={stageRef}
-      className={`stage ${mode === "hero" ? "stage-hero" : "stage-full"}`}
+      className={`stage ${mode === "hero" ? "stage-hero" : mode === "wordmark" ? "stage-wordmark" : "stage-full"}`}
       aria-hidden="true"
     >
       <canvas ref={canvasRef} />

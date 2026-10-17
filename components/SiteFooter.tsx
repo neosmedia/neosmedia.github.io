@@ -5,13 +5,13 @@ export default function SiteFooter() {
     <footer className="site-footer container">
       <div className="footer-top">
         <div>
-          <p className="label">Stay in touch</p>
+          <p className="label">Get in touch</p>
           <a className="footer-mail" href={`mailto:${EMAIL}`}>
             {EMAIL}
           </a>
         </div>
         <div>
-          <p className="label">A few tools of the trade</p>
+          <p className="label">Design Stack</p>
           <ul className="tools">
             {TOOLS.map((t) => (
               <li key={t}>{t}</li>

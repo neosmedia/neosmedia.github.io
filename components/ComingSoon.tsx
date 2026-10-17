@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import BalloonName from "./BalloonName";
 import { clearingFor } from "@/lib/softbody";
 import { TOGGLE_INFO } from "./NavAvatar";
-import Toolbox from "./Toolbox";
+import { Sections, SelectedWork, AboutSection, ExperienceSection, LetsBuild } from "./HomeSections";
+import SiteFooter from "./SiteFooter";
 
 export default function ComingSoon() {
   const [open, setOpen] = useState(false);
+  const [dragged, setDragged] = useState(false); // after the first drag the hint fades away
   const [box, setBox] = useState<{ w: number; h: number } | null>(null);
 
   // Size the text to the clearing the letters are pushed out of.
@@ -27,6 +29,13 @@ export default function ComingSoon() {
     window.addEventListener(TOGGLE_INFO, toggle);
     return () => window.removeEventListener(TOGGLE_INFO, toggle);
   }, []);
+
+  // Opening the modal while scrolled down: glide back up to the letters.
+  useEffect(() => {
+    if (!open || window.scrollY < 2) return;
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" });
+  }, [open]);
 
   // While open: Esc closes, and so does a tap/click outside the text.
   // (Drags don't count, so letters can still be thrown around.)
@@ -64,7 +73,7 @@ export default function ComingSoon() {
       <div className="screen">
       <h1 className="sr-only">Tyler Lange — Freelance Product Designer and UX Designer in Vancouver</h1>
       <p className="sr-only">Freelance product designer and UX designer with over 18 years of experience, based in Vancouver, BC. Currently designing AI analytics for the semiconductor industry at PDF.com.</p>
-      <BalloonName clearing={open} />
+      <BalloonName clearing={open} onGrab={() => setDragged(true)} />
       <noscript>
         <p className="noscript">Tyler Lange</p>
       </noscript>
@@ -79,7 +88,7 @@ export default function ComingSoon() {
         style={box ? { width: box.w, maxHeight: box.h } : undefined}
       >
         <p>
-          Tyler Lange is a Product Designer and UX Engineer with over 18 years of
+          Tyler Lange is a Product Designer & UX Engineer with over 18 years of
           experience.
         </p>
         <p>
@@ -104,8 +113,8 @@ export default function ComingSoon() {
       </div>
 
       <footer className="footer">
-        <span>Product Designer and UX Engineer</span>
-        <span className="hint">
+        <span>Product Designer & UX Engineer</span>
+        <span className={`hint${dragged ? " hint-gone" : ""}`}>
           <svg viewBox="0 0 12 8" width="10" height="7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M1.5 6.5 6 2l4.5 4.5" />
           </svg>
@@ -123,10 +132,13 @@ export default function ComingSoon() {
       </footer>
       </div>
 
-      <div className="below">
-        <Toolbox />
-        <p className="bottom-note">Projects and case studies coming soon</p>
-      </div>
+      <Sections>
+        <SelectedWork />
+      <AboutSection />
+      <ExperienceSection />
+      <LetsBuild />
+      <SiteFooter />
+      </Sections>
     </main>
   );
 }

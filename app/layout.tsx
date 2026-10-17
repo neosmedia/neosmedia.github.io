@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Gochi_Hand } from "next/font/google";
 import "./globals.css";
 import SiteNav from "@/components/SiteNav";
 import {
@@ -11,6 +11,9 @@ const mono = Geist_Mono({
   variable: "--font-mono",
   display: "swap",
 });
+
+const sans = Geist({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const serif = Gochi_Hand({ subsets: ["latin"], weight: "400", variable: "--font-serif", display: "swap" });
 
 const TITLE = `${NAME} | ${SITE_TAGLINE}`;
 const OG_ALT = "TYLER LANGE in chunky balloon letters";
@@ -85,7 +88,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={mono.variable} suppressHydrationWarning>
+    <html lang="en" className={`${mono.variable} ${sans.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
