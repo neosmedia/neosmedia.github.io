@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Sections } from "@/components/HomeSections";
 import SiteFooter from "@/components/SiteFooter";
 import { CASE_STUDY_AI, CASE_STUDY_DETAILS, CASE_STUDY_HEADINGS, CASE_STUDY_PARAGRAPHS } from "@/lib/site";
+import BentoVideo from "@/components/BentoVideo";
 import { pageMeta } from "@/lib/seo";
 import { NAME, SITE_URL } from "@/lib/site";
 import { PROJECTS, getProject, neighbours } from "@/lib/projects";
@@ -78,16 +79,20 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
         <section className="container project-body">
           {project.gallery && !project.galleryBelow ? (
-            <div className={`project-bento bento-n${project.gallery.length}`}>
+            <div className={`project-bento bento-n${project.gallery.length}${project.bentoLayout ? ` bento-${project.bentoLayout}` : ""}`}>
               {project.gallery.map((src, i) => (
                 <div key={src} className={`bento-tile bento-${i + 1}`}>
-                  {/* eslint-disable-next-line @next/next/no-img-element -- static export, no image optimizer */}
-                  <img src={src} alt={`${project.title} design ${i + 1}`} loading={i < 2 ? "eager" : "lazy"} decoding="async" />
+                  {src.endsWith(".mp4") ? (
+                    <BentoVideo src={src} poster={src.replace(".mp4", "-poster.webp")} label={`${project.title} prototype video`} />
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element -- static export, no image optimizer
+                    <img src={src} alt={`${project.title} design ${i + 1}`} loading={i < 2 ? "eager" : "lazy"} decoding="async" />
+                  )}
                 </div>
               ))}
             </div>
           ) : (
-            <div className="project-cover">
+            <div className="project-cover" style={project.coverRatio ? { aspectRatio: project.coverRatio } : undefined}>
               {coverSrc ? (
                 // eslint-disable-next-line @next/next/no-img-element -- static export, no image optimizer
                 <img src={coverSrc} alt={`${project.title} design work`} decoding="async" />
@@ -98,11 +103,15 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           )}
 
           {project.gallery && project.galleryBelow && (
-            <div className={`project-bento bento-n${project.gallery.length}`}>
+            <div className={`project-bento bento-n${project.gallery.length}${project.bentoLayout ? ` bento-${project.bentoLayout}` : ""}`}>
               {project.gallery.map((src, i) => (
                 <div key={src} className={`bento-tile bento-${i + 1}`}>
-                  {/* eslint-disable-next-line @next/next/no-img-element -- static export, no image optimizer */}
-                  <img src={src} alt={`${project.title} design ${i + 1}`} loading={i < 2 ? "eager" : "lazy"} decoding="async" />
+                  {src.endsWith(".mp4") ? (
+                    <BentoVideo src={src} poster={src.replace(".mp4", "-poster.webp")} label={`${project.title} prototype video`} />
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element -- static export, no image optimizer
+                    <img src={src} alt={`${project.title} design ${i + 1}`} loading={i < 2 ? "eager" : "lazy"} decoding="async" />
+                  )}
                 </div>
               ))}
             </div>

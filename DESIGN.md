@@ -65,10 +65,10 @@ Rules:
 | Avatar, icon circles | 50% |
 
 ## Components
-- **Nav:** photo avatar top-left (toggles Info on the coming-soon page), theme toggle. The first letter must not overlap the avatar.
+- **Nav:** T logo (white circle) top-left (toggles Info on the coming-soon page, otherwise links home), uppercase 12px links (Work, About, Contact) with the current page underlined, theme toggle, contact icons (hidden on phones). The first letter must not overlap the avatar.
 - **Hero (BalloonName):** soft-body TYLER LANGE, drag to stretch, grows 15% over 15s, random soft jiggles, "Drag the letters" hint fades after first drag. Cursor: 28px move/grab.
 - **Info modal:** circular clearing; letters shrink (0.2 desktop / 0.32 mobile) and shove out. Links blue, "INFO" button uppercase.
-- **Selected work card:** title (Gochi Hand), subtitle (Gochi Hand, muted), lowercase URL, whole card is the link, surface-grey hover. Note below: info icon + "Case studies coming soon".
+- **Selected work card:** title (Gochi Hand), subtitle (Gochi Hand, muted), lowercase URL, whole card links to its case study; surface-grey hover. A card with an `image` shows only the image at rest and the text card on hover/focus (on touch screens: text over a faded image). Note below: info icon + "Case studies coming soon".
 - **About:** headline, tray of 3 pillar cards (Design / Engineer / Ship) with white icons on solid colour tiles (Design blue, Engineer and Ship solid colours), then "Design stack" toolbox (Figma, Framer, Claude, Cursor, React, Next.js, TypeScript, Vercel as CSS logo, Tailwind CSS, Three.js).
 - **Experience:** tray of rows, company in Gochi Hand, role, years; "Now" chip green; date range sits next to the label; "Full resume on LinkedIn" button.
 - **Let's build something good:** green status dot pill, headline with shader-filled "good", buttons: email, Book a call, LinkedIn, Send a message.
@@ -90,3 +90,11 @@ Rules:
 
 ## Voice
 First person, short, confident, no fluff. Titles: "Product Designer & UX Engineer", "UX Design Engineer". Booking line: "Booking new projects — Nov ’26".
+
+## Work and case-study pages
+- **Archive list** (`/work/`): same grey tray and white row cards as the Experience list. Row = name (17–20px mono) + optional year, short blurb, pill "Website ↗" button.
+- **Case study:** "← All Work" pill button top left; title (h1, `--case-heading-size` 32–48px mono) left, summary right; wide cover (16:9, or per-project `coverRatio`) or a bento grid; details column (sticky) left with the "Website ↗" pill; write-up right with one h2 then h3 sub-headings and a final "How AI was used" section. All blocks share a 1280px max width.
+- **Bento grids:** 3 or 4 images (tiles with 28px radius on the surface colour); video tiles play silently only while on screen. Layouts: default (wide, tall + two short) and `split` (Fobi). Phones stack to one column.
+- **About page:** centered 144px round portrait (colour, black and white on hover) and a name + location chip.
+- **404:** "Lost? Same." with two buttons.
+- **Voice for copy:** relaxed, short, first person where it fits. Plain words over jargon.

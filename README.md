@@ -1,14 +1,12 @@
 # Tyler Lange — Portfolio
 
-Personal portfolio site for Tyler Lange, Product Designer and UX Engineer.
+Personal portfolio site for Tyler Lange, Product Designer and UX Engineer. **Live at https://tylerlange.ca**
 
-**Status: v0.1.0.** The live site is a *coming soon* page with interactive balloon letters.
-The full portfolio (home, work, 8 project pages, about, contact) is already built and
-hidden behind a single launch switch (see [Launching the full site](#launching-the-full-site)).
-
-- **Stack:** Next.js (App Router, static export) · React · TypeScript · plain CSS · Geist Mono
-- **Hosting:** GitHub Pages (`neosmedia/neosmedia.github.io`), deployed by GitHub Actions
-- **Dependencies:** none beyond Next/React. The balloon physics is hand-written, with no physics library.
+- **Stack:** Next.js 16 (App Router, static export) · React 19 · TypeScript · plain CSS · Geist, Geist Mono and Gochi Hand
+- **Hosting:** GitHub Pages (`neosmedia/neosmedia.github.io`, custom domain `tylerlange.ca`), deployed by GitHub Actions on push to `main`
+- **Dependencies:** none beyond Next/React. The balloon physics and the WebGL shaders are hand-written.
+- **Branches:** `dev` is work in progress, `main` is what goes live.
+- **Design rules:** see [DESIGN.md](DESIGN.md). Release notes: [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -21,36 +19,25 @@ npm run build      # static site in ./out
 npm run lint       # type-check (tsc --noEmit)
 ```
 
-Requires Node 20+ (Node 22 is used in CI). `next/font` downloads Geist Mono at build time,
-so the first build needs internet access.
+Node 20+ (CI uses 22). `next/font` downloads the fonts at build time, so the first build needs internet access.
 
 ---
 
-## What's in v0.1
+## What's on the site
 
-**Coming soon page (`/`)**
+| Page | Route | Notes |
+| --- | --- | --- |
+| Home | `/` | Interactive balloon-letter hero, selected work (9 cards), about, experience, contact CTA |
+| Work | `/work/` | The same 9 cards plus the Archive list |
+| Case study | `/work/<slug>/` | One per project, built from `lib/site.ts` (cover, optional bento, details, write-up, AI note) |
+| About | `/about/` | Portrait with hover, name chip, about, experience, CTA |
+| Contact | `/contact/` | Contact form (Formspree) and direct links |
+| 404 | any unknown URL | `app/not-found.tsx` |
+| Preview | `/preview/` | Old duplicate of the home page. `noindex`, kept so old links work |
 
-- Full-screen *TYLER LANGE* in soft-body "inner tube" letters (drawn on a canvas):
-  - **Drag** any letter. The tube bends and trails behind your finger, then eases home.
-  - **Hover** (mouse) and the letter leans a little toward the cursor.
-  - **Idle motion:** a gentle jiggle for the first 3 seconds, then at rest. After that, every
-    5 or 10 seconds a few random letters jiggle. Over one minute the letters slowly grow 10%.
-  - Hand-drawn / fat-marker look: wobbly strokes, uneven thickness, random letter sizes
-    (the opening **T** is biggest, the closing **E** a touch smaller), small resting tilts.
-  - Phones lay the name out on 3 lines (TYL / ERL / ANGE: top two rows 10% larger, bottom row 20% smaller).
-- **Info** button (bottom right) or tapping your **photo** (top left) opens a modal: the letters
-  are pushed aside to leave a clearing in the middle. Esc, or a click/tap outside, closes it.
-- Top right: dark / light toggle, a divider, then email, phone and LinkedIn icons.
-  - Light mode: black letters with a 1px white border. Dark mode: inverted (white letters, black border).
-- **Daily toolbox** icon row below the first screen, then "Projects and case studies coming soon".
-- Respects `prefers-reduced-motion` (no jiggle, hover, growth or pop-in).
-
-**Built but hidden until launch**
-
-- `/preview/` — full home page (balloon hero, work grid, about band, contact, footer)
-- `/work/` and `/work/<slug>/` — 8 project pages from a shared template
-- `/about/`, `/contact/` — with a working contact form (Formspree)
-- Primary navigation (Work / About / Contact) — commented out in `components/SiteNav.tsx`
+Balloon hero: drag letters (soft-body physics), hover lean, random idle jiggle, slow growth, a colour shader that fades in
+only while dragging (rainbow, or a glossy blue bubble on alternate visits; `?shader=bubble|rainbow` forces one), and an
+Info modal that clears space in the middle. It respects `prefers-reduced-motion`.
 
 ---
 
@@ -58,94 +45,94 @@ so the first build needs internet access.
 
 ```
 app/
-  layout.tsx            Root layout: Geist Mono, theme script, nav, metadata
-  page.tsx              "/" → ComingSoon, or Home once launched
-  preview/page.tsx      Full home page, available before launch (noindex)
-  work/                 Work index + [slug] project template (noindex until launch)
-  about/  contact/      Pages (noindex until launch)
-  globals.css           All styles + light/dark theme variables
+  layout.tsx              Root layout: fonts, theme script, nav, global metadata + JSON-LD
+  page.tsx                "/" → Home (or ComingSoon if NEXT_PUBLIC_LAUNCHED=false)
+  work/ about/ contact/   Pages. work/[slug]/page.tsx is the case-study template
+  not-found.tsx           404 page
+  robots.ts  sitemap.ts   SEO files (sitemap lists every page and case study)
+  globals.css             All styles. The `.fx` block is the editorial look below the hero
 components/
-  BalloonName.tsx       Canvas renderer + pointer handling for the letters
-  ComingSoon.tsx        Coming soon screen: info modal, footer, toolbox
-  SiteNav.tsx           Top bar (photo, theme toggle, email, phone, LinkedIn)
-  NavAvatar.tsx         Photo: opens the info modal on "/", links home elsewhere
-  ThemeToggle.tsx       Dark / light switch (saved in localStorage)
-  Toolbox.tsx           Daily toolbox icon row
-  Home.tsx  ProjectGrid.tsx  ProjectCover.tsx  AboutBand.tsx
-  ContactSection.tsx  ContactForm.tsx  SiteFooter.tsx
+  BalloonName.tsx         Canvas renderer + pointer handling for the hero letters
+  Home.tsx  ComingSoon.tsx  HomeSections.tsx   Page sections (work grid, archive, about, experience, CTA)
+  SiteNav.tsx  NavLinks.tsx  NavAvatar.tsx  ThemeToggle.tsx
+  BentoVideo.tsx          Looping silent video tile (plays only on screen)
+  ShaderText.tsx          Shader-filled text ("good")
+  ContactForm.tsx  SiteFooter.tsx  Toolbox.tsx
 lib/
-  glyphs.ts             Letter shapes (stroke centerlines) + stroke / width / height knobs
-  softbody.ts           Physics + layout for the letters (all the tunables live here)
-  site.ts               Name, email, phone, LinkedIn, launch flag, form + booking config
-  projects.ts           The 8 projects
-  toolbox.ts            Toolbox icons (SVG paths)
+  site.ts                 ALL the content: contact details, experience, work, archive, case studies
+  seo.ts                  Per-page metadata helper (canonical, Open Graph, Twitter)
+  softbody.ts  glyphs.ts  rainbow.ts  toolbox.ts  projects.ts
 public/
-  logo.png   Nav logo (T on a white circle, same as the favicon)
-.github/workflows/deploy.yml   Build + deploy to GitHub Pages on push to main
+  work/                   Project images and the Fobi video
+  logo.png  ty-color.jpg  ty-bw.jpg  og-image.png  CNAME  .nojekyll
 ```
+
+---
+
+## Editing content
+
+Almost everything is in **`lib/site.ts`**.
+
+| To change… | Edit |
+| --- | --- |
+| Email, phone, LinkedIn, booking link | `lib/site.ts` (`EMAIL`, `PHONE_TEL`, `LINKEDIN_URL`, `BOOKING_URL`) |
+| Experience list | `EXPERIENCE` |
+| Home / Work cards | `WORK_LINKS` |
+| Archive list | `ARCHIVE` (newest first; `year` and `url` are optional) |
+| Fallback case-study copy | `CASE_STUDY_*` |
+| About headline and pillars | `ABOUT_HEADLINE`, `ABOUT_PILLARS` |
+| Toolbox icons | `lib/toolbox.ts` (24×24 SVG paths) |
+| Colours, spacing, dark mode | `app/globals.css` and [DESIGN.md](DESIGN.md) |
+| Nav logo / About photos | `public/logo.png`, `public/ty-color.jpg`, `public/ty-bw.jpg` |
+
+### Adding a project
+
+1. Add an entry to `WORK_LINKS` in `lib/site.ts`: `slug`, `title`, `subtitle`, `url`, `image` (the 4:3 card image).
+2. Put images in `public/work/` as WebP (about 1000–1600px wide; videos as a short silent MP4 under ~1 MB plus a `-poster.webp`).
+3. Optional fields:
+   - `cover`, `coverRatio`: wide hero image for the case study (default ratio 16 / 9).
+   - `gallery`: a bento grid of 3 or 4 images (an `.mp4` renders as a looping video). With no `galleryBelow` it replaces the cover; with `galleryBelow: true` it sits below the cover. `bentoLayout: "split"` is the Fobi arrangement.
+   - `study`: `role`, `year`, three `headings`, three `paragraphs` and the `ai` note. Without it the fallback copy is used.
+4. The page, sitemap entry, canonical URL and structured data are generated automatically.
 
 ---
 
 ## Configuration
 
 Copy `.env.example` to `.env.local` for local work. For the live site, add the same names as
-**repository variables** (Settings → Secrets and variables → Actions → *Variables*).
-The deploy workflow passes them to the build.
+**repository variables** (Settings → Secrets and variables → Actions → *Variables*). The deploy workflow passes them to the build.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `NEXT_PUBLIC_LAUNCHED` | `true` | `false` brings back the coming soon page at `/` and hides inner pages from search |
-| `NEXT_PUBLIC_FORMSPREE_ID` | *(empty)* | Contact form endpoint. Empty = form opens the visitor's email app |
-| `NEXT_PUBLIC_BOOKING_URL` | *(empty)* | "Book a time to chat" link (Cal.com, Calendly…). Empty = email |
+| `NEXT_PUBLIC_FORMSPREE_ID` | *(empty)* | Contact form endpoint. Empty = the form opens the visitor's email app |
+| `NEXT_PUBLIC_BOOKING_URL` | *(empty)* | "Book a call" link (Cal.com, Calendly…). Empty = email |
 
-Because this is a static export, `NEXT_PUBLIC_*` values are baked in at build time:
-change a variable, then re-run the deploy workflow.
-
-Contact details (email, phone, LinkedIn), services and the footer tool list are in `lib/site.ts`.
+`NEXT_PUBLIC_*` values are baked in at build time: change a variable, then re-run the deploy workflow.
+If a repository variable named `NEXT_PUBLIC_LAUNCHED` is set to `false`, the live site stays on the coming soon page.
 
 ---
 
 ## Deploying
 
-1. In the repo: **Settings → Pages → Source: GitHub Actions** (one time).
-2. Push to `main`. The workflow in `.github/workflows/deploy.yml` runs `npm ci`,
-   `npm run build`, and publishes `./out`.
-3. It's a user site (`neosmedia.github.io`), so it's served from the domain root and needs no `basePath`.
+1. Repo **Settings → Pages → Source: GitHub Actions** (one time).
+2. Merge `dev` into `main`. The workflow runs `npm ci`, `npm run build` and publishes `./out`.
+3. Custom domain `tylerlange.ca` (`public/CNAME`): the apex needs A records `185.199.108.153`, `.109.153`, `.110.153`, `.111.153`;
+   `www` needs a CNAME to `neosmedia.github.io`; then tick **Enforce HTTPS** in Pages settings once the certificate is ready.
 
-`next.config.mjs` sets `output: "export"`, `trailingSlash: true` and unoptimised images.
-`public/.nojekyll` stops GitHub Pages from ignoring `_next/`.
-
----
-
-## Launching the full site
-
-Everything is already built. To go live:
-
-1. **Content:** replace the colour-block covers in `lib/projects.ts` / `components/ProjectCover.tsx`
-   with real images (put them in `public/work/<slug>/`) and write the case studies.
-2. **Form:** create a Formspree form delivering to tylerlangebc@gmail.com and set
-   `NEXT_PUBLIC_FORMSPREE_ID`. Send a test message. Optionally set `NEXT_PUBLIC_BOOKING_URL`.
-3. **Navigation:** uncomment the logo and links block in `components/SiteNav.tsx`.
-4. **Check** every page on a real phone and in dark mode (review the home page at `/preview/`).
-5. **Launch:** the full site is on by default. To go back to "coming soon", set `NEXT_PUBLIC_LAUNCHED=false` and re-run the deploy workflow.
-   To roll back, set it to `false` and re-run.
-
-Until launch, `/preview/`, `/work/`, `/about/` and `/contact/` are reachable by URL but marked `noindex`.
+`next.config.mjs` sets `output: "export"`, `trailingSlash: true` and unoptimised images (no image server on GitHub Pages).
 
 ---
 
-## Editing content
+## Launch checklist
 
-| To change… | Edit |
-| --- | --- |
-| Info modal text and company links | `components/ComingSoon.tsx` |
-| Footer line ("Product Designer and UX Engineer") | `components/ComingSoon.tsx` |
-| Email / phone / LinkedIn | `lib/site.ts` |
-| Toolbox icons (add, remove, reorder) | `lib/toolbox.ts` (24×24 SVG paths, e.g. from Simple Icons) |
-| Projects (title, tagline, category, year, colours) | `lib/projects.ts` |
-| Nav logo | replace `public/logo.png` (square, ~120px) |
-| Colours / spacing / light-dark theme | `app/globals.css` (`:root` and `:root[data-theme="dark"]`) |
-| Font | `app/layout.tsx` (`Geist_Mono`) |
+- [ ] Replace every `TODO` in `lib/site.ts` (years for AutoTrader and Modo, case-study details and AI notes, About copy)
+- [ ] Create a Formspree form delivering to tylerlangebc@gmail.com, set `NEXT_PUBLIC_FORMSPREE_ID`, send a test message
+- [ ] Optional: set `NEXT_PUBLIC_BOOKING_URL`
+- [ ] `npm run lint` and `npm run build` pass
+- [ ] Check every page on a real phone, in dark mode, and at a narrow desktop width
+- [ ] `https://tylerlange.ca` loads with a valid certificate (and `www` redirects to it)
+- [ ] Share preview works (paste the URL into LinkedIn / Slack); submit `https://tylerlange.ca/sitemap.xml` in Google Search Console
 
 ---
 
@@ -195,12 +182,8 @@ Physics is simulated in `lib/softbody.ts` with no DOM access, so it can be teste
 
 ## Notes and limitations
 
-- Dragging works with mouse and touch. On touch, only a gesture that starts on a letter drags;
-  anywhere else scrolls the page.
+- Dragging works with mouse and touch. On touch, only a gesture that starts on a letter drags; anywhere else scrolls the page.
 - Hover nudge is mouse-only. Dark mode is saved per browser, defaulting to light.
-- The toolbox icon set was modelled on a reference site's row (it includes Three.js, Vercel,
-  Next.js and Tailwind), so it may not match your actual stack. Edit `lib/toolbox.ts` to match.
-- The about and project-page copy is placeholder until the case studies are written.
-- Design reference: the *Tyler Lange Portfolio 27* Figma file (home frame).
-
-See [CHANGELOG.md](CHANGELOG.md) for release notes.
+- The letters are pointer-only for now (no keyboard way to drag them). Everything else is keyboard accessible.
+- Project images are static WebP files (no image optimizer on GitHub Pages), so keep them small.
+- The shaders need WebGL; without it the letters stay plain ink.

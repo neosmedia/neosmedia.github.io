@@ -2045,6 +2045,7 @@ ul {
 
 .fx .archive-main .exp-company {
   margin: 0;
+  font-size: clamp(17px, 1.7vw, 20px); /* smaller than the Experience company names */
   font-weight: 400;
 }
 
@@ -2490,4 +2491,44 @@ ul {
 .fx.fx-page > .sec:first-of-type {
   border-top: 0;
   padding-top: 36px;
+}
+
+/* "split" bento (Fobi, 3 items): full-width video, then a wide screen (4 cols) beside a tall one (2 cols) at the same height */
+.fx .project-bento.bento-split {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-areas:
+    "a a a a a a"
+    "b b b b c c";
+}
+
+.fx .project-bento.bento-split .bento-1 {
+  aspect-ratio: 16 / 9;
+}
+
+.fx .project-bento.bento-split .bento-2 {
+  aspect-ratio: 3 / 2;
+}
+
+.fx .project-bento.bento-split .bento-3 {
+  aspect-ratio: auto; /* stretches to the wide tile's height */
+}
+
+@media (max-width: 700px) {
+  .fx .project-bento.bento-split {
+    grid-template-columns: 1fr;
+    grid-template-areas: "a" "b" "c";
+  }
+  .fx .project-bento.bento-split .bento-1 {
+    aspect-ratio: 4 / 3;
+  }
+  .fx .project-bento.bento-split .bento-3 {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+.fx .bento-tile video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

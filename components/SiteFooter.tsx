@@ -20,7 +20,7 @@ export default function SiteFooter() {
         </div>
       </div>
       <div className="footer-bottom">
-        <span>© 2027 Tyler Lange</span>
+        <span>© {new Date().getFullYear()} Tyler Lange</span>
         <span>Thoughtfully made. Always evolving.</span>
       </div>
     </footer>

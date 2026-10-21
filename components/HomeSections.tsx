@@ -119,7 +119,7 @@ export function Archive() {
           <li key={a.name} className="exp-row archive-row">
             <div className="archive-main">
               <h3 className="exp-company">{a.name}</h3>
-              <span className="archive-year mono">{a.year}</span>
+              {a.year && <span className="archive-year mono">{a.year}</span>}
             </div>
             <p className="archive-blurb">{a.blurb}</p>
             {a.url ? (

@@ -16,3 +16,9 @@
 - Launch: full site is on by default (`NEXT_PUBLIC_LAUNCHED !== "false"`); sitemap lists every page; per-page canonical/Open Graph/Twitter metadata (`lib/seo.ts`); case studies get CreativeWork + breadcrumb JSON-LD; About page has an h1.
 - Contact page: removed the Book a call button.
 - Work, About, Contact pages and 9 case studies (bento image grids, per-project copy), archive list, T logo in the nav, About portrait + name chip.
+
+## Unreleased (launch prep, after v0.4.0)
+- Archive list: AutoTrader and Modo added, placeholder rows removed, ordered newest first, relaxed copy.
+- Case studies: Aurora, Cimetrix and Finning written; fallback copy no longer Lorem ipsum.
+- Footer year is now automatic; custom 404 page; `public/.nojekyll`; Aurora image recompressed.
+- README rewritten (pages, adding a project, launch checklist, domain/HTTPS setup); DESIGN.md covers work/case-study pages.

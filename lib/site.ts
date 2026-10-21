@@ -82,12 +82,39 @@ export type CaseStudy = {
 };
 
 /** Selected work: a simple list of links for now. Replace these placeholders with real URLs. */
-export const WORK_LINKS: { slug: string; title: string; subtitle?: string; url: string; /** shown instead of the URL when set */ label?: string; /** card cover shown at rest (public/work/*); hover reveals the text card */ image?: string; /** case-study copy; falls back to the CASE_STUDY_* placeholders */ study?: CaseStudy; /** images for a bento grid on the case study. 4 images: [wide, tall, short, short]. 3 images: [wide, half, half] */ gallery?: string[]; /** wide hero image for the case study (falls back to `image`) */ cover?: string; /** show the cover first and the bento below it */ galleryBelow?: boolean }[] = [
-  { slug: "aurora", title: "Aurora", subtitle: "Microchip analysis, AI workflows and Design System", url: "https://pdf.com", image: "/work/aurora.webp" },
+export const WORK_LINKS: { slug: string; title: string; subtitle?: string; url: string; /** shown instead of the URL when set */ label?: string; /** card cover shown at rest (public/work/*); hover reveals the text card */ image?: string; /** case-study copy; falls back to the CASE_STUDY_* placeholders */ study?: CaseStudy; /** images for a bento grid on the case study. 4 images: [wide, tall, short, short]. 3 images: [wide, half, half] */ gallery?: string[]; /** wide hero image for the case study (falls back to `image`) */ cover?: string; /** CSS aspect-ratio for the case study cover (default 16 / 9) */ coverRatio?: string; /** show the cover first and the bento below it */ galleryBelow?: boolean; /** named bento arrangement, see app/globals.css (.bento-split) */ bentoLayout?: "split" }[] = [
+  {
+    slug: "aurora", title: "Aurora", subtitle: "Microchip analysis, AI workflows and Design System", url: "https://pdf.com",
+    image: "/work/aurora.webp",
+    study: {
+      role: "Senior Product Designer",
+      year: "2024 — 2026",
+      headings: ["Analytics, minus the headache", "One system, many screens", "AI that shows its work"],
+      paragraphs: [
+        "Aurora brings microchip data, AI workflows and a shared design system into one place. Engineers want answers, not another dashboard to decode, so the goal was simple: less digging, more doing.",
+        "A common set of components and patterns means every new tool feels familiar from day one. Designers and developers work from the same playbook, and features ship faster.",
+        "When the AI suggests something, you can see why. Clear states, plain language and an easy path back to the source data keep people in control.",
+      ],
+      // TODO: Tyler to confirm/edit these details and the AI note.
+      ai: "AI is part of the product, so a big piece of the job was deciding when it should help and when it should step aside. In my own workflow, I use AI to explore ideas quickly and tidy up copy, then make the calls myself.",
+    },
+  },
   {
     slug: "cimetrix", title: "Cimetrix", subtitle: "Industrial equipment software", url: "https://www.cimetrix.com/",
     image: "/work/cimetrix.webp",
     gallery: ["/work/cimetrix-1.webp", "/work/cimetrix-2.webp", "/work/cimetrix-3.webp", "/work/cimetrix-4.webp"],
+    study: {
+      role: "Senior Product Designer",
+      year: "2024 — 2026",
+      headings: ["Making factory software friendly", "A design system with range", "Built for the factory floor"],
+      paragraphs: [
+        "Cimetrix connects and controls equipment on the factory floor. The software is powerful, but it was not always easy on the eyes. This project gave it a friendlier face.",
+        "Buttons, tables, alerts, forms and a handful of mobile patterns, all in one system. Dense data screens and simple phone alerts now share the same look and feel.",
+        "Operators are busy and screens often get glanced at, not studied. Clear status colours, big touch targets and calm layouts help people spot what matters fast.",
+      ],
+      // TODO: Tyler to confirm/edit these details and the AI note.
+      ai: "I used AI to speed up the repetitive parts, like documenting components and drafting guidelines, so more time went into the design itself.",
+    },
   },
   {
     slug: "securewise", title: "secureWISE", subtitle: "Remote Equipment Monitoring", url: "https://www.pdf.com/products/securewise/",
@@ -124,6 +151,15 @@ export const WORK_LINKS: { slug: string; title: string; subtitle?: string; url: 
   {
     slug: "fobi-ai", title: "Fobi AI", subtitle: "Infrastructure for the AI Era", url: "https://www.fobi.ai/",
     image: "/work/fobi-ai.webp",
+    cover: "/work/fobi-ai-cover.webp",
+    coverRatio: "3 / 2",
+    gallery: [
+      "/work/fobi-ai-1.mp4",
+      "/work/fobi-ai-4.webp",
+      "/work/fobi-ai-7.webp",
+    ],
+    galleryBelow: true,
+    bentoLayout: "split",
     study: {
       role: "Senior UX / UI Designer",
       year: "2019",
@@ -188,36 +224,53 @@ export const WORK_LINKS: { slug: string; title: string; subtitle?: string; url: 
       ai: "This work predates the generative AI tools I use today. Now I would lean on AI to explore asset and environment ideas faster and to draft event copy, while the creative direction and the final experience would still be shaped by hand.",
     },
   },
-  { slug: "finning", title: "Finning", subtitle: "24/7 Customer Platform", url: "https://www.finning.com/en_CA/technology/finning-customer-portal.html", label: "finning.com/en/technology/customer-portal", image: "/work/finning.webp" },
-];
-
-/** Older projects shown in the Archive list on /work. TODO: replace the Lorem ipsum placeholders with real projects. */
-export const ARCHIVE: { name: string; year: string; blurb: string; url?: string }[] = [
-  { name: "Lorem Ipsum", year: "2018", blurb: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore." },
-  { name: "Dolor Sit", year: "2017", blurb: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo." },
-  { name: "Consectetur", year: "2016", blurb: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
-  { name: "Adipiscing", year: "2015", blurb: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim." },
-  { name: "Eiusmod Tempor", year: "2014", blurb: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium." },
-  { name: "Incididunt", year: "2013", blurb: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur." },
+  {
+    slug: "finning", title: "Finning", subtitle: "24/7 Customer Platform", url: "https://www.finning.com/en_CA/technology/finning-customer-portal.html", label: "finning.com/en/technology/customer-portal", image: "/work/finning.webp",
+    study: {
+      role: "Lead UX Designer",
+      year: "2017 — 2019",
+      headings: ["A customer portal that never sleeps", "Fewer clicks to the machine", "Practical over fancy"],
+      paragraphs: [
+        "Finning customers run heavy equipment, and downtime costs real money. The customer platform gives them one place to keep an eye on their machines, any time of day.",
+        "The aim was to get people from login to answer in as few steps as possible: what is running, what needs attention, and who to call.",
+        "Keeping things practical meant plain language, clear status and nothing that gets in the way of a busy day on site.",
+      ],
+      // TODO: Tyler to confirm/edit these details and the AI note.
+      ai: "This work came before AI tools were part of my day to day. Today I would use them to spot patterns in machine data and to sketch quick prototypes, with people still steering the design.",
+    },
+  },
 ];
 
 /**
- * Placeholder copy for every case-study page.
- * TODO: replace with real per-project details and write-ups (move into each WORK_LINKS entry).
+ * Older projects shown in the Archive list on /work, newest first. `year` is optional (hidden when empty).
+ * TODO: add years for AutoTrader and Modo, and confirm the blurbs.
+ */
+export const ARCHIVE: { name: string; year?: string; blurb: string; url?: string }[] = [
+  { name: "Ajna Labs", year: "2022 — 2023", blurb: "A protocol for lending and borrowing, made clear instead of complicated.", url: "https://www.ajna.finance/" },
+  { name: "OSI Maritime Systems", year: "2020 — 2021", blurb: "Navigation and command software for ships, where clear screens really matter.", url: "https://osimaritime.com/" },
+  { name: "GE Vernova", year: "2016 — 2017", blurb: "Industrial software that turns machine data into things operators can act on.", url: "https://www.gevernova.com/" },
+  { name: "EA Sports FC", year: "2013 — 2015", blurb: "Menus and interfaces for the football franchise millions of players love.", url: "https://www.ea.com/games/ea-sports-fc" },
+  { name: "AutoTrader", blurb: "Making car shopping simpler, from the first search to the right listing.", url: "https://autotrader.ca" },
+  { name: "Modo Car Share", blurb: "Helping a Vancouver car-share co-op make finding and booking a car feel easy.", url: "https://www.modo.coop/" },
+];
+
+/**
+ * Fallback copy for a case study that has no `study` of its own (see WORK_LINKS).
+ * Every current project has its own study, so this only shows up for new projects until they are written.
  */
 export const CASE_STUDY_DETAILS = [
-  { label: "Role", value: "Lorem ipsum, dolor sit" },
-  { label: "Year", value: "Lorem ipsum" },
+  { label: "Role", value: "Product design" },
+  { label: "Year", value: "2026" },
 ];
 
 /** Headings for the write-up rows (3 paragraphs, then "How AI was used"). */
-export const CASE_STUDY_HEADINGS = ["Lorem ipsum dolor", "Sit amet consectetur", "Adipiscing elit sed"];
+export const CASE_STUDY_HEADINGS = ["The short version", "How it came together", "What stuck"];
 
 export const CASE_STUDY_PARAGRAPHS = [
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-  "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
+  "A quick look at what this project was about and who it was for. The full story is on its way.",
+  "A bit about how the work took shape: the questions asked, the ideas tried and the choices made along the way.",
+  "What the project did in the end, and what I took away from it.",
 ];
 
 export const CASE_STUDY_AI =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.";
+  "A few words on where AI helped in this project, and where I kept my hands on the wheel.";
