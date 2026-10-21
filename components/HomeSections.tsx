@@ -12,7 +12,6 @@ import {
   ABOUT_DETAILS,
   ABOUT_HEADLINE,
   ABOUT_PILLARS,
-  BOOKING_URL,
   CTA_STATUS,
   EMAIL,
   EXPERIENCE,
@@ -292,9 +291,6 @@ export function LetsBuild() {
       <div className="build-actions">
         <a className="btn btn-solid" href={`mailto:${EMAIL}`}>
           {EMAIL}
-        </a>
-        <a className="btn btn-outline" href={BOOKING_URL}>
-          Book a call <span aria-hidden="true">↗</span>
         </a>
         <a className="btn btn-outline" href={LINKEDIN_URL} target="_blank" rel="noreferrer">
           LinkedIn <span aria-hidden="true">↗</span>

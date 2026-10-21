@@ -28,7 +28,6 @@ jobs:
         env:
           NEXT_PUBLIC_LAUNCHED: ${{ vars.NEXT_PUBLIC_LAUNCHED }}
           NEXT_PUBLIC_FORMSPREE_ID: ${{ vars.NEXT_PUBLIC_FORMSPREE_ID }}
-          NEXT_PUBLIC_BOOKING_URL: ${{ vars.NEXT_PUBLIC_BOOKING_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: out

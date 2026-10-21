@@ -30,7 +30,7 @@ Next.js 16 (App Router, `output: "export"`, `trailingSlash`), React 19, TypeScri
 - Cap devicePixelRatio at 2. Keep CSS lean; remove dead rules.
 
 ## Env
-`NEXT_PUBLIC_LAUNCHED`, `NEXT_PUBLIC_FORMSPREE_ID`, `NEXT_PUBLIC_BOOKING_URL` (see `.env.example`).
+`NEXT_PUBLIC_LAUNCHED`, `NEXT_PUBLIC_FORMSPREE_ID` (see `.env.example`).
 
 ## Before finishing
 Type-check, test light + dark, 375px + desktop, reduced motion, and `?shader=bubble` / `?shader=rainbow`.

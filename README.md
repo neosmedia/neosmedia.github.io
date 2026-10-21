@@ -76,7 +76,7 @@ Almost everything is in **`lib/site.ts`**.
 
 | To change… | Edit |
 | --- | --- |
-| Email, phone, LinkedIn, booking link | `lib/site.ts` (`EMAIL`, `PHONE_TEL`, `LINKEDIN_URL`, `BOOKING_URL`) |
+| Email, phone, LinkedIn | `lib/site.ts` (`EMAIL`, `PHONE_TEL`, `LINKEDIN_URL`) |
 | Experience list | `EXPERIENCE` |
 | Home / Work cards | `WORK_LINKS` |
 | Archive list | `ARCHIVE` (newest first; `year` and `url` are optional) |
@@ -107,7 +107,6 @@ Copy `.env.example` to `.env.local` for local work. For the live site, add the s
 | --- | --- | --- |
 | `NEXT_PUBLIC_LAUNCHED` | `true` | `false` brings back the coming soon page at `/` and hides inner pages from search |
 | `NEXT_PUBLIC_FORMSPREE_ID` | *(empty)* | Contact form endpoint. Empty = the form opens the visitor's email app |
-| `NEXT_PUBLIC_BOOKING_URL` | *(empty)* | "Book a call" link (Cal.com, Calendly…). Empty = email |
 
 `NEXT_PUBLIC_*` values are baked in at build time: change a variable, then re-run the deploy workflow.
 If a repository variable named `NEXT_PUBLIC_LAUNCHED` is set to `false`, the live site stays on the coming soon page.
@@ -129,7 +128,6 @@ If a repository variable named `NEXT_PUBLIC_LAUNCHED` is set to `false`, the liv
 
 - [ ] Replace every `TODO` in `lib/site.ts` (case-study details and AI notes, About copy)
 - [ ] Create a Formspree form delivering to tylerlangebc@gmail.com, set `NEXT_PUBLIC_FORMSPREE_ID`, send a test message
-- [ ] Optional: set `NEXT_PUBLIC_BOOKING_URL`
 - [ ] `npm run lint` and `npm run build` pass
 - [ ] Check every page on a real phone, in dark mode, and at a narrow desktop width
 - [ ] `https://tylerlange.ca` loads with a valid certificate (and `www` redirects to it)

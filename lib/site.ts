@@ -31,9 +31,6 @@ export const LAUNCHED = process.env.NEXT_PUBLIC_LAUNCHED !== "false";
 // TODO: create a Formspree form and set NEXT_PUBLIC_FORMSPREE_ID, otherwise the contact form uses mailto.
 export const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID ?? "";
 
-// TODO: set NEXT_PUBLIC_BOOKING_URL to a real scheduler (Cal.com / Calendly); falls back to email.
-export const BOOKING_URL =
-  process.env.NEXT_PUBLIC_BOOKING_URL || `mailto:${EMAIL}?subject=Let%27s%20chat`;
 
 // TODO: TOOLS (about page/footer) overlaps lib/toolbox.ts; consolidate into one list.
 export const TOOLS = ["Figma", "Framer", "Claude", "Cursor", "React", "TypeScript"];
