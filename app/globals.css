@@ -2660,3 +2660,37 @@ ul {
   width: 36px;
   color: var(--muted);
 }
+
+/* About page: bio + philosophy / specialties / availability */
+.fx .about-more {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.fx .about-bio {
+  display: grid;
+  gap: 16px;
+  max-width: 640px;
+  margin: 0 auto 48px;
+  text-align: center;
+  color: var(--muted);
+  font-size: clamp(17px, 1.7vw, 20px);
+  line-height: 1.6;
+}
+
+.fx .about-bio p {
+  margin: 0;
+}
+
+.fx .about-more .pillars {
+  margin-top: 0;
+}
+
+.fx .about-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+}

@@ -8,6 +8,8 @@ import ShaderText from "./ShaderText";
 import Link from "next/link";
 import Toolbox from "./Toolbox";
 import {
+  ABOUT_BIO,
+  ABOUT_DETAILS,
   ABOUT_HEADLINE,
   ABOUT_PILLARS,
   BOOKING_URL,
@@ -162,6 +164,34 @@ export function SelectedWork() {
  * `label`: the small "About" text above the headline (hidden on the About page itself).
  * `portrait`: centered round photo above the headline (About page); black & white on hover.
  */
+/** About page extras: short bio, philosophy, specialties and availability (from the old site). */
+export function AboutDetails() {
+  return (
+    <section className="sec container about-more">
+      <div className="about-bio">
+        {ABOUT_BIO.map((t) => (
+          <p key={t}>{t}</p>
+        ))}
+      </div>
+      <ul className="pillars">
+        {ABOUT_DETAILS.map((d) => (
+          <li key={d.title} className="pillar">
+            <h3>{d.title}</h3>
+            {"text" in d && d.text ? <p>{d.text}</p> : null}
+            {"list" in d && d.list ? (
+              <ul className="about-list">
+                {d.list.map((i) => (
+                  <li key={i}>{i}</li>
+                ))}
+              </ul>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export function AboutSection({ label = true, portrait = false }: { label?: boolean; portrait?: boolean }) {
   return (
     <section className="sec container" id="about">

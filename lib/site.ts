@@ -55,6 +55,29 @@ export const ABOUT_PILLARS = [
   { name: "Ship", blurb: "Launched, measured and kept improving." },
 ];
 
+export const DRIBBBLE_URL = "https://dribbble.com/tylerlange";
+
+/** From the old site (northvanweb.com/about), lightly trimmed. */
+export const ABOUT_BIO = [
+  "I’m a designer and creativity enthusiast who loves making digital products that feel seamless and useful. UX is my home turf, and I like solving tricky UX problems with clean, concise answers.",
+  "I’m into remote work, the open web and economic freedom, and I try to make the web a more connected, less boring place through design.",
+];
+
+export const ABOUT_DETAILS = [
+  {
+    title: "Design philosophy",
+    text: "Keep it simple. I aim for straightforward, intuitive design guided by Nielsen Norman Group principles, so every interaction feels easy.",
+  },
+  {
+    title: "Specializing in",
+    list: ["UX design", "Product design", "Design systems", "Rapid prototyping", "User research", "Figma & FigJam"],
+  },
+  {
+    title: "Available for",
+    list: ["Full-time, onsite or remote", "Contract work", "Freelance design"],
+  },
+];
+
 export const EXPERIENCE_HEADLINE = "18 years of shipping things";
 
 export const EXPERIENCE = [
