@@ -2693,11 +2693,15 @@ ul {
   }
 }
 
-.fx .about-list {
-  display: grid;
-  gap: 6px;
+/* plain list inside a card: undo the .pillars li row styling (grid, padding, divider lines) */
+.fx .pillars .about-list {
   margin: 0;
   padding: 0;
-  list-style: none;
   color: var(--muted);
+}
+
+.fx .pillars .about-list li {
+  display: block;
+  padding: 0 0 6px;
+  border: 0;
 }
