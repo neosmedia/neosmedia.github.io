@@ -276,6 +276,8 @@ export const ARCHIVE: { name: string; year?: string; blurb: string; url?: string
   { name: "EA Sports FC", year: "2013 — 2015", blurb: "Menus and interfaces for the football franchise millions of players love.", url: "https://www.ea.com/games/ea-sports-fc" },
   { name: "AutoTrader", blurb: "Making car shopping simpler, from the first search to the right listing.", url: "https://autotrader.ca" },
   { name: "Modo Car Share", blurb: "Helping a Vancouver car-share co-op make finding and booking a car feel easy.", url: "https://www.modo.coop/" },
+  // TODO: Tyler to confirm SAP years
+  { name: "SAP Analytics Cloud", blurb: "Analytics and planning software that helps teams turn data into decisions.", url: "https://www.sap.com/products/data-cloud/cloud-analytics.html" },
 ];
 
 /**
