@@ -12,7 +12,10 @@ export default function NotFound() {
   return (
     <main className="page nf">
       <section className="nf-top">
-        <h1 className="nf-title">Pop! That page is gone.</h1>
+        <h1 className="nf-title">
+          <span className="nf-kicker">Pop!</span>
+          That page is gone.
+        </h1>
       </section>
 
       <section className="nf-balloons" aria-label="404">

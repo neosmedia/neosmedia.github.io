@@ -2550,6 +2550,17 @@ ul {
   letter-spacing: 0;
 }
 
+/* "Pop!" on its own line, small label style (same as the section labels like "Experience") */
+.nf-kicker {
+  display: block;
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-family: var(--font-mono), ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 /* a big hero-style stage for the balloon 404 */
 .nf-balloons {
   height: clamp(150px, 23vw, 310px);
