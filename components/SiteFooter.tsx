@@ -1,12 +1,5 @@
-import Link from "next/link";
+import FooterLinks from "./FooterLinks";
 import { EMAIL, TOOLS } from "@/lib/site";
-
-const PAGES = [
-  { href: "/", label: "Home" },
-  { href: "/work/", label: "Work" },
-  { href: "/about/", label: "About" },
-  { href: "/contact/", label: "Contact" },
-];
 
 export default function SiteFooter() {
   return (
@@ -20,13 +13,7 @@ export default function SiteFooter() {
         </div>
         <nav aria-label="Footer">
           <p className="label">Pages</p>
-          <ul className="footer-links">
-            {PAGES.map((l) => (
-              <li key={l.href}>
-                <Link href={l.href}>{l.label}</Link>
-              </li>
-            ))}
-          </ul>
+          <FooterLinks />
         </nav>
         <div>
           <p className="label">Design Stack</p>

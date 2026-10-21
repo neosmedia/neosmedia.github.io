@@ -2777,6 +2777,14 @@ ul {
   text-decoration: underline;
 }
 
+/* current page is greyed out */
+.footer-links a[aria-current="page"] {
+  color: var(--muted);
+  opacity: 0.6;
+  pointer-events: none;
+  text-decoration: none;
+}
+
 /* smaller footer email */
 .fx .footer-mail {
   font-size: 20px;
