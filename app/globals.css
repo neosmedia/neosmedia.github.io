@@ -2789,3 +2789,37 @@ ul {
 .fx .footer-mail {
   font-size: 20px;
 }
+
+/* name chip dot: green (same as the "Booking new projects" dot) with a soft pulse */
+.fx .name-chip-dot {
+  background: rgba(46, 160, 90, 0.18);
+}
+
+.fx .name-chip-dot::after {
+  background: #2a8a52;
+  animation: chip-pulse 2s ease-out infinite;
+}
+
+:root[data-theme="dark"] .fx .name-chip-dot {
+  background: rgba(80, 200, 120, 0.2);
+}
+
+:root[data-theme="dark"] .fx .name-chip-dot::after {
+  background: #5bd08a;
+  --pulse: rgba(91, 208, 138, 0.55);
+}
+
+.fx .name-chip-dot::after {
+  --pulse: rgba(42, 138, 82, 0.5);
+}
+
+@keyframes chip-pulse {
+  0% { box-shadow: 0 0 0 0 var(--pulse); }
+  70%, 100% { box-shadow: 0 0 0 10px transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx .name-chip-dot::after {
+    animation: none;
+  }
+}
