@@ -2768,6 +2768,9 @@ ul {
 
 .footer-links a {
   text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 12px; /* same as the nav links */
 }
 
 .footer-links a:hover {
