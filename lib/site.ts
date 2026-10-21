@@ -36,7 +36,7 @@ export const BOOKING_URL =
   process.env.NEXT_PUBLIC_BOOKING_URL || `mailto:${EMAIL}?subject=Let%27s%20chat`;
 
 // TODO: TOOLS (about page/footer) overlaps lib/toolbox.ts; consolidate into one list.
-export const TOOLS = ["Figma", "Framer", "Claude", "Cursor", "React", "TypeScript", "CSS"];
+export const TOOLS = ["Figma", "Framer", "Claude", "Cursor", "React", "TypeScript"];
 
 export const SERVICES = [
   { name: "Strategy", blurb: "Finding the right problem before drawing the first screen." },
