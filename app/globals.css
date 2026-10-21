@@ -2751,12 +2751,19 @@ ul {
   }
 }
 
-/* footer page links */
+/* footer page links: one line, little bullets between */
 .footer-links {
-  display: grid;
-  gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
   margin-top: 10px;
   font-size: 13px;
+}
+
+.footer-links li + li::before {
+  content: "•";
+  margin: 0 10px;
+  color: var(--muted);
 }
 
 .footer-links a {
@@ -2765,4 +2772,9 @@ ul {
 
 .footer-links a:hover {
   text-decoration: underline;
+}
+
+/* smaller footer email */
+.fx .footer-mail {
+  font-size: 20px;
 }
