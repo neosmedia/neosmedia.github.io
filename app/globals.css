@@ -164,8 +164,12 @@ ul {
   display: flex;
   gap: 24px;
 }
-
-.nav-links a:hover,
+@media (hover: hover) {
+  .nav-links a:hover {
+    border-color: currentColor;
+    outline: none;
+  }
+}
 .nav-links a:focus-visible {
   border-color: currentColor;
   outline: none;
@@ -228,8 +232,12 @@ ul {
   cursor: pointer;
   transition: background-color 0.15s;
 }
-
-.icon-btn:hover,
+@media (hover: hover) {
+  .icon-btn:hover {
+    background: var(--line);
+    outline: none;
+  }
+}
 .icon-btn:focus-visible {
   background: var(--line);
   outline: none;
@@ -270,8 +278,13 @@ ul {
   pointer-events: auto;
   transition: color 0.15s, border-color 0.15s;
 }
-
-.footer-btn:hover,
+@media (hover: hover) {
+  .footer-btn:hover {
+    color: var(--ink);
+    border-color: currentColor;
+    outline: none;
+  }
+}
 .footer-btn:focus-visible {
   color: var(--ink);
   border-color: currentColor;
@@ -309,8 +322,12 @@ ul {
   pointer-events: auto;
   transition: opacity 0.15s;
 }
-
-.info a:hover,
+@media (hover: hover) {
+  .info a:hover {
+    opacity: 0.6;
+    outline: none;
+  }
+}
 .info a:focus-visible {
   opacity: 0.6;
   outline: none;
@@ -328,8 +345,13 @@ ul {
   border-bottom: 1px solid transparent;
   transition: color 0.15s, border-color 0.15s;
 }
-
-.footer a:hover,
+@media (hover: hover) {
+  .footer a:hover {
+    color: var(--ink);
+    border-color: currentColor;
+    outline: none;
+  }
+}
 .footer a:focus-visible {
   color: var(--ink);
   border-color: currentColor;
@@ -437,8 +459,11 @@ ul {
 .cover-large {
   aspect-ratio: 16 / 9;
 }
-
-.card:hover .cover,
+@media (hover: hover) {
+  .card:hover .cover {
+    transform: scale(0.985);
+  }
+}
 .card:focus-visible .cover {
   transform: scale(0.985);
 }
@@ -468,9 +493,10 @@ ul {
   font-weight: 400;
   transition: transform 0.2s;
 }
-
-.card:hover .card-arrow {
-  transform: translate(2px, -2px);
+@media (hover: hover) {
+  .card:hover .card-arrow {
+    transform: translate(2px, -2px);
+  }
 }
 
 .card-sub {
@@ -550,9 +576,10 @@ ul {
 .tags a {
   text-decoration: none;
 }
-
-.tags a:hover {
-  text-decoration: underline;
+@media (hover: hover) {
+  .tags a:hover {
+    text-decoration: underline;
+  }
 }
 
 .link {
@@ -643,10 +670,11 @@ ul {
   background: transparent;
   color: var(--ink);
 }
-
-.btn-outline:hover {
-  background: var(--ink);
-  color: var(--bg);
+@media (hover: hover) {
+  .btn-outline:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
 }
 
 .btn-solid,
@@ -654,10 +682,11 @@ ul {
   background: var(--ink);
   color: var(--bg);
 }
-
-.btn-solid:hover,
-.btn-primary:hover {
-  opacity: 0.85;
+@media (hover: hover) {
+  .btn-solid:hover,
+  .btn-primary:hover {
+    opacity: 0.85;
+  }
 }
 
 .btn:disabled {
@@ -763,9 +792,10 @@ ul {
   color: var(--muted);
   text-decoration: none;
 }
-
-.back:hover {
-  color: var(--ink);
+@media (hover: hover) {
+  .back:hover {
+    color: var(--ink);
+  }
 }
 
 .project-title {
@@ -863,9 +893,10 @@ ul {
   font-size: 22px;
   text-decoration: none;
 }
-
-.footer-mail:hover {
-  text-decoration: underline;
+@media (hover: hover) {
+  .footer-mail:hover {
+    text-decoration: underline;
+  }
 }
 
 .tools {
@@ -933,10 +964,11 @@ ul {
   width: 52%;
   height: 52%;
 }
-
-.tool:hover {
-  background: color-mix(in srgb, var(--ink) 14%, transparent);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .tool:hover {
+    background: color-mix(in srgb, var(--ink) 14%, transparent);
+    transform: translateY(-2px);
+  }
 }
 
 .tool::after {
@@ -956,10 +988,11 @@ ul {
   pointer-events: none;
   transition: opacity 0.15s, transform 0.15s;
 }
-
-.tool:hover::after {
-  opacity: 1;
-  transform: translate(-50%, 0);
+@media (hover: hover) {
+  .tool:hover::after {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }
 
 @media (min-width: 640px) {
@@ -1264,11 +1297,12 @@ ul {
   border-color: var(--ink);
   color: var(--bg);
 }
-
-.fx .btn-outline:hover {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--bg);
+@media (hover: hover) {
+  .fx .btn-outline:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
 }
 
 /* footer inside the warm wrapper */
@@ -1349,15 +1383,17 @@ ul {
   color: var(--muted);
   transition: transform 0.2s, color 0.2s;
 }
-
-.links a:hover {
-  padding-left: 12px;
-  color: var(--accent);
+@media (hover: hover) {
+  .links a:hover {
+    padding-left: 12px;
+    color: var(--accent);
+  }
 }
-
-.links a:hover .links-arrow {
-  color: var(--accent);
-  transform: translate(2px, -2px);
+@media (hover: hover) {
+  .links a:hover .links-arrow {
+    color: var(--accent);
+    transform: translate(2px, -2px);
+  }
 }
 
 @media (max-width: 700px) {
@@ -1634,11 +1670,12 @@ ul {
   background: var(--bg);
   text-align: center;
 }
-
-.fx .links a:hover {
-  padding-left: 24px;
-  color: var(--ink);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .fx .links a:hover {
+    padding-left: 24px;
+    color: var(--ink);
+    transform: translateY(-2px);
+  }
 }
 
 .fx .links-title {
@@ -1661,11 +1698,12 @@ ul {
   color: var(--ink);
   text-align: center;
 }
-
-.fx .links a:hover .links-arrow {
-  background: var(--ink);
-  color: var(--bg);
-  transform: none;
+@media (hover: hover) {
+  .fx .links a:hover .links-arrow {
+    background: var(--ink);
+    color: var(--bg);
+    transform: none;
+  }
 }
 
 /* stays 2 per row on small screens, just tighter */
@@ -1743,13 +1781,19 @@ ul {
 .fx .links a {
   transition: background-color 0.25s ease, transform 0.25s ease, color 0.2s;
 }
-
-.fx .links a:hover,
+@media (hover: hover) {
+  .fx .links a:hover {
+    background: #fff;
+  }
+}
 .fx .links a:focus-visible {
   background: #fff;
 }
-
-:root[data-theme="dark"] .fx .links a:hover,
+@media (hover: hover) {
+  :root[data-theme="dark"] .fx .links a:hover {
+    background: #000;
+  }
+}
 :root[data-theme="dark"] .fx .links a:focus-visible {
   background: #000;
 }
@@ -1818,14 +1862,21 @@ ul {
   opacity: 0;
   transition: opacity 0.3s ease;
 }
-
-.fx .links a.has-cover:hover .links-cover,
+@media (hover: hover) {
+  .fx .links a.has-cover:hover .links-cover {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
 .fx .links a.has-cover:focus-visible .links-cover {
   opacity: 0;
   transform: scale(1.04);
 }
-
-.fx .links a.has-cover:hover > :not(.links-cover),
+@media (hover: hover) {
+  .fx .links a.has-cover:hover > :not(.links-cover) {
+    opacity: 1;
+  }
+}
 .fx .links a.has-cover:focus-visible > :not(.links-cover) {
   opacity: 1;
 }
@@ -2067,11 +2118,12 @@ ul {
   cursor: default;
   white-space: nowrap;
 }
-
-.fx .archive-btn[aria-disabled="true"]:hover {
-  background: transparent;
-  border-color: var(--line);
-  color: inherit;
+@media (hover: hover) {
+  .fx .archive-btn[aria-disabled="true"]:hover {
+    background: transparent;
+    border-color: var(--line);
+    color: inherit;
+  }
 }
 
 @media (max-width: 700px) {
@@ -2425,9 +2477,10 @@ ul {
 .fx .about-portrait .portrait-bw {
   opacity: 0;
 }
-
-.fx .about-portrait:hover .portrait-bw {
-  opacity: 1;
+@media (hover: hover) {
+  .fx .about-portrait:hover .portrait-bw {
+    opacity: 1;
+  }
 }
 
 /* name + location chip under the About portrait */
@@ -2772,9 +2825,10 @@ ul {
   letter-spacing: 0.06em;
   font-size: 12px; /* same as the nav links */
 }
-
-.footer-links a:hover {
-  text-decoration: underline;
+@media (hover: hover) {
+  .footer-links a:hover {
+    text-decoration: underline;
+  }
 }
 
 /* current page is greyed out */
@@ -2821,5 +2875,42 @@ ul {
 @media (prefers-reduced-motion: reduce) {
   .fx .name-chip-dot::after {
     animation: none;
+  }
+}
+
+/* ---------- Touch ---------- */
+/* finger-sized targets (44px) on touch screens */
+@media (pointer: coarse) {
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+  .nav-links a {
+    display: inline-block;
+    padding-block: 12px;
+  }
+  .btn.btn-sm {
+    min-height: 40px;
+  }
+  .footer-links a {
+    display: inline-block;
+    padding-block: 10px;
+  }
+  .footer-mail {
+    padding-block: 8px;
+  }
+}
+
+/* very narrow phones: keep logo, links and theme toggle on one row */
+@media (max-width: 380px) {
+  .nav {
+    gap: 12px;
+    padding-inline: 14px;
+  }
+  .nav-links {
+    gap: 12px;
+  }
+  .nav-links a {
+    letter-spacing: 0.04em;
   }
 }
