@@ -71,12 +71,12 @@ export const CTA_STATUS = "Booking new projects — Nov ’26";
 /** Selected work: a simple list of links for now. Replace these placeholders with real URLs. */
 export const WORK_LINKS: { title: string; subtitle?: string; url: string }[] = [
   { title: "Aurora", subtitle: "AI microchip analytics", url: "https://pdf.com" },
-  { title: "Cimetrix", subtitle: "Industrial equipment software", url: "https://www.pdf.com/products/cimetrix" },
+  { title: "Cimetrix", subtitle: "Industrial equipment software", url: "https://www.cimetrix.com/" },
   { title: "secureWISE", subtitle: "Remote Equipment Monitoring", url: "https://www.pdf.com/products/securewise/" },
   { title: "Tilt Rips", subtitle: "Rip Pokémon & Sports Card Packs", url: "https://tiltrips.com" },
   { title: "Fobi AI", subtitle: "Infrastructure for the AI Era", url: "https://www.fobi.ai/" },
   { title: "AgExpert", subtitle: "Formerly Bio Smart Agriculture", url: "https://agexpert.ca/en" },
   { title: "micro1 AI", subtitle: "AI Product Design", url: "https://www.micro1.ai/experts/opportunities" },
   { title: "TerraZero", subtitle: "Bringing Brands into the Intraverse", url: "https://terrazero.com" },
-  { title: "Ajna Labs", subtitle: "A protocol for lending and borrowing", url: "https://grants.ajnafi.com/overview" },
+  { title: "Finning", subtitle: "24/7 Customer Platform", url: "https://www.finning.com/en_GB/performance/finning-customer-portal.html" },
 ];
