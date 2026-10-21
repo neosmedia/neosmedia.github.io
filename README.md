@@ -127,7 +127,7 @@ If a repository variable named `NEXT_PUBLIC_LAUNCHED` is set to `false`, the liv
 
 ## Launch checklist
 
-- [ ] Replace every `TODO` in `lib/site.ts` (years for AutoTrader and Modo, case-study details and AI notes, About copy)
+- [ ] Replace every `TODO` in `lib/site.ts` (case-study details and AI notes, About copy)
 - [ ] Create a Formspree form delivering to tylerlangebc@gmail.com, set `NEXT_PUBLIC_FORMSPREE_ID`, send a test message
 - [ ] Optional: set `NEXT_PUBLIC_BOOKING_URL`
 - [ ] `npm run lint` and `npm run build` pass

@@ -274,10 +274,9 @@ export const ARCHIVE: { name: string; year?: string; blurb: string; url?: string
   { name: "OSI Maritime Systems", year: "2020 — 2021", blurb: "Navigation and command software for ships, where clear screens really matter.", url: "https://osimaritime.com/" },
   { name: "GE Vernova", year: "2016 — 2017", blurb: "Industrial software that turns machine data into things operators can act on.", url: "https://www.gevernova.com/" },
   { name: "EA Sports FC", year: "2013 — 2015", blurb: "Menus and interfaces for the football franchise millions of players love.", url: "https://www.ea.com/games/ea-sports-fc" },
-  { name: "AutoTrader", blurb: "Making car shopping simpler, from the first search to the right listing.", url: "https://autotrader.ca" },
-  { name: "Modo Car Share", blurb: "Helping a Vancouver car-share co-op make finding and booking a car feel easy.", url: "https://www.modo.coop/" },
-  // TODO: Tyler to confirm SAP years
-  { name: "SAP Analytics Cloud", blurb: "Analytics and planning software that helps teams turn data into decisions.", url: "https://www.sap.com/products/data-cloud/cloud-analytics.html" },
+  { name: "AutoTrader", year: "2012", blurb: "Making car shopping simpler, from the first search to the right listing.", url: "https://autotrader.ca" },
+  { name: "Modo Car Share", year: "2011", blurb: "Helping a Vancouver car-share co-op make finding and booking a car feel easy.", url: "https://www.modo.coop/" },
+  { name: "SAP Analytics Cloud", year: "2010", blurb: "Analytics and planning software that helps teams turn data into decisions.", url: "https://www.sap.com/products/data-cloud/cloud-analytics.html" },
 ];
 
 /**
