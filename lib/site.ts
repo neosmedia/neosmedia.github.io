@@ -116,23 +116,24 @@ export const WORK_LINKS: { slug: string; title: string; subtitle?: string; url: 
       ai: "I used AI to speed up the repetitive parts, like documenting components and drafting guidelines, so more time went into the design itself.",
     },
   },
-  {
-    slug: "securewise", title: "secureWISE", subtitle: "Remote Equipment Monitoring", url: "https://www.pdf.com/products/securewise/",
-    image: "/work/securewise.webp",
-    gallery: ["/work/securewise-3.webp", "/work/securewise-1.webp", "/work/securewise-2.webp"],
-    study: {
-      role: "Senior Product Designer",
-      year: "2024 — 2026",
-      headings: ["Secure access without the friction", "One interface for every tool", "Security people can actually use"],
-      paragraphs: [
-        "secureWISE is PDF Solutions’ remote equipment monitoring and access platform for semiconductor fabs and the toolmakers who support them. It gives secure, end-to-end connectivity to equipment over private networks, so operators can see uptime and utilization and engineers can fix problems without a flight. The design challenge is a classic one: protect valuable intellectual property while still making access fast.",
-        "Fab administrators work from a single pane of glass: one interface to control and audit who can reach which piece of equipment, with dashboards that give a 360-degree view of the installed base. Remote experts get permissioned access to the tools they need through one place, and a multilanguage chat helps in noisy fabs without phones, where an operator can paste the exact command needed to troubleshoot.",
-        "Security only works if people use it, so the experience leans on familiar patterns: single sign-on across sites, multifactor authentication, a business management portal showing which services are being accessed, and a scheduler that moves files on a set schedule instead of asking for manual downloads. The result is a neutral ground where OEMs and fabs collaborate without either opening up their own systems.",
-      ],
-      // TODO: Tyler to confirm/edit these design details and the AI note.
-      ai: "The platform’s scheduled data transfers feed analytics and AI, so a lot of the UX thinking was about making sure the right data reaches those models safely and visibly. In my own process, AI helped me summarise dense technical documentation and tighten interface copy, while the design decisions were made by hand.",
-    },
-  },
+  // secureWISE hidden for now: uncomment this block to bring it back (grid is 2 x N).
+//   {
+//     slug: "securewise", title: "secureWISE", subtitle: "Remote Equipment Monitoring", url: "https://www.pdf.com/products/securewise/",
+//     image: "/work/securewise.webp",
+//     gallery: ["/work/securewise-3.webp", "/work/securewise-1.webp", "/work/securewise-2.webp"],
+//     study: {
+//       role: "Senior Product Designer",
+//       year: "2024 — 2026",
+//       headings: ["Secure access without the friction", "One interface for every tool", "Security people can actually use"],
+//       paragraphs: [
+//         "secureWISE is PDF Solutions’ remote equipment monitoring and access platform for semiconductor fabs and the toolmakers who support them. It gives secure, end-to-end connectivity to equipment over private networks, so operators can see uptime and utilization and engineers can fix problems without a flight. The design challenge is a classic one: protect valuable intellectual property while still making access fast.",
+//         "Fab administrators work from a single pane of glass: one interface to control and audit who can reach which piece of equipment, with dashboards that give a 360-degree view of the installed base. Remote experts get permissioned access to the tools they need through one place, and a multilanguage chat helps in noisy fabs without phones, where an operator can paste the exact command needed to troubleshoot.",
+//         "Security only works if people use it, so the experience leans on familiar patterns: single sign-on across sites, multifactor authentication, a business management portal showing which services are being accessed, and a scheduler that moves files on a set schedule instead of asking for manual downloads. The result is a neutral ground where OEMs and fabs collaborate without either opening up their own systems.",
+//       ],
+//       // TODO: Tyler to confirm/edit these design details and the AI note.
+//       ai: "The platform’s scheduled data transfers feed analytics and AI, so a lot of the UX thinking was about making sure the right data reaches those models safely and visibly. In my own process, AI helped me summarise dense technical documentation and tighten interface copy, while the design decisions were made by hand.",
+//     },
+//   },
     {
     slug: "tilt-rips", title: "Tilt Rips", subtitle: "Rip Pokémon & Sports Card Packs", url: "https://tiltrips.com", image: "/work/tilt-rips.webp",
     study: {

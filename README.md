@@ -27,8 +27,8 @@ Node 20+ (CI uses 22). `next/font` downloads the fonts at build time, so the fir
 
 | Page | Route | Notes |
 | --- | --- | --- |
-| Home | `/` | Interactive balloon-letter hero, selected work (9 cards), about, experience, contact CTA |
-| Work | `/work/` | The same 9 cards plus the Archive list |
+| Home | `/` | Interactive balloon-letter hero, selected work (8 cards), about, experience, contact CTA |
+| Work | `/work/` | The same 8 cards plus the Archive list |
 | Case study | `/work/<slug>/` | One per project, built from `lib/site.ts` (cover, optional bento, details, write-up, AI note) |
 | About | `/about/` | Portrait with hover, name chip, about, experience, CTA |
 | Contact | `/contact/` | Contact form (Formspree) and direct links |
