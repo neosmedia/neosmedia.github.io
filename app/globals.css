@@ -2731,3 +2731,22 @@ ul {
     gap: 18px;
   }
 }
+
+/* 404: taller stage so the message, balloons and buttons fill the first screen, with space under the buttons */
+.nf-top {
+  padding-top: clamp(140px, 20vh, 240px);
+}
+
+.nf-balloons {
+  margin-top: clamp(16px, 4vh, 48px);
+}
+
+.nf-links {
+  padding-bottom: clamp(120px, 20vh, 240px);
+}
+
+@media (max-width: 700px) {
+  .nf-top {
+    padding-top: clamp(120px, 16vh, 180px);
+  }
+}
