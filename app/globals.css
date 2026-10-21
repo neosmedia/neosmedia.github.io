@@ -2694,10 +2694,19 @@ ul {
 }
 
 .fx .about-list {
-  display: grid;
-  gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 0;
   margin: 0;
   padding: 0;
   list-style: none;
   color: var(--muted);
+}
+
+/* inline list: items run on one line, separated by bullets */
+.fx .about-list li + li::before {
+  content: "•";
+  margin: 0 10px;
+  color: var(--line);
 }
