@@ -13,7 +13,14 @@ export default function NotFound() {
     <main className="page nf">
       <section className="nf-top">
         <h1 className="nf-title">
-          <span className="nf-kicker">Pop!</span>
+          <span className="nf-kicker">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9.5" />
+              <path d="M12 7.5v5.5" />
+              <circle cx="12" cy="16.4" r="0.6" fill="currentColor" />
+            </svg>
+            Pop!
+          </span>
           That page is gone.
         </h1>
       </section>

@@ -2552,7 +2552,10 @@ ul {
 
 /* "Pop!" on its own line, small label style (same as the section labels like "Experience") */
 .nf-kicker {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   margin-bottom: 14px;
   color: var(--muted);
   font-family: var(--font-mono), ui-monospace, Menlo, monospace;
