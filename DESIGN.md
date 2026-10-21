@@ -50,7 +50,7 @@ Rules:
 - `.fx` sheet slides up over the hero with `border-radius: 28px 28px 0 0`.
 - Section rhythm: keep vertical spacing equal between sections (Selected work has +8px top by request).
 - Max widths: Experience list and CTA **720px**; centered.
-- Selected work: 2-column card grid; 8 cards as 2 / 2 / 2 / 2.
+- Selected work: 2-column card grid at every width (tighter on mobile); 8 cards as 2 / 2 / 2 / 2.
 - Hero letters stay **16px** inside the viewport edge after growth (`EDGE_PX`).
 - Mobile breakpoints: 520 / 700 / 800px.
 

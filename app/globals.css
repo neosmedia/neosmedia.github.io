@@ -1668,12 +1668,16 @@ ul {
   transform: none;
 }
 
+/* stays 2 per row on small screens, just tighter */
 @media (max-width: 800px) {
   .fx .links {
-    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 28px;
   }
   .fx .links a {
-    padding: 32px 24px;
+    padding: 28px 12px;
+    border-radius: 20px;
   }
 }
 
