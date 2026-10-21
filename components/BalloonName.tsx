@@ -55,7 +55,7 @@ const CLEAR_SHRINK_MOBILE = 0.32;
 // Clear space kept around the letters (also after they have grown).
 const EDGE_PX = 16;
 // 404 page: the first 4 is the big one.
-const SIZES_404 = [1.22, 0.94, 1.0];
+const SIZES_404 = [1.04, 1.0, 1.0];
 
 // Big 4-way "move" cursors (28px) for hovering and dragging the letters.
 const CURSOR_GRAB = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 56 56'%3E%3Cg transform='translate(28 28) scale(1.0) translate(-28 -28)'%3E%3Ccircle cx='28' cy='28' r='27' fill='rgba(255,255,255,0.35)'/%3E%3Cpath d='M28 14 V42 M14 28 H42' stroke='white' stroke-width='7' stroke-linecap='round' fill='none'/%3E%3Cpath d='M28 5 L20 15 H36 Z M28 51 L20 41 H36 Z M5 28 L15 20 V36 Z M51 28 L41 20 V36 Z' fill='white' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M28 14 V42 M14 28 H42' stroke='black' stroke-width='3' stroke-linecap='round' fill='none'/%3E%3Cpath d='M28 5 L20 15 H36 Z M28 51 L20 41 H36 Z M5 28 L15 20 V36 Z M51 28 L41 20 V36 Z' fill='black' stroke='black' stroke-width='1' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E") 14 14, move`;
