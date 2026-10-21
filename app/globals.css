@@ -2683,7 +2683,14 @@ ul {
 }
 
 .fx .about-more .pillars {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-top: 0;
+}
+
+@media (max-width: 800px) {
+  .fx .about-more .pillars {
+    grid-template-columns: 1fr;
+  }
 }
 
 .fx .about-list {

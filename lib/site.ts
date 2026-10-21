@@ -72,10 +72,6 @@ export const ABOUT_DETAILS = [
     title: "Specializing in",
     list: ["UX design", "Product design", "Design systems", "Rapid prototyping", "User research", "Figma & FigJam"],
   },
-  {
-    title: "Available for",
-    list: ["Full-time, onsite or remote", "Contract work", "Freelance design"],
-  },
 ];
 
 export const EXPERIENCE_HEADLINE = "18 years of shipping things";
