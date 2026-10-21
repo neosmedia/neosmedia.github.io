@@ -1729,24 +1729,7 @@ ul {
   text-align: center;
 }
 
-/* selected work grid: three across */
-.fx .links {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-}
-
-.fx .links li {
-  grid-column: span 2;
-}
-
-@media (max-width: 800px) {
-  .fx .links {
-    grid-template-columns: 1fr;
-  }
-  .fx .links li {
-    grid-column: auto;
-  }
-}
-
+/* selected work grid: two across (also on mobile) */
 /* small subtitle between the project title and its URL */
 .fx .links-sub {
   font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
