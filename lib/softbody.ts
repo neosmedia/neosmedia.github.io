@@ -198,6 +198,8 @@ export type LayoutOpts = {
   letters?: string[];
   /** Letters per line for `letters` (default: one line). */
   lines?: number[];
+  /** Size multiplier per letter for `letters` (default: a little random variety). */
+  sizes?: number[];
 };
 
 export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
@@ -300,7 +302,7 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
 
       const sizeRand = rng(5000 + k * 131);
       const ls = custom
-        ? 0.94 + sizeRand() * 0.14
+        ? (opts.sizes?.[k] ?? 0.94 + sizeRand() * 0.14)
         : k === 0
           ? FIRST_SIZE
           : k === LETTERS.length - 1

@@ -2552,7 +2552,7 @@ ul {
 
 /* a big hero-style stage for the balloon 404 */
 .nf-balloons {
-  height: clamp(150px, 23vw, 310px);
+  height: clamp(180px, 27.6vw, 372px); /* 20% taller to leave room for the bigger first 4 */
   margin-top: 16px;
 }
 
@@ -2574,7 +2574,7 @@ ul {
     padding-top: 104px;
   }
   .nf-balloons {
-    height: 36vw;
+    height: 43vw;
   }
 }
 
