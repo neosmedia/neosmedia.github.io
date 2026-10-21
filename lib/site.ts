@@ -60,7 +60,6 @@ export const DRIBBBLE_URL = "https://dribbble.com/tylerlange";
 /** From the old site (northvanweb.com/about), lightly trimmed. */
 export const ABOUT_BIO = [
   "I’m a designer and creativity enthusiast who loves making digital products that feel seamless and useful. UX is my home turf, and I like solving tricky UX problems with clean, concise answers.",
-  "I’m into remote work, the open web and economic freedom, and I try to make the web a more connected, less boring place through design.",
 ];
 
 export const ABOUT_DETAILS = [
