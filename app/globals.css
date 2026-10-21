@@ -649,12 +649,14 @@ ul {
   color: var(--bg);
 }
 
-.btn-solid {
+.btn-solid,
+.btn-primary {
   background: var(--ink);
   color: var(--bg);
 }
 
-.btn-solid:hover {
+.btn-solid:hover,
+.btn-primary:hover {
   opacity: 0.85;
 }
 
@@ -1256,7 +1258,8 @@ ul {
   font-weight: 500;
 }
 
-.fx .btn-solid {
+.fx .btn-solid,
+.fx .btn-primary {
   background: var(--ink);
   border-color: var(--ink);
   color: var(--bg);
@@ -2573,4 +2576,77 @@ ul {
   .nf-balloons {
     height: 36vw;
   }
+}
+
+/* ---------- Pill buttons: sizes, icons (see DESIGN.md "Buttons") ---------- */
+/* Variants:  .btn-primary (alias .btn-solid) = filled,  .btn-outline = outlined.
+   Sizes:     .btn-sm / default / .btn-lg.   Icons: put an <svg> before (left) or after (right) the label,
+   or use .btn-icon for a round icon-only button (needs an aria-label). */
+.btn svg {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+}
+
+.btn.btn-sm {
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.btn.btn-lg {
+  gap: 12px;
+  padding: 16px 28px;
+  font-size: 16px;
+}
+
+.btn.btn-icon {
+  justify-content: center;
+  gap: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+}
+
+.btn.btn-icon.btn-sm {
+  width: 34px;
+  height: 34px;
+}
+
+.btn.btn-icon.btn-lg {
+  width: 56px;
+  height: 56px;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* style guide page */
+.fx .sg {
+  display: grid;
+  gap: 40px;
+  max-width: 860px;
+  margin-inline: auto;
+  border-top: 0;
+}
+
+.fx .sg-h {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+
+.fx .sg-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+
+.fx .sg-label {
+  width: 36px;
+  color: var(--muted);
 }

@@ -23,3 +23,4 @@
 - Footer year is now automatic; custom 404 page; `public/.nojekyll`; Aurora image recompressed.
 - README rewritten (pages, adding a project, launch checklist, domain/HTTPS setup); DESIGN.md covers work/case-study pages.
 - 404 page: balloon-letter "404" using the hero physics (`buildWorld` accepts custom `letters`; new "4" and "0" glyphs).
+- 404: Contact button removed, "See the work" is the primary button. New `Button` component and pill-button system (primary/outline, sm/md/lg, icon left/right/only), documented in DESIGN.md with a noindex `/styleguide/` specimen page.

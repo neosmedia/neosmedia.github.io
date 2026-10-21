@@ -98,3 +98,25 @@ First person, short, confident, no fluff. Titles: "Product Designer & UX Enginee
 - **About page:** centered 144px round portrait (colour, black and white on hover) and a name + location chip.
 - **404:** "Pop! That page is gone." in Gochi Hand, a big draggable balloon 404 (same letter style and physics as the hero; glyphs "4" and "0" live in `lib/glyphs.ts`), then pill buttons "Float back home", "See the work" and "Contact".
 - **Voice for copy:** relaxed, short, first person where it fits. Plain words over jargon.
+
+## Buttons (pills)
+All buttons are fully rounded pills (`border-radius: 999px`). Build them with `components/Button.tsx`, or with classes. A live specimen is at `/styleguide/` (noindex, not linked).
+
+| Variant | Class | Look | Use |
+| --- | --- | --- | --- |
+| Primary | `.btn.btn-primary` (alias `.btn-solid`) | Filled with `--ink`, text in `--bg`; hover fades to 85% | The one main action on a screen ("See the work", "Website", Send message) |
+| Outline | `.btn.btn-outline` | 1px border, transparent; hover fills with `--ink` | Secondary actions ("Float back home", "All work", LinkedIn) |
+
+| Size | Class | Padding / text |
+| --- | --- | --- |
+| Small | `.btn-sm` | 8px 14px · 13px |
+| Medium (default) | none | 12px 20px · 14px (home sheet) |
+| Large | `.btn-lg` | 16px 28px · 16px |
+
+| Icon placement | How | Example |
+| --- | --- | --- |
+| Left | `<svg>` before the label (`iconLeft` in `Button`) | ← Float back home |
+| Right | `<svg>` after the label (`iconRight`) | See the work → · Website ↗ |
+| Icon only | `.btn-icon` (round: 34 / 44 / 56px with sm / md / lg); needs an `aria-label` | + |
+
+Rules: icons are 1.15em, stroke 1.8, inheriting the text colour. One primary button per group. Keyboard focus shows a 2px outline. Disabled buttons drop to 55% opacity.

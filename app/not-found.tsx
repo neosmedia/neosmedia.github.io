@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Button from "@/components/Button";
 import BalloonName from "@/components/BalloonName";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -20,15 +20,12 @@ export default function NotFound() {
       </section>
 
       <section className="nf-links">
-        <Link className="btn btn-outline" href="/">
+        <Button variant="outline" href="/" iconLeft="arrowLeft">
           Float back home
-        </Link>
-        <Link className="btn btn-outline" href="/work/">
+        </Button>
+        <Button variant="primary" href="/work/" iconRight="arrowRight">
           See the work
-        </Link>
-        <Link className="btn btn-outline" href="/contact/">
-          Contact
-        </Link>
+        </Button>
       </section>
       <SiteFooter />
     </main>
