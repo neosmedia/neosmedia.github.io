@@ -115,8 +115,8 @@ const RAW_GLYPHS: Record<string, Glyph> = {
   "4": {
     w: 92,
     strokes: [
-      [[68, TOP], [H, 66], [92 - H, 66]],
-      [[68, TOP + 4], [68, BOT]],
+      [[69, TOP], [H, 66], [92 - H, 66]],
+      [[69, TOP + 4], [69, BOT]],
     ],
   },
   G: {
