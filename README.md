@@ -32,7 +32,7 @@ Node 20+ (CI uses 22). `next/font` downloads the fonts at build time, so the fir
 | Case study | `/work/<slug>/` | One per project, built from `lib/site.ts` (cover, optional bento, details, write-up, AI note) |
 | About | `/about/` | Portrait with hover, name chip, about, experience, CTA |
 | Contact | `/contact/` | Contact form (Formspree) and direct links |
-| 404 | any unknown URL | `app/not-found.tsx` |
+| 404 | any unknown URL | `app/not-found.tsx`: "Pop! That page is gone." with a draggable balloon 404 (same letters and physics as the hero) |
 | Preview | `/preview/` | Old duplicate of the home page. `noindex`, kept so old links work |
 
 Balloon hero: drag letters (soft-body physics), hover lean, random idle jiggle, slow growth, a colour shader that fades in

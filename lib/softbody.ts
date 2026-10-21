@@ -194,21 +194,27 @@ export type LayoutOpts = {
   margin?: number;
   /** Lay letters out this much smaller, leaving room to inflate (e.g. 1.1). */
   headroom?: number;
+  /** Spell something else (e.g. "404" on the 404 page): glyph keys in reading order. Default: TYLER LANGE. */
+  letters?: string[];
+  /** Letters per line for `letters` (default: one line). */
+  lines?: number[];
 };
 
 export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
   const reserveTop = opts.top ?? 0;
   const reserveBottom = opts.bottom ?? 0;
-  const tall = W < 700 || H > W * 1.1;
-  const counts = tall ? TALL_LINES : WIDE_LINES;
+  const custom = !!opts.letters;
+  const word = opts.letters ?? LETTERS;
+  const tall = !custom && (W < 700 || H > W * 1.1);
+  const counts = custom ? (opts.lines ?? [word.length]) : tall ? TALL_LINES : WIDE_LINES;
 
   let cursor = 0;
   const lines = counts.map((n) => {
-    const line = LETTERS.slice(cursor, cursor + n);
+    const line = word.slice(cursor, cursor + n);
     cursor += n;
     return line;
   });
-  const lk = tall ? TALL_LINE_SCALE : WIDE_LINE_SCALE; // per-line size
+  const lk = custom ? counts.map(() => 1) : tall ? TALL_LINE_SCALE : WIDE_LINE_SCALE; // per-line size
   const sumW = lines.map((l) => l.reduce((a, ch) => a + GLYPHS[ch].w, 0));
   const natural = lines.map((l, i) => (sumW[i] + GAP * (l.length - 1)) * lk[i]);
   const target = Math.max(...natural);
@@ -293,8 +299,9 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
       };
 
       const sizeRand = rng(5000 + k * 131);
-      const ls =
-        k === 0
+      const ls = custom
+        ? 0.94 + sizeRand() * 0.14
+        : k === 0
           ? FIRST_SIZE
           : k === LETTERS.length - 1
             ? LAST_SIZE
@@ -302,7 +309,7 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
               ? FIRST_E.size
               : SIZE_MIN + sizeRand() * (SIZE_MAX - SIZE_MIN);
 
-      const tilt = (TILT[k] * Math.PI) / 180;
+      const tilt = (TILT[k % TILT.length] * Math.PI) / 180;
       const cos = Math.cos(tilt);
       const sin = Math.sin(tilt);
       const boxCx = ox + (g.w * sl) / 2;
@@ -349,7 +356,7 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
             kk *
             ls *
             strokeK *
-            (k === FIRST_E.index ? FIRST_E.thickness : 1) *
+            (!custom && k === FIRST_E.index ? FIRST_E.thickness : 1) *
             (1 + rA * Math.sin((2 * Math.PI * d) / rl + rp)) *
             (1 + 0.07 * (1 - u) ** 3) * // ink pools where the marker lands
             (i === n ? 1.05 : 1); // and a soft bulb where it lifts

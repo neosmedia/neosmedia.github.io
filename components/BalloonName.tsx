@@ -35,6 +35,8 @@ type Props = {
   clearing?: boolean;
   /** Called when a letter is first grabbed. */
   onGrab?: () => void;
+  /** Spell "404" instead of the name (404 page). Uses the same balloon letters, physics and shader. */
+  word?: "404";
 };
 
 // A slow "inflating" effect: letters swell by GROW_BY over GROW_MS, then hold.
@@ -143,7 +145,7 @@ function draw(
   }
 }
 
-export default function BalloonName({ mode = "fullscreen", clearing = false, onGrab }: Props) {
+export default function BalloonName({ mode = "fullscreen", clearing = false, onGrab, word }: Props) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const clearingRef = useRef(clearing);
@@ -202,7 +204,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
         W,
         H,
         hero
-          ? { top: 0, bottom: 0, margin: EDGE_PX, headroom }
+          ? { top: 0, bottom: 0, margin: EDGE_PX, headroom, ...(word ? { letters: word.split("") } : {}) }
           : { top: 64, bottom: 72, margin: EDGE_PX, headroom }
       );
       world.calm = reduceMotion;
@@ -394,7 +396,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
       stage.removeEventListener("pointerleave", onLeave);
       stage.removeEventListener("touchstart", onTouchStart);
     };
-  }, [mode]);
+  }, [mode, word]);
 
   return (
     <div

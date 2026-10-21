@@ -22,3 +22,4 @@
 - Case studies: Aurora, Cimetrix and Finning written; fallback copy no longer Lorem ipsum.
 - Footer year is now automatic; custom 404 page; `public/.nojekyll`; Aurora image recompressed.
 - README rewritten (pages, adding a project, launch checklist, domain/HTTPS setup); DESIGN.md covers work/case-study pages.
+- 404 page: balloon-letter "404" using the hero physics (`buildWorld` accepts custom `letters`; new "4" and "0" glyphs).

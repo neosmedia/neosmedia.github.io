@@ -107,6 +107,18 @@ const RAW_GLYPHS: Record<string, Glyph> = {
     w: 78,
     strokes: [[[H, BOT], [H, TOP], [78 - H, BOT], [78 - H, TOP]]],
   },
+  // Numerals for the 404 page (same stroke width and shaping as the letters)
+  "0": {
+    w: 82,
+    strokes: [arc(41, 50, 27, 36, -90, 270, 30)],
+  },
+  "4": {
+    w: 92,
+    strokes: [
+      [[68, TOP], [H, 66], [92 - H, 66]],
+      [[68, TOP + 4], [68, BOT]],
+    ],
+  },
   G: {
     w: 88,
     strokes: [
