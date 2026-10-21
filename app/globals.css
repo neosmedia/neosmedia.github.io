@@ -2674,8 +2674,9 @@ ul {
   margin: 0 auto 48px;
   text-align: center;
   color: var(--muted);
-  font-size: clamp(17px, 1.7vw, 20px);
-  line-height: 1.6;
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px; /* same as the card text below */
+  line-height: 1.5;
 }
 
 .fx .about-bio p {
@@ -2698,6 +2699,9 @@ ul {
   margin: 0;
   padding: 0;
   color: var(--muted);
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px; /* same as .pillar p */
+  line-height: 1.5;
 }
 
 .fx .pillars .about-list li {
