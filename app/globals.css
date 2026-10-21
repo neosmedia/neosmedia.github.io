@@ -1788,6 +1788,18 @@ ul {
   position: relative;
   overflow: hidden;
   isolation: isolate;
+  height: auto;
+  aspect-ratio: 16 / 9; /* cover images are 16:9 */
+  justify-content: center;
+  padding-block: 24px;
+}
+
+/* small screens: cards are too narrow for 16:9 to fit the hover text, so let them grow */
+@media (max-width: 800px) {
+  .fx .links a.has-cover {
+    aspect-ratio: auto;
+    min-height: 200px;
+  }
 }
 
 .fx .links-cover {
