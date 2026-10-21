@@ -70,7 +70,7 @@ export const ABOUT_DETAILS = [
   },
   {
     title: "Specializing in",
-    list: ["UX design", "Product design", "Design systems", "Rapid prototyping", "User research", "Figma & FigJam"],
+    list: ["UX design", "AI product design", "Design systems", "Rapid prototyping"],
   },
 ];
 
