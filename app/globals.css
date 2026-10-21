@@ -2709,3 +2709,25 @@ ul {
   padding: 0 0 6px;
   border: 0;
 }
+
+/* nav: more breathing room between logo, links and icons */
+.nav {
+  gap: 40px;
+}
+
+.nav-links {
+  gap: 32px;
+}
+
+.nav-actions {
+  gap: 10px;
+}
+
+@media (max-width: 560px) {
+  .nav {
+    gap: 18px;
+  }
+  .nav-links {
+    gap: 18px;
+  }
+}
