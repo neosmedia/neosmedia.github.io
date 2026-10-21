@@ -206,15 +206,22 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
           : { top: 64, bottom: 72, margin: EDGE_PX, headroom }
       );
       world.calm = reduceMotion;
-      // keep the letters clear of the nav photo (top left)
-      const av = document.querySelector(".nav .nav-avatar");
-      if (!hero && av) {
-        const a = av.getBoundingClientRect();
+      // keep the letters clear of the whole nav: photo, links and icon buttons.
+      // Each element becomes a row of keep-out circles (wide links need several).
+      if (!hero) {
         const b = stage.getBoundingClientRect();
-        world.keepOut.push({
-          cx: a.left + a.width / 2 - b.left,
-          cy: a.top + a.height / 2 - b.top,
-          r: a.width / 2 + 10,
+        document.querySelectorAll(".nav .nav-avatar, .nav-links a, .nav-actions > *").forEach((el) => {
+          const a = el.getBoundingClientRect();
+          if (!a.width || !a.height) return; // hidden on this screen size
+          const r = a.height / 2 + 10;
+          const cy = a.top + a.height / 2 - b.top;
+          const first = a.left + a.height / 2;
+          const last = a.right - a.height / 2;
+          const n = Math.max(1, Math.ceil((last - first) / r));
+          for (let i = 0; i <= n; i++) {
+            const x = n === 0 || last <= first ? a.left + a.width / 2 : first + ((last - first) * i) / n;
+            world.keepOut.push({ cx: x - b.left, cy, r });
+          }
         });
       }
     };

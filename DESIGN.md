@@ -38,6 +38,8 @@ Semantic colours:
 | Labels, meta, tags | Geist Mono (`--font-mono`) | 11px, uppercase, letter-spacing .08em (`.fx .mono`); global body is mono 13px |
 | Section headings, company/project names, subtitles, modal text | Gochi Hand (`--font-serif`) | Hand-drawn accent. Fallback "Comic Sans MS", cursive |
 
+| Case-study headings | Geist Mono | Page title (h1) uses `--case-heading-size` (32–48px); first write-up heading is h2 (24–32px); later sub-headings use the **h3** style: 20–24px, weight 400, -0.02em (`.project-copy .h3`) |
+
 Rules:
 - Section headings are **centered**, no numbers, no dashes ("Experience", not "(04) — Experience").
 - Project subtitles, About card text and the Info modal body all share the same style ("Product Designer & UX" style). Don't introduce a fourth text style.

@@ -6,7 +6,7 @@ export const metadata = {
 };
 
 // Full home page, available before launch. At launch, set
-// NEXT_PUBLIC_LAUNCHED=true and "/" shows this instead of coming soon.
+// The full site is now live at "/", so this page is just a noindex duplicate (kept so old links work).
 export default function Preview() {
   return <Home />;
 }

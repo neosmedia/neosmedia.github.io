@@ -1,32 +1,13 @@
-import Link from "next/link";
+import NavLinks from "./NavLinks";
 import ThemeToggle from "./ThemeToggle";
 import NavAvatar from "./NavAvatar";
 import { EMAIL, LINKEDIN_URL, PHONE_TEL } from "@/lib/site";
-
-const LINKS = [
-  { href: "/work/", label: "Work" },
-  { href: "/about/", label: "About" },
-  { href: "/contact/", label: "Contact" },
-];
 
 export default function SiteNav() {
   return (
     <header className="nav">
       <NavAvatar />
-      {/* Hidden until launch: logo + primary navigation.
-      <Link href="/" className="nav-logo" aria-label="Tyler Lange — home">
-        <svg viewBox="0 0 28 28" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M5 5h18M14 5v18" />
-        </svg>
-      </Link>
-      <nav className="nav-links" aria-label="Primary">
-        {LINKS.map((l) => (
-          <Link key={l.href} href={l.href}>
-            {l.label}
-          </Link>
-        ))}
-      </nav>
-      */}
+      <NavLinks />
       <div className="nav-actions">
         <ThemeToggle />
         <span className="nav-divider" aria-hidden="true" />

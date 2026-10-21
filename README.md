@@ -80,7 +80,7 @@ lib/
   projects.ts           The 8 projects
   toolbox.ts            Toolbox icons (SVG paths)
 public/
-  ty-color.jpg  ty-bw.jpg   Nav photo (colour; black & white on hover)
+  logo.png   Nav logo (T on a white circle, same as the favicon)
 .github/workflows/deploy.yml   Build + deploy to GitHub Pages on push to main
 ```
 
@@ -94,7 +94,7 @@ The deploy workflow passes them to the build.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `NEXT_PUBLIC_LAUNCHED` | `false` | `true` makes `/` the full home page instead of coming soon |
+| `NEXT_PUBLIC_LAUNCHED` | `true` | `false` brings back the coming soon page at `/` and hides inner pages from search |
 | `NEXT_PUBLIC_FORMSPREE_ID` | *(empty)* | Contact form endpoint. Empty = form opens the visitor's email app |
 | `NEXT_PUBLIC_BOOKING_URL` | *(empty)* | "Book a time to chat" link (Cal.com, Calendly…). Empty = email |
 
@@ -127,7 +127,7 @@ Everything is already built. To go live:
    `NEXT_PUBLIC_FORMSPREE_ID`. Send a test message. Optionally set `NEXT_PUBLIC_BOOKING_URL`.
 3. **Navigation:** uncomment the logo and links block in `components/SiteNav.tsx`.
 4. **Check** every page on a real phone and in dark mode (review the home page at `/preview/`).
-5. **Flip the switch:** set `NEXT_PUBLIC_LAUNCHED=true` and re-run the deploy workflow.
+5. **Launch:** the full site is on by default. To go back to "coming soon", set `NEXT_PUBLIC_LAUNCHED=false` and re-run the deploy workflow.
    To roll back, set it to `false` and re-run.
 
 Until launch, `/preview/`, `/work/`, `/about/` and `/contact/` are reachable by URL but marked `noindex`.
@@ -143,7 +143,7 @@ Until launch, `/preview/`, `/work/`, `/about/` and `/contact/` are reachable by 
 | Email / phone / LinkedIn | `lib/site.ts` |
 | Toolbox icons (add, remove, reorder) | `lib/toolbox.ts` (24×24 SVG paths, e.g. from Simple Icons) |
 | Projects (title, tagline, category, year, colours) | `lib/projects.ts` |
-| Nav photo | replace `public/ty-color.jpg` and `public/ty-bw.jpg` (square, ~200px) |
+| Nav logo | replace `public/logo.png` (square, ~120px) |
 | Colours / spacing / light-dark theme | `app/globals.css` (`:root` and `:root[data-theme="dark"]`) |
 | Font | `app/layout.tsx` (`Geist_Mono`) |
 

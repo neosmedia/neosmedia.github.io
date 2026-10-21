@@ -2,9 +2,6 @@
  * Home page sections below the hero (shared by Home and ComingSoon):
  * SelectedWork, AboutSection, ExperienceSection, LetsBuild. Content comes from lib/site.ts.
  * Styles: the scoped `.fx` block in app/globals.css (colour vars --bg/--ink/--muted/--line/--surface).
- *
- * TODO: link SelectedWork cards to /work/<slug> case-study pages once they exist
- * (they currently open the live product URLs).
  */
 import type { ReactNode } from "react";
 import ShaderText from "./ShaderText";
@@ -19,12 +16,25 @@ import {
   EXPERIENCE,
   EXPERIENCE_HEADLINE,
   LINKEDIN_URL,
+  ARCHIVE,
   WORK_LINKS,
 } from "@/lib/site";
 
 /** Warm editorial wrapper for sections 2-5 + footer (styled after tyl.framer.website). */
-export function Sections({ children }: { children: ReactNode }) {
-  return <div className="fx">{children}</div>;
+export function Sections({ children, page = false }: { children: ReactNode; page?: boolean }) {
+  // `page`: inner pages have no hero above, so the sheet is flat and clears the nav bar
+  return <div className={page ? "fx fx-page" : "fx"}>{children}</div>;
+}
+
+/** Centered title block at the top of inner pages (Work, Contact, project pages). */
+/** `cardTitle`: set the title in the project-card title style (case study pages). */
+export function PageHead({ title, lede, cardTitle = false }: { title: string; lede?: string; cardTitle?: boolean }) {
+  return (
+    <section className="sec container page-intro">
+      <h1 className={cardTitle ? "sec-title page-title-card" : "sec-title"}>{title}</h1>
+      {lede && <p className="page-intro-lede">{lede}</p>}
+    </section>
+  );
 }
 
 function PillarIcon({ name }: { name: string }) {
@@ -64,45 +74,122 @@ function PillarIcon({ name }: { name: string }) {
   );
 }
 
+/** The project cards. `internal` links to the case-study pages instead of the live sites. */
+export function WorkGrid({ internal = false }: { internal?: boolean }) {
+  return (
+    <ul className="links">
+      {WORK_LINKS.map((w) => {
+        const inner = (
+          <>
+            {w.image && (
+              // eslint-disable-next-line @next/next/no-img-element -- static export, no image optimizer
+              <img className="links-cover" src={w.image} alt="" loading="lazy" decoding="async" />
+            )}
+            <span className="links-title">{w.title}</span>
+            {w.subtitle && <span className="links-sub">{w.subtitle}</span>}
+            <span className="mono links-url">{w.label ?? w.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
+            <span className="links-arrow" aria-hidden="true">↗</span>
+          </>
+        );
+        const cls = w.image ? "has-cover" : undefined;
+        return (
+          <li key={w.slug}>
+            {internal ? (
+              <Link href={`/work/${w.slug}/`} className={cls}>{inner}</Link>
+            ) : (
+              <a href={w.url} target="_blank" rel="noreferrer" className={cls}>{inner}</a>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** Older projects as a list (name, year, blurb, pill button). Placeholder content for now. */
+export function Archive() {
+  return (
+    <section className="sec container archive" id="archive">
+      <div className="sec-head">
+        <span className="mono">Archive</span>
+      </div>
+      {/* same tray + row cards as the Experience list; inside each row: name/year, blurb, button */}
+      <ul className="exp">
+        {ARCHIVE.map((a) => (
+          <li key={a.name} className="exp-row archive-row">
+            <div className="archive-main">
+              <h3 className="exp-company">{a.name}</h3>
+              <span className="archive-year mono">{a.year}</span>
+            </div>
+            <p className="archive-blurb">{a.blurb}</p>
+            {a.url ? (
+              <a className="btn btn-outline archive-btn" href={a.url} target="_blank" rel="noreferrer">
+                Website <span aria-hidden="true">↗</span>
+              </a>
+            ) : (
+              // TODO: add `url` to the ARCHIVE entry in lib/site.ts to make this a live link
+              <span className="btn btn-outline archive-btn" aria-disabled="true">
+                Website <span aria-hidden="true">↗</span>
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 /** Section 2 */
 export function SelectedWork() {
   return (
     <section className="sec container" id="work">
       <div className="sec-head">
         <span className="mono">Selected work</span>
-        <span className="mono">2020 — 2026</span>
+        <span className="mono">2019 — 2026</span>
       </div>
-      <ul className="links">
-        {WORK_LINKS.map((w) => (
-          <li key={w.url}>
-            <a href={w.url} target="_blank" rel="noreferrer">
-              <span className="links-title">{w.title}</span>
-              {w.subtitle && <span className="links-sub">{w.subtitle}</span>}
-              <span className="mono links-url">{w.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
-              <span className="links-arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-      <p className="work-note mono">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="9.5" />
-          <path d="M12 11v5.5" />
-          <circle cx="12" cy="7.6" r="0.6" fill="currentColor" />
-        </svg>
-        Case studies coming soon
-      </p>
+      <WorkGrid internal />
+      <div className="work-more">
+        <Link className="btn btn-outline" href="/work/">
+          All work <span aria-hidden="true">↗</span>
+        </Link>
+      </div>
     </section>
   );
 }
 
 /** Section 3 */
-export function AboutSection() {
+/**
+ * `label`: the small "About" text above the headline (hidden on the About page itself).
+ * `portrait`: centered round photo above the headline (About page); black & white on hover.
+ */
+export function AboutSection({ label = true, portrait = false }: { label?: boolean; portrait?: boolean }) {
   return (
     <section className="sec container" id="about">
-      <div className="sec-head">
-        <span className="mono">About</span>
-      </div>
+      {portrait && (
+        <div className="about-portrait">
+          {/* eslint-disable-next-line @next/next/no-img-element -- static export, no image optimizer */}
+          <img className="portrait-color" src="/ty-color.jpg" alt="Tyler Lange" width={192} height={192} decoding="async" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="portrait-bw" src="/ty-bw.jpg" alt="" aria-hidden="true" width={192} height={192} decoding="async" />
+        </div>
+      )}
+      {portrait && (
+        <p className="name-chip">
+          <span className="name-chip-dot" aria-hidden="true" />
+          <span className="name-chip-name">Tyler Lange</span>
+          <span className="name-chip-sep" aria-hidden="true" />
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z" />
+            <circle cx="12" cy="9.5" r="2.5" />
+          </svg>
+          <span className="name-chip-place">Vancouver, CA</span>
+        </p>
+      )}
+      {label && (
+        <div className="sec-head">
+          <span className="mono">About</span>
+        </div>
+      )}
       <h2 className="about-lead">{ABOUT_HEADLINE}</h2>
       <ul className="pillars">
         {ABOUT_PILLARS.map((p, i) => (

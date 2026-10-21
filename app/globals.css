@@ -194,15 +194,6 @@ ul {
   transition: opacity 0.35s ease;
 }
 
-.nav-avatar .avatar-bw {
-  opacity: 0;
-}
-
-.nav-avatar:hover .avatar-bw,
-.nav-avatar:focus-visible .avatar-bw {
-  opacity: 1;
-}
-
 .nav-logo {
   display: inline-grid;
   place-items: center;
@@ -978,6 +969,8 @@ ul {
 /* ---------- Home sections (style after tyl.framer.website) ---------- */
 
 .fx {
+  --case-heading-size: clamp(32px, 4vw, 48px); /* case study page title (h1) */
+  --card-title-size: clamp(22px, 2.4vw, 28px); /* project card titles, case study title, pager, archive names */
   --bg: #f4f2ee;
   --ink: #1a1917;
   --muted: #6b6862;
@@ -1684,7 +1677,7 @@ ul {
 /* project titles match the experience company names */
 .fx .links-title {
   font-family: var(--font-mono), ui-monospace, Menlo, monospace;
-  font-size: clamp(22px, 2.4vw, 28px);
+  font-size: var(--card-title-size);
   letter-spacing: -0.02em;
   line-height: 1.05;
 }
@@ -1798,4 +1791,703 @@ ul {
   font-size: 14px;
   line-height: 1.5;
   letter-spacing: 0;
+}
+
+/* Cover cards: the image is the resting state; hover/focus reveals the normal text card */
+.fx .links a.has-cover {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.fx .links-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.35s ease, transform 0.6s ease;
+}
+
+.fx .links a.has-cover > :not(.links-cover) {
+  position: relative;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.fx .links a.has-cover:hover .links-cover,
+.fx .links a.has-cover:focus-visible .links-cover {
+  opacity: 0;
+  transform: scale(1.04);
+}
+
+.fx .links a.has-cover:hover > :not(.links-cover),
+.fx .links a.has-cover:focus-visible > :not(.links-cover) {
+  opacity: 1;
+}
+
+/* touch screens have no hover: show the text over a faded cover instead */
+@media (hover: none) {
+  .fx .links-cover {
+    opacity: 0.16;
+  }
+  .fx .links a.has-cover > :not(.links-cover) {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx .links-cover {
+    transition: opacity 0.2s;
+  }
+  .fx .links a.has-cover:hover .links-cover {
+    transform: none;
+  }
+}
+
+/* ---------- Inner pages (Work, About, Contact, case studies) ---------- */
+
+/* top nav links sit right after the avatar */
+.nav-links {
+  gap: 22px;
+}
+
+.nav-links a[aria-current="page"] {
+  border-color: currentColor;
+}
+
+@media (max-width: 560px) {
+  .nav {
+    gap: 14px;
+  }
+  .nav-links {
+    gap: 14px;
+    font-size: 13px;
+  }
+  /* keep the bar uncluttered on phones: theme toggle stays, contact icons are on the Contact page */
+  .nav-actions .nav-divider,
+  .nav-actions .icon-btn:not(.theme-toggle):not(:first-child) {
+    display: none;
+  }
+}
+
+/* no hero above, so the flat sheet starts below the nav bar */
+.fx.fx-page {
+  min-height: 100dvh;
+  padding-top: 88px;
+  border-radius: 0;
+}
+
+.fx .page-intro {
+  padding-bottom: 0;
+  border-top: 0;
+}
+
+.fx .page-intro .sec-head {
+  justify-content: center;
+}
+
+.fx .page-intro .sec-title {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.fx .page-intro-lede {
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: center;
+  color: var(--muted);
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+}
+
+.fx .work-page {
+  border-top: 0;
+  padding-top: 48px;
+}
+
+/* contact page: details left, form right */
+.fx .contact-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 48px;
+  max-width: 860px;
+  margin-inline: auto;
+  border-top: 0;
+  padding-top: 56px;
+}
+
+.fx .contact-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.fx .contact-side .avail {
+  margin-bottom: 8px;
+}
+
+.fx .form {
+  display: grid;
+  gap: 20px;
+  padding: 28px;
+  border-radius: 28px;
+  background: var(--surface);
+}
+
+.fx .form-title {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.fx .field input,
+.fx .field textarea {
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg);
+}
+
+.fx .field input:focus,
+.fx .field textarea:focus {
+  border-color: var(--ink);
+}
+
+@media (max-width: 800px) {
+  .fx .contact-page {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* case study page */
+.fx .project-body {
+  display: grid;
+  gap: 28px;
+  max-width: 860px;
+  margin-inline: auto;
+  padding-top: 40px;
+  padding-bottom: 80px;
+}
+
+.fx .project-cover {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 28px;
+  background: var(--surface);
+}
+
+.fx .project-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fx .project-cover-name {
+  font-family: var(--serif);
+  font-size: clamp(48px, 9vw, 120px);
+  color: var(--muted);
+  opacity: 0.5;
+}
+
+.fx .project-soon {
+  text-align: center;
+  color: var(--muted);
+}
+
+.fx .project-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.fx .pager {
+  max-width: 860px;
+  margin-inline: auto;
+  padding-block: 32px 72px;
+}
+
+/* matches the project names on the home cards (.fx .links-title) */
+.fx .pager-title {
+  font-family: var(--font-mono), ui-monospace, Menlo, monospace;
+  font-size: var(--card-title-size);
+  line-height: 1.05;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- Work page: Archive list (same tray + row cards as Experience) ---------- */
+.fx .archive {
+  max-width: 1280px;
+  margin-inline: auto;
+}
+
+.fx .archive .sec-head {
+  justify-content: center;
+}
+
+.fx .archive-row {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) auto;
+  gap: 8px 24px;
+}
+
+.fx .archive-main {
+  display: grid;
+  gap: 2px;
+}
+
+.fx .archive-main .exp-company {
+  margin: 0;
+  font-weight: 400;
+}
+
+.fx .archive-year {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.fx .archive-blurb {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.fx .archive-btn[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.fx .archive-btn[aria-disabled="true"]:hover {
+  background: transparent;
+  border-color: var(--line);
+  color: inherit;
+}
+
+@media (max-width: 700px) {
+  .fx .archive-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 16px;
+  }
+  .fx .archive-btn {
+    justify-self: start;
+    margin-top: 4px;
+  }
+}
+
+/* case study: back button, top left */
+.fx .back-row {
+  max-width: 1000px;
+  margin-inline: auto;
+  padding-top: 12px;
+}
+
+.fx .back-btn {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+/* headings without the small label above them keep a little room under the nav */
+.fx .page-intro {
+  padding-top: 36px;
+}
+
+/* case study title = same style as the project card titles (.fx .links-title) */
+.fx .page-intro .sec-title.page-title-card {
+  font-family: var(--font-mono), ui-monospace, Menlo, monospace;
+  font-size: var(--card-title-size);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+/* case study: header (title left, summary right), details row, write-up rows */
+.fx .project-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 16px 56px;
+  max-width: 1000px;
+  margin-inline: auto;
+  padding-top: 36px;
+}
+
+.fx .project-title {
+  margin: 0;
+  font-family: var(--font-mono), ui-monospace, Menlo, monospace;
+  font-size: var(--case-heading-size);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.fx .project-sub {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(17px, 1.7vw, 20px);
+  line-height: 1.45;
+}
+
+.fx .project-body {
+  max-width: 1000px;
+  gap: 40px;
+  padding-top: 32px;
+}
+
+.fx .project-facts {
+  display: grid;
+  gap: 12px;
+  padding-top: 24px;
+}
+
+.fx .project-facts-label {
+  color: var(--muted);
+}
+
+/* label left, value right, one row per detail (like the reference) */
+.fx .project-facts dl {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+
+.fx .project-facts dl > div {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) minmax(0, 4fr);
+  align-items: baseline;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.fx .project-facts dt {
+  color: var(--muted);
+}
+
+.fx .project-facts dd {
+  margin: 0;
+  font-size: 16px;
+}
+
+.fx .project-facts .btn {
+  justify-self: start;
+}
+
+/* write-up: one reading column, serif headings, large body text, no divider lines */
+.fx .project-copy {
+  display: grid;
+  gap: 40px;
+  max-width: 720px;
+  padding-top: 24px;
+}
+
+.fx .project-copy section {
+  display: grid;
+  gap: 14px;
+}
+
+.fx .project-copy h2 {
+  margin: 0;
+  font-family: var(--font-mono), ui-monospace, Menlo, monospace; /* same family as the page title */
+  font-size: clamp(24px, 2.6vw, 32px); /* h2: between the h1 title and the h3 sub-headings */
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.fx .project-copy p {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(17px, 1.7vw, 20px);
+  line-height: 1.6;
+}
+
+@media (max-width: 800px) {
+  .fx .project-head {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* desktop: details on the left, write-up on the right (as in the reference); stacked on small screens */
+.fx .project-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 40px 72px;
+  align-items: start;
+  padding-top: 24px;
+}
+
+.fx .project-cols .project-facts {
+  position: sticky;
+  top: 24px;
+  padding-top: 0;
+}
+
+.fx .project-cols .project-facts dl > div {
+  grid-template-columns: 1fr;
+  gap: 2px;
+  padding: 8px 0;
+}
+
+.fx .project-cols .project-copy {
+  max-width: none;
+  padding-top: 0;
+}
+
+.fx .project-cols .project-copy p {
+  color: var(--muted);
+}
+
+@media (max-width: 800px) {
+  .fx .project-cols {
+    grid-template-columns: 1fr;
+  }
+  .fx .project-cols .project-facts {
+    position: static;
+  }
+  .fx .project-cols .project-facts dl > div {
+    grid-template-columns: minmax(110px, 1fr) minmax(0, 4fr);
+    gap: 16px;
+    padding: 20px 0;
+  }
+  .fx .project-cols .project-copy p {
+    color: var(--ink);
+  }
+}
+
+/* h3 style: sub-headings in the write-up (only the first heading uses the larger card-title size) */
+.fx .project-copy .h3 {
+  margin: 0;
+  font-family: var(--font-mono), ui-monospace, Menlo, monospace;
+  font-size: clamp(20px, 2.1vw, 24px);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* nav links in uppercase */
+.nav-links a {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 12px;
+}
+
+/* long URLs/labels never push a card wider than the screen */
+.fx .links-url {
+  overflow-wrap: anywhere;
+}
+
+/* "All work" button under the home page cards */
+.fx .work-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+/* case study: wider cover, bento grid */
+.fx .project-body {
+  max-width: 1280px;
+}
+
+.fx .project-cover {
+  aspect-ratio: 16 / 9;
+}
+
+/* text columns stay at reading width under the wide cover */
+.fx .project-body .project-cols {
+  width: 100%;
+  max-width: 1000px;
+  margin-inline: auto;
+}
+
+.fx .project-bento {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    "a a"
+    "b c"
+    "b d";
+  gap: 24px;
+}
+
+.fx .bento-tile {
+  overflow: hidden;
+  border-radius: 28px;
+  background: var(--surface);
+}
+
+.fx .bento-tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fx .bento-1 { grid-area: a; }
+.fx .bento-2 { grid-area: b; }
+.fx .bento-3 { grid-area: c; }
+.fx .bento-4 { grid-area: d; }
+
+@media (max-width: 700px) {
+  .fx .project-bento {
+    grid-template-columns: 1fr;
+    grid-template-areas: "a" "b" "c" "d";
+    gap: 16px;
+  }
+  .fx .bento-tile {
+    border-radius: 20px;
+  }
+}
+
+/* case study: header, details/write-up and pager use the same width as the cover image */
+.fx .back-row,
+.fx .project-head,
+.fx .project-body .project-cols,
+.fx .pager {
+  max-width: 1280px;
+}
+
+/* three-image bento: one wide tile over two half-width tiles */
+.fx .project-bento.bento-n3 {
+  grid-template-areas:
+    "a a"
+    "b c";
+}
+
+@media (max-width: 700px) {
+  .fx .project-bento.bento-n3 {
+    grid-template-areas: "a" "b" "c";
+  }
+}
+
+/* the wide bento tile is 16:9 (not the screenshot's own taller ratio); crops from the bottom */
+.fx .bento-1 {
+  aspect-ratio: 16 / 9;
+}
+
+.fx .bento-1 img {
+  object-position: top center;
+}
+
+@media (max-width: 700px) {
+  .fx .bento-1 {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+/* two-image bento (wide + tall) sits side by side; widths chosen so both end up the same height */
+.fx .project-bento.bento-n2 {
+  grid-template-columns: 2.45fr 1fr;
+  grid-template-areas: "a b";
+}
+
+.fx .project-bento.bento-n2 .bento-1 {
+  aspect-ratio: auto; /* only the 3/4-image layouts use the 16:9 wide tile */
+}
+
+@media (max-width: 700px) {
+  .fx .project-bento.bento-n2 {
+    grid-template-columns: 1fr;
+    grid-template-areas: "a" "b";
+  }
+}
+
+/* About page: centered round portrait, black & white on hover */
+.fx .about-portrait {
+  position: relative;
+  width: 144px;
+  height: 144px;
+  margin: 0 auto 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.fx .about-portrait img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.35s ease;
+}
+
+.fx .about-portrait .portrait-bw {
+  opacity: 0;
+}
+
+.fx .about-portrait:hover .portrait-bw {
+  opacity: 1;
+}
+
+/* name + location chip under the About portrait */
+.fx .about-portrait {
+  margin-bottom: 20px;
+}
+
+.fx .name-chip {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto 36px;
+  padding: 8px 20px 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg) 60%, #fff);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  font-size: 15px;
+}
+
+:root[data-theme="dark"] .fx .name-chip {
+  background: color-mix(in srgb, var(--bg) 85%, #fff);
+}
+
+.fx .name-chip-dot {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.fx .name-chip-dot::after {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.fx .name-chip-name {
+  font-weight: 500;
+}
+
+.fx .name-chip-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--line);
+}
+
+.fx .name-chip-place {
+  margin-left: -4px;
+  color: var(--muted);
+}
+
+.fx .name-chip svg {
+  color: var(--muted);
+}
+
+/* the first section on an inner page has no divider line above it (the sr-only h1 can sit before it) */
+.fx.fx-page > .sec:first-of-type {
+  border-top: 0;
+  padding-top: 36px;
 }

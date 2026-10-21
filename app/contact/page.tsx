@@ -1,13 +1,34 @@
-import ContactSection from "@/components/ContactSection";
+import { pageMeta } from "@/lib/seo";
+import { Sections, PageHead } from "@/components/HomeSections";
+import ContactForm from "@/components/ContactForm";
 import SiteFooter from "@/components/SiteFooter";
+import { CTA_STATUS, EMAIL, LINKEDIN_URL } from "@/lib/site";
 
-export const metadata = { title: "Contact" };
+export const metadata = pageMeta({
+  title: "Contact",
+  description:
+    "Contact Tyler Lange, a freelance product designer and UX designer in Vancouver, about your next project.",
+  path: "/contact/",
+});
 
 export default function ContactPage() {
   return (
-    <main className="page page-contact">
-      <ContactSection />
-      <SiteFooter />
+    <main className="page">
+      <Sections page>
+        <PageHead title="Let’s talk" lede="Tell me about your project, or just say hello." />
+        <section className="sec container contact-page">
+          <div className="contact-side">
+            <p className="avail">
+              <span className="dot" aria-hidden="true" />
+              {CTA_STATUS}
+            </p>
+            <a className="btn btn-solid" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+            <a className="btn btn-outline" href={LINKEDIN_URL} target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+          </div>
+          <ContactForm />
+        </section>
+        <SiteFooter />
+      </Sections>
     </main>
   );
 }

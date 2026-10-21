@@ -10,6 +10,9 @@
 - Full portfolio (home preview at `/preview/`, work + 8 project pages, about, contact form)
   built but hidden behind `NEXT_PUBLIC_LAUNCHED`.
 
-## Unreleased (after v0.2.0)
+## v0.4.0
 - Performance: broad-phase letter collisions, paint skipped when the scene is at rest, lazy WebGL creation (hero + "good" text), allocation-free path tracing, dead code/CSS removed (ShaderDisc, wordmark mode).
 - Dev docs: header comments and TODOs across physics, shader, hero and home sections.
+- Launch: full site is on by default (`NEXT_PUBLIC_LAUNCHED !== "false"`); sitemap lists every page; per-page canonical/Open Graph/Twitter metadata (`lib/seo.ts`); case studies get CreativeWork + breadcrumb JSON-LD; About page has an h1.
+- Contact page: removed the Book a call button.
+- Work, About, Contact pages and 9 case studies (bento image grids, per-project copy), archive list, T logo in the nav, About portrait + name chip.
