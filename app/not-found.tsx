@@ -23,6 +23,9 @@ export default function NotFound() {
         <Link className="btn btn-outline" href="/">
           Float back home
         </Link>
+        <Link className="btn btn-outline" href="/work/">
+          See the work
+        </Link>
         <Link className="btn btn-outline" href="/contact/">
           Contact
         </Link>

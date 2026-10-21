@@ -96,5 +96,5 @@ First person, short, confident, no fluff. Titles: "Product Designer & UX Enginee
 - **Case study:** "← All Work" pill button top left; title (h1, `--case-heading-size` 32–48px mono) left, summary right; wide cover (16:9, or per-project `coverRatio`) or a bento grid; details column (sticky) left with the "Website ↗" pill; write-up right with one h2 then h3 sub-headings and a final "How AI was used" section. All blocks share a 1280px max width.
 - **Bento grids:** 3 or 4 images (tiles with 28px radius on the surface colour); video tiles play silently only while on screen. Layouts: default (wide, tall + two short) and `split` (Fobi). Phones stack to one column.
 - **About page:** centered 144px round portrait (colour, black and white on hover) and a name + location chip.
-- **404:** "Pop! That page is gone." in Gochi Hand, a big draggable balloon 404 (same letter style and physics as the hero; glyphs "4" and "0" live in `lib/glyphs.ts`), then pill buttons "Float back home" and "Contact".
+- **404:** "Pop! That page is gone." in Gochi Hand, a big draggable balloon 404 (same letter style and physics as the hero; glyphs "4" and "0" live in `lib/glyphs.ts`), then pill buttons "Float back home", "See the work" and "Contact".
 - **Voice for copy:** relaxed, short, first person where it fits. Plain words over jargon.
