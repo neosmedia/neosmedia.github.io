@@ -3060,3 +3060,10 @@ ul {
   aspect-ratio: var(--bento-top-ratio);
   height: auto;
 }
+
+/* contact page: handle under the buttons */
+.fx .contact-handle {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}

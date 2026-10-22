@@ -25,6 +25,7 @@ export default function ContactPage() {
             <a className="btn btn-solid" href={`mailto:${EMAIL}`}>{EMAIL}</a>
             <a className="btn btn-outline" href={LINKEDIN_URL} target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
             <a className="btn btn-outline" href={DRIBBBLE_URL} target="_blank" rel="noreferrer">Dribbble <span aria-hidden="true">↗</span></a>
+            <p className="contact-handle mono">@tylerlangebc</p>
           </div>
           <ContactForm />
         </section>
