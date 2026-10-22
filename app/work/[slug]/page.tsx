@@ -4,7 +4,7 @@ import { Sections } from "@/components/HomeSections";
 import SiteFooter from "@/components/SiteFooter";
 import { CASE_STUDY_AI, CASE_STUDY_DETAILS, CASE_STUDY_HEADINGS, CASE_STUDY_PARAGRAPHS } from "@/lib/site";
 import BentoVideo from "@/components/BentoVideo";
-import { pageMeta } from "@/lib/seo";
+import { pageMeta, snippet } from "@/lib/seo";
 import { NAME, SITE_URL } from "@/lib/site";
 import { PROJECTS, getProject, neighbours } from "@/lib/projects";
 
@@ -19,8 +19,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const p = getProject(slug);
   if (!p) return { title: "Work" };
   return pageMeta({
-    title: `${p.title} case study`,
-    description: `${p.title}: ${p.subtitle ?? "product design case study"}. A product design and UX case study by Tyler Lange.`,
+    title: `${p.title}: UX case study`, // short on purpose: the site name is appended, keep the total under about 60 characters
+    description: snippet(
+      p.study?.paragraphs?.[0]
+        ? `${p.title} case study. ${p.study.paragraphs[0]}`
+        : `${p.title}: ${p.subtitle ?? "product design"}. A product design and UX case study by Tyler Lange.`
+    ),
     path: `/work/${p.slug}/`,
     image: p.image,
     type: "article",

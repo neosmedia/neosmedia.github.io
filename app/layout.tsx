@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Gochi_Hand } from "next/font/google";
 import "./globals.css";
 import SiteNav from "@/components/SiteNav";
 import {
-  EMAIL, KEYWORDS, LINKEDIN_URL, NAME, SITE_DESCRIPTION, SITE_TAGLINE, SITE_URL,
+  DRIBBBLE_URL, EMAIL, KEYWORDS, LINKEDIN_URL, NAME, ROLE_TITLE, SITE_DESCRIPTION, SITE_TAGLINE, SITE_URL, X_URL,
 } from "@/lib/site";
 
 const mono = Geist_Mono({
@@ -53,12 +53,13 @@ const JSON_LD = {
       "@id": `${SITE_URL}/#person`,
       name: NAME,
       url: SITE_URL,
-      image: `${SITE_URL}/og-image.png`,
+      image: `${SITE_URL}/ty-color.jpg`,
       email: EMAIL,
-      jobTitle: "Freelance Product Designer and UX Designer",
-      worksFor: { "@type": "Organization", name: "PDF.com" },
+      jobTitle: ROLE_TITLE,
+      description: SITE_DESCRIPTION,
+      worksFor: { "@type": "Organization", name: "micro1", url: "https://www.micro1.ai/" },
       address: { "@type": "PostalAddress", addressLocality: "Vancouver", addressRegion: "BC", addressCountry: "CA" },
-      sameAs: [LINKEDIN_URL],
+      sameAs: [LINKEDIN_URL, X_URL, DRIBBBLE_URL],
       knowsAbout: ["Product design", "UX design", "Design systems", "UX engineering", "AI workflow UX", "AI workflows and analytics"],
     },
     {
@@ -88,7 +89,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${mono.variable} ${sans.variable} ${serif.variable}`} suppressHydrationWarning>
+    <html lang="en-CA" className={`${mono.variable} ${sans.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"

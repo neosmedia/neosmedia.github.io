@@ -18,6 +18,7 @@
 - Work, About, Contact pages and 9 case studies (bento image grids, per-project copy), archive list, T logo in the nav, About portrait + name chip.
 
 ## Unreleased (launch prep, after v0.4.0)
+- SEO pass: `lang="en-CA"`, keyword titles for Work / About / Contact, unique case-study titles and descriptions (from each write-up), Twitter handle, Person schema (job title, current employer, X + Dribbble in `sameAs`, portrait), ProfilePage / CollectionPage+ItemList / ContactPage JSON-LD.
 - Archive list: AutoTrader and Modo added, placeholder rows removed, ordered newest first, relaxed copy.
 - Case studies: Aurora, Cimetrix and Finning written; fallback copy no longer Lorem ipsum.
 - Footer year is now automatic; custom 404 page; `public/.nojekyll`; Aurora image recompressed.
