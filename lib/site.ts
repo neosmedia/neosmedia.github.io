@@ -88,7 +88,7 @@ export const EXPERIENCE = [
   { company: "EA Sports", role: "User Experience Engineer", years: "2013 — 2015", now: false },
 ];
 
-export const CTA_STATUS = "Booking new projects — Nov ’26";
+export const CTA_STATUS = "Booking new projects";
 
 // TODO: add case-study pages (8 project sub-pages per project brief) and point `url` at them.
 export type CaseStudy = {
