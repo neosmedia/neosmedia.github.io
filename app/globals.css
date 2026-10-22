@@ -3063,16 +3063,9 @@ ul {
   opacity: 1;
 }
 
-.hero-avatar-name {
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.2;
-}
-
 .hero-avatar-title {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.2;
-  opacity: 0.7;
 }
 
 @media (max-width: 700px) {

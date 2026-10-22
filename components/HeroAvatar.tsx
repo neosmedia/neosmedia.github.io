@@ -54,7 +54,6 @@ export default function HeroAvatar() {
         <img src="/ty-color.jpg" alt="Tyler Lange" width={40} height={40} decoding="async" />
       </span>
       <span id="hero-avatar-tip" role="tooltip" className="hero-avatar-tip">
-        <span className="hero-avatar-name">Tyler Lange</span>
         <span className="hero-avatar-title">{ROLE_TITLE}</span>
       </span>
     </button>
