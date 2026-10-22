@@ -3061,10 +3061,13 @@ ul {
   height: auto;
 }
 
-/* contact page: handle under the buttons */
+/* contact page: handle button (plain text for now, not a link) */
 .fx .contact-handle {
-  margin: 8px 0 0;
   text-transform: lowercase;
-  color: var(--muted);
-  font-size: 13px;
+  cursor: default;
+}
+
+.fx .contact-handle:hover {
+  background: transparent;
+  color: inherit;
 }

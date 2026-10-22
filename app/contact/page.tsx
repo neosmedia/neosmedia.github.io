@@ -22,10 +22,11 @@ export default function ContactPage() {
               <span className="dot" aria-hidden="true" />
               {CTA_STATUS}
             </p>
-            <a className="btn btn-solid" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+            <a className="btn btn-outline" href={`mailto:${EMAIL}`}>{EMAIL}</a>
             <a className="btn btn-outline" href={LINKEDIN_URL} target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
             <a className="btn btn-outline" href={DRIBBBLE_URL} target="_blank" rel="noreferrer">Dribbble <span aria-hidden="true">↗</span></a>
-            <p className="contact-handle mono">@tylerlangebc</p>
+            {/* TODO: make this a link once the platform is known */}
+            <span className="btn btn-outline contact-handle">@tylerlangebc</span>
           </div>
           <ContactForm />
         </section>
