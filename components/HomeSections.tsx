@@ -164,7 +164,7 @@ export function SelectedWork() {
       <WorkGrid internal />
       <div className="work-more">
         <Link className="btn btn-outline" href="/work/">
-          All work <span aria-hidden="true">↗</span>
+          View all work <span aria-hidden="true">↗</span>
         </Link>
       </div>
     </section>

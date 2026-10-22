@@ -44,7 +44,7 @@ export default function SiteFooter() {
       </div>
       <div className="footer-bottom">
         <span>©{new Date().getFullYear()} Tyler Lange</span>
-        <span>Thoughtfully made in Canada.</span>
+        <span>Thoughtfully made, always evolving.</span>
       </div>
     </footer>
     <FooterName />
