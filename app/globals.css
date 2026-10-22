@@ -2115,6 +2115,11 @@ ul {
   letter-spacing: -0.02em;
 }
 
+/* round logos (GE) fill the whole tile as a circle */
+.fx .archive-icon.round {
+  border-radius: 50%;
+}
+
 /* hairline outline drawn on top, so white logos stay visible against the card */
 .fx .archive-icon::after {
   content: "";

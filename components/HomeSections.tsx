@@ -122,7 +122,7 @@ export function Archive() {
         {ARCHIVE.map((a) => (
           <li key={a.name} className="exp-row archive-row">
             <div className="archive-main">
-              <span className={`archive-icon${a.iconFill ? " fill" : ""}`} style={{ background: a.color, color: a.fg }} aria-hidden="true">
+              <span className={`archive-icon${a.iconFill ? " fill" : ""}${a.iconRound ? " round" : ""}`} style={{ background: a.color, color: a.fg }} aria-hidden="true">
                 {a.icon ? (
                   // eslint-disable-next-line @next/next/no-img-element -- static export, no image optimizer
                   <img src={a.icon} alt="" loading="lazy" decoding="async" />
