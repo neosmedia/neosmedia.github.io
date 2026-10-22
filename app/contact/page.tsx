@@ -21,11 +21,11 @@ export default function ContactPage() {
         <PageHead title="Let’s talk" lede="Tell me about your project, or just say hello." />
         <section className="sec container contact-page">
           <div className="contact-side">
+            <NameChip showName={false} showDot={false} />
             <p className="avail">
               <span className="dot" aria-hidden="true" />
               {CTA_STATUS}
             </p>
-            <NameChip showName={false} />
             <Button href={`mailto:${EMAIL}`} iconLeft="mail">{EMAIL}</Button>
             <SocialLinks />
           </div>

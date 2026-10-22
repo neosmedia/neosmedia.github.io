@@ -15,12 +15,12 @@ function gmtOffset(): string {
 }
 
 /** Name + location chip (About and Contact pages): green dot, name, pin, "Vancouver, CA GMT-7". */
-export default function NameChip({ showName = true }: { showName?: boolean }) {
+export default function NameChip({ showName = true, showDot = true }: { showName?: boolean; showDot?: boolean }) {
   const [gmt, setGmt] = useState("");
   useEffect(() => setGmt(gmtOffset()), []);
   return (
     <p className="name-chip">
-      <span className="name-chip-dot" aria-hidden="true" />
+      {showDot && <span className="name-chip-dot" aria-hidden="true" />}
       {showName && (
         <>
           <span className="name-chip-name">Tyler Lange</span>
