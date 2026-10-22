@@ -115,7 +115,7 @@ export function Archive() {
   return (
     <section className="sec container archive" id="archive">
       <div className="sec-head">
-        <span className="mono">Archive</span>
+        <span className="mono">Work Archive</span>
       </div>
       {/* same tray + row cards as the Experience list; inside each row: name/year, blurb, button */}
       <ul className="exp">
