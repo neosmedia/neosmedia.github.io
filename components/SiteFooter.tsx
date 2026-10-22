@@ -1,6 +1,7 @@
 import ContactIcons from "./ContactIcons";
 import FooterLinks from "./FooterLinks";
 import { EMAIL, TOOLS } from "@/lib/site";
+import { TOOLBOX } from "@/lib/toolbox";
 
 export default function SiteFooter() {
   return (
@@ -22,9 +23,20 @@ export default function SiteFooter() {
         <div>
           <p className="label">Design Stack</p>
           <ul className="tools">
-            {TOOLS.map((t) => (
-              <li key={t}>{t}</li>
-            ))}
+            {TOOLS.map((name) => {
+              const icon = TOOLBOX.find((t) => t.name === name);
+              return (
+                <li key={name} title={name}>
+                  {icon ? (
+                    <svg viewBox="0 0 24 24" fill="currentColor" role="img" aria-label={name}>
+                      <path d={icon.d} />
+                    </svg>
+                  ) : (
+                    name
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

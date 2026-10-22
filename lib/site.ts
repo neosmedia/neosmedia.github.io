@@ -34,7 +34,7 @@ export const LAUNCHED = process.env.NEXT_PUBLIC_LAUNCHED !== "false";
 export const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID ?? "";
 
 
-// TODO: TOOLS (about page/footer) overlaps lib/toolbox.ts; consolidate into one list.
+// Footer "Design Stack": names here, icons looked up by name in lib/toolbox.ts.
 export const TOOLS = ["Figma", "Framer", "Claude", "Cursor", "React", "TypeScript"];
 
 export const SERVICES = [
