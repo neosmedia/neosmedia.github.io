@@ -119,8 +119,18 @@ export function Archive() {
         {ARCHIVE.map((a) => (
           <li key={a.name} className="exp-row archive-row">
             <div className="archive-main">
-              <h3 className="exp-company">{a.name}</h3>
-              {a.year && <span className="archive-year mono">{a.year}</span>}
+              <span className="archive-icon" style={{ background: a.color }} aria-hidden="true">
+                {a.icon ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- static export, no image optimizer
+                  <img src={a.icon} alt="" loading="lazy" decoding="async" />
+                ) : (
+                  a.initials
+                )}
+              </span>
+              <div className="archive-text">
+                <h3 className="exp-company">{a.name}</h3>
+                {a.year && <span className="archive-year mono">{a.year}</span>}
+              </div>
             </div>
             <p className="archive-blurb">{a.blurb}</p>
             {a.url ? (
