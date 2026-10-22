@@ -3076,8 +3076,15 @@ ul {
 }
 
 @media (max-width: 700px) {
+  /* phones: centred under the letters, in its own gap, so the bubble opens evenly and never covers the name */
+  .hero {
+    margin-bottom: 60px;
+  }
   .hero-avatar-wrap {
-    bottom: calc(clamp(16px, 4vw, 56px) - 24px); /* 24px lower on phones */
+    left: 50%;
+    right: auto;
+    margin-left: -24px;
+    bottom: -54px;
   }
 }
 
