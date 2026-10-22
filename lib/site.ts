@@ -1,5 +1,7 @@
 export const NAME = "Tyler Lange";
 export const SITE_URL = "https://tylerlange.ca";
+/** Job title shown on the hero avatar tooltip */
+export const ROLE_TITLE = "Product Designer & UX Engineer";
 export const SITE_TAGLINE = "Product Designer & UX Designer in Vancouver";
 export const SITE_DESCRIPTION =
   "Tyler Lange is a freelance product designer and UX designer in Vancouver, BC with 18+ years of experience in product design, UX strategy, design systems and AI workflow UX. Available for freelance projects.";

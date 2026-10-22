@@ -210,7 +210,15 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
       world.calm = reduceMotion;
       // keep the letters clear of the whole nav: photo, links and icon buttons.
       // Each element becomes a row of keep-out circles (wide links need several).
-      if (!hero) {
+      if (hero) {
+        // the small avatar on top of the hero: letters are pushed around it
+        const b = stage.getBoundingClientRect();
+        const av = document.querySelector(".hero-avatar");
+        if (av) {
+          const a = av.getBoundingClientRect();
+          if (a.width) world.keepOut.push({ cx: a.left + a.width / 2 - b.left, cy: a.top + a.height / 2 - b.top, r: a.width / 2 + 14 });
+        }
+      } else {
         const b = stage.getBoundingClientRect();
         document.querySelectorAll(".nav .nav-avatar, .nav-links a, .nav-actions > *").forEach((el) => {
           const a = el.getBoundingClientRect();

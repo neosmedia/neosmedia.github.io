@@ -1,3 +1,4 @@
+import HeroAvatar from "./HeroAvatar";
 import BalloonName from "./BalloonName";
 import { Sections, SelectedWork, AboutSection, ExperienceSection, LetsBuild } from "./HomeSections";
 import SiteFooter from "./SiteFooter";
@@ -9,6 +10,7 @@ export default function Home() {
       {/* 1 · Hero */}
       <section className="hero">
         <BalloonName mode="hero" />
+        <HeroAvatar />
       </section>
 
       <Sections>

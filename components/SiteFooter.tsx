@@ -1,3 +1,4 @@
+import ContactIcons from "./ContactIcons";
 import FooterLinks from "./FooterLinks";
 import { EMAIL, TOOLS } from "@/lib/site";
 
@@ -10,6 +11,9 @@ export default function SiteFooter() {
           <a className="footer-mail" href={`mailto:${EMAIL}`}>
             {EMAIL}
           </a>
+          <div className="footer-icons">
+            <ContactIcons />
+          </div>
         </div>
         <nav aria-label="Footer">
           <p className="label">Pages</p>
