@@ -13,7 +13,7 @@ export default function NotFound() {
     <main className="page nf">
       <section className="nf-top">
         <h1 className="nf-title">
-          <span className="nf-kicker">Poof!</span>
+          <span className="nf-kicker">Error 404: Poof!</span>
           That page is gone.
         </h1>
       </section>

@@ -59,6 +59,9 @@ export default function ContactForm() {
         <textarea name="message" rows={3} placeholder="A little about you and your project…" required />
       </label>
 
+      {/* Formspree: subject line of the email you receive */}
+      <input type="hidden" name="_subject" value="New note from tylerlange.ca" />
+
       {/* honeypot */}
       <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" className="sr-only" aria-hidden="true" />
 
