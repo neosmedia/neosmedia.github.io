@@ -3099,3 +3099,35 @@ ul {
     color: var(--bg);
   }
 }
+
+/* name chip: GMT offset after the city */
+.fx .name-chip-gmt {
+  opacity: 0.7;
+}
+
+/* contact page: chip under the heading */
+.fx .contact-chip {
+  padding-top: 28px;
+}
+
+.fx .contact-chip .name-chip {
+  margin-bottom: 0;
+}
+
+/* big balloon name under the footer: the stage keeps its full height, only the top 80% shows */
+.footer-name {
+  --name-h: clamp(380px, 42vw, 640px);
+  height: calc(var(--name-h) * 0.8);
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.footer-name-inner {
+  height: var(--name-h);
+}
+
+@media (max-width: 700px) {
+  .footer-name {
+    --name-h: 108vw;
+  }
+}
