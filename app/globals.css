@@ -3330,3 +3330,10 @@ ul {
 .tools {
   margin-top: 16px;
 }
+
+/* the three footer columns share one gap between their label and their content */
+.footer-mail,
+.footer-links,
+.tools {
+  margin-top: 16px;
+}
