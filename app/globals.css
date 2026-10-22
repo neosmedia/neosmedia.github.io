@@ -3055,8 +3055,8 @@ ul {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-/* fixed-height wide first tile (set per project with bentoTopHeight in lib/site.ts) */
-.fx .project-bento.bento-top-h .bento-1 {
-  aspect-ratio: auto;
-  height: var(--bento-top-h);
+/* custom-ratio wide first tile (set per project with bentoTopRatio in lib/site.ts); the image is shown in full */
+.fx .project-bento.bento-top-ratio .bento-1 {
+  aspect-ratio: var(--bento-top-ratio);
+  height: auto;
 }
