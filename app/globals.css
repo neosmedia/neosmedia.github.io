@@ -3157,3 +3157,112 @@ ul {
   height: auto;
   overflow: hidden;
 }
+
+/* About page: "Dive into my work" colour cards with handwritten notes */
+.fx .principles {
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+.fx .principles .sec-head {
+  justify-content: center;
+}
+
+.fx .principle-list {
+  display: grid;
+  gap: 56px;
+  margin-top: 40px;
+}
+
+.fx .principle {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 24px 48px;
+}
+
+.fx .principle-right {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+}
+
+/* alternate: card left / note right, then note left / card right */
+.fx .principle-right .principle-card {
+  order: 2;
+}
+
+.fx .principle-card {
+  padding: 44px 40px 40px;
+  border-radius: 6px;
+  color: #141414; /* pastel cards keep dark text in both themes */
+}
+
+.fx .principle-card h3 {
+  margin: 0 0 18px;
+  font-family: var(--font-mono), ui-monospace, Menlo, monospace;
+  font-size: clamp(24px, 2.6vw, 32px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.fx .principle-card p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.fx .principle-note {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--ink);
+  font-family: var(--font-serif), "Comic Sans MS", cursive;
+  font-size: clamp(22px, 2.4vw, 30px);
+  line-height: 1;
+  transform: rotate(-5deg);
+}
+
+.fx .principle-note svg {
+  flex: none;
+  width: 88px;
+  height: 30px;
+}
+
+/* left card: the arrow points right, away from it; right card: flipped to point left */
+.fx .principle-right .principle-note {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  transform: rotate(3deg);
+}
+
+.fx .principle-right .principle-note svg {
+  transform: scaleX(-1);
+}
+
+@media (max-width: 800px) {
+  .fx .principle,
+  .fx .principle-right {
+    grid-template-columns: 1fr;
+  }
+  .fx .principle-right .principle-card {
+    order: 0;
+  }
+  .fx .principle-card {
+    padding: 32px 24px 28px;
+  }
+  .fx .principle-list {
+    gap: 36px;
+  }
+  .fx .principle-note,
+  .fx .principle-right .principle-note {
+    flex-direction: row;
+    transform: rotate(-3deg);
+  }
+  .fx .principle-right .principle-note svg {
+    transform: none;
+  }
+  .fx .principle-note svg {
+    transform: rotate(60deg) scale(0.7);
+    width: 60px;
+  }
+}

@@ -73,6 +73,37 @@ export const ABOUT_DETAILS = [
   },
 ];
 
+/**
+ * "Dive into my work" cards on the About page. Structure borrowed from nudge-folio.framer.website/about;
+ * copy rewritten short and relaxed. TODO: Tyler to confirm these still sound like him.
+ */
+export const PRINCIPLES = [
+  {
+    title: "Starting with why, not what",
+    text: "Before any wireframes, I want to know what problem we’re really solving. The thing people ask for isn’t always the thing they need. The best projects start with good questions and end with answers that feel obvious.",
+    note: "think first, draw later.",
+    color: "#b3e2f7",
+  },
+  {
+    title: "Designing for real constraints",
+    text: "Perfect conditions don’t exist. Budgets are tight, timelines are short, legacy systems are messy and sometimes users aren’t reachable. I’m happy making smart calls with imperfect info and finding the clever way through.",
+    note: "no perfect world here!",
+    color: "#f1dda8",
+  },
+  {
+    title: "Collaboration over hero design",
+    text: "The best work happens when design, engineering and product actually talk to each other, instead of tossing things over the wall. I love the back-and-forth of figuring out what’s possible, practical and worth doing.",
+    note: "we, not me.",
+    color: "#acddc5",
+  },
+  {
+    title: "Making the invisible visible",
+    text: "Some of the most useful design isn’t flashy. It’s the progress bar that keeps you oriented, the autosave that prevents panic, the error message that actually helps. Small details build trust.",
+    note: "details build trust.",
+    color: "#f0c0d0",
+  },
+];
+
 export const EXPERIENCE_HEADLINE = "18 years of shipping things";
 
 export const EXPERIENCE = [

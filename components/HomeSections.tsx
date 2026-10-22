@@ -13,6 +13,7 @@ import {
   ABOUT_BIO,
   ABOUT_DETAILS,
   ABOUT_HEADLINE,
+  PRINCIPLES,
   ABOUT_PILLARS,
   CTA_STATUS,
   EMAIL,
@@ -175,6 +176,34 @@ export function SelectedWork() {
  * `label`: the small "About" text above the headline (hidden on the About page itself).
  * `portrait`: centered round photo above the headline (About page); black & white on hover.
  */
+/** About page: "Dive into my work" colour cards, each with a handwritten side note and arrow. */
+export function Principles() {
+  return (
+    <section className="sec container principles" aria-labelledby="principles-title">
+      <div className="sec-head">
+        <span className="mono" id="principles-title">Dive into my work</span>
+      </div>
+      <ul className="principle-list">
+        {PRINCIPLES.map((p, i) => (
+          <li key={p.title} className={`principle ${i % 2 ? "principle-right" : "principle-left"}`}>
+            <article className="principle-card" style={{ background: p.color }}>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </article>
+            <div className="principle-note" aria-hidden="true">
+              <svg viewBox="0 0 120 40" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 6c30 2 62 8 100 22" />
+                <path d="M92 17l12 11-16 5" />
+              </svg>
+              <span>{p.note}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 /** About page extras: short bio, philosophy, specialties and availability (from the old site). */
 export function AboutDetails() {
   return (

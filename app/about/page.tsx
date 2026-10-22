@@ -1,5 +1,5 @@
 import { pageMeta, pageJsonLd } from "@/lib/seo";
-import { Sections, AboutSection, AboutDetails, ExperienceSection, LetsBuild } from "@/components/HomeSections";
+import { Sections, AboutSection, AboutDetails, Principles, ExperienceSection, LetsBuild } from "@/components/HomeSections";
 import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = pageMeta({
@@ -24,6 +24,7 @@ export default function AboutPage() {
         <h1 className="sr-only">About Tyler Lange, UX Design Engineer in Vancouver</h1>
         <AboutSection label={false} portrait />
         <AboutDetails />
+        <Principles />
         <ExperienceSection />
         <LetsBuild />
         <SiteFooter />
