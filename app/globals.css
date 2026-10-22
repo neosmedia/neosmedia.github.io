@@ -2128,6 +2128,13 @@ ul {
   object-fit: contain;
 }
 
+/* full-bleed logo image (e.g. EA Sports) */
+.fx .archive-icon.fill img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .fx .archive-main .exp-company {
   margin: 0;
   font-size: clamp(17px, 1.7vw, 20px); /* smaller than the Experience company names */
