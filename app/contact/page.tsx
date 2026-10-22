@@ -19,15 +19,13 @@ export default function ContactPage() {
     <main className="page">
       <Sections page>
         <PageHead title="Let’s talk" lede="Tell me about your project, or just say hello." />
-        <div className="container contact-chip">
-          <NameChip />
-        </div>
         <section className="sec container contact-page">
           <div className="contact-side">
             <p className="avail">
               <span className="dot" aria-hidden="true" />
               {CTA_STATUS}
             </p>
+            <NameChip />
             <Button href={`mailto:${EMAIL}`} iconLeft="mail">{EMAIL}</Button>
             <SocialLinks />
           </div>

@@ -3105,13 +3105,9 @@ ul {
   opacity: 0.7;
 }
 
-/* contact page: chip under the heading */
-.fx .contact-chip {
-  padding-top: 28px;
-}
-
-.fx .contact-chip .name-chip {
-  margin-bottom: 0;
+/* contact page: chip sits above the email button, left-aligned with it */
+.fx .contact-side .name-chip {
+  margin: 0;
 }
 
 /* big static name under the footer (components/FooterName.tsx) */
