@@ -22,12 +22,12 @@ export default function ContactPage() {
         <section className="sec container contact-page">
           <div className="contact-side">
             <NameChip showName={false} showDot={false} />
+            <Button href={`mailto:${EMAIL}`} iconLeft="mail">{EMAIL}</Button>
+            <SocialLinks />
             <p className="avail">
               <span className="dot" aria-hidden="true" />
               {CTA_STATUS}
             </p>
-            <Button href={`mailto:${EMAIL}`} iconLeft="mail">{EMAIL}</Button>
-            <SocialLinks />
           </div>
           <ContactForm />
         </section>
