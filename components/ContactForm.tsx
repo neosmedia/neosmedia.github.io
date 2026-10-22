@@ -7,6 +7,7 @@ type Status = "idle" | "sending" | "sent" | "error";
 
 export default function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
+  const [problem, setProblem] = useState(""); // Formspree's own message when it rejects a field
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -25,6 +26,7 @@ export default function ContactForm() {
     }
 
     setStatus("sending");
+    setProblem("");
     try {
       const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
         method: "POST",
@@ -35,6 +37,14 @@ export default function ContactForm() {
         setStatus("sent");
         form.reset();
       } else {
+        // Formspree explains what is wrong, e.g. {"errors":[{"field":"email","message":"should be an email"}]}
+        try {
+          const body = await res.json();
+          const first = Array.isArray(body?.errors) ? body.errors[0] : null;
+          if (first?.message) setProblem(first.field ? `${first.field}: ${first.message}` : String(first.message));
+        } catch {
+          /* no JSON body */
+        }
         setStatus("error");
       }
     } catch {
@@ -71,7 +81,8 @@ export default function ContactForm() {
 
       <p className="form-status" role="status" aria-live="polite">
         {status === "sent" && "Thanks! Your note is on its way."}
-        {status === "error" && `Something went wrong. Please email ${EMAIL} directly.`}
+        {status === "error" &&
+          `${problem ? `${problem}. ` : "Something went wrong. "}You can also email ${EMAIL} directly.`}
       </p>
     </form>
   );

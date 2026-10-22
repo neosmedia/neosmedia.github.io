@@ -77,7 +77,7 @@ Rules:
 ## Motion and shaders
 - Letters: Verlet soft body, snap-back is slow and eased (low `HOME_K`, high damping). See `lib/softbody.ts`.
 - Colour shader fades **in only while dragging**, back to ink when idle (`SHADER_RISE_S 3.5`, `FALL_S 2.5`).
-- Two variants alternate per visit: rainbow, and glossy blue bubble. `?shader=bubble|rainbow` forces one.
+- Two variants, picked at random on every page load: rainbow, and glossy blue bubble. `?shader=bubble|rainbow` forces one.
 - Shader also fills the word "good" (`ShaderText`). Pause off-screen, 30fps.
 - About icon tiles use plain solid colours, not the shader.
 - Reduced motion: no continuous shader animation.

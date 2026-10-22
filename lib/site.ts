@@ -30,8 +30,11 @@ export const LINKEDIN_URL = "https://www.linkedin.com/in/tylerlange/";
 export const LAUNCHED = process.env.NEXT_PUBLIC_LAUNCHED !== "false";
 
 /** Formspree form ID (see .env.example). Empty = form falls back to mailto. */
-// TODO: create a Formspree form and set NEXT_PUBLIC_FORMSPREE_ID, otherwise the contact form uses mailto.
-export const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID ?? "";
+/** Formspree form that delivers the contact form to tylerlangebc@gmail.com (a public ID, safe in the page).
+ *  Override with NEXT_PUBLIC_FORMSPREE_ID; set it to "off" to fall back to the visitor's mail app. */
+const FORMSPREE_DEFAULT = "xnpparbe";
+export const FORMSPREE_ID =
+  process.env.NEXT_PUBLIC_FORMSPREE_ID === "off" ? "" : process.env.NEXT_PUBLIC_FORMSPREE_ID || FORMSPREE_DEFAULT;
 
 
 // Footer "Design Stack": names here, icons looked up by name in lib/toolbox.ts.

@@ -205,26 +205,18 @@ export type ShaderVariant = "rainbow" | "bubble";
 let cachedVariant: ShaderVariant | null = null;
 
 /**
- * Which shader this visit gets. Visits alternate: 1st rainbow, 2nd bubble, 3rd rainbow...
- * A visit = a browser session. Add ?shader=bubble or ?shader=rainbow to the URL to force one.
+ * Which shader this page load gets: picked at random (50 / 50) every time the page loads.
+ * Add ?shader=bubble or ?shader=rainbow to the URL to force one.
  */
 export function getShaderVariant(): ShaderVariant {
   if (cachedVariant) return cachedVariant;
-  let v: ShaderVariant = "rainbow";
   try {
     const forced = new URLSearchParams(window.location.search).get("shader");
     if (forced === "bubble" || forced === "rainbow") return (cachedVariant = forced);
-    let n = parseInt(localStorage.getItem("tl-visits") || "0", 10) || 0;
-    if (!sessionStorage.getItem("tl-visit-counted")) {
-      n += 1;
-      localStorage.setItem("tl-visits", String(n));
-      sessionStorage.setItem("tl-visit-counted", "1");
-    }
-    v = n % 2 === 0 ? "bubble" : "rainbow";
   } catch {
-    /* storage blocked: stay on rainbow */
+    /* no URL access: fall through to random */
   }
-  return (cachedVariant = v);
+  return (cachedVariant = Math.random() < 0.5 ? "rainbow" : "bubble");
 }
 
 export type Rainbow = {

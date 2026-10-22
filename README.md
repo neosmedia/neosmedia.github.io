@@ -37,7 +37,7 @@ Node 20+ (CI uses 22). `next/font` downloads the fonts at build time, so the fir
 | Preview | `/preview/` | Old duplicate of the home page. `noindex`, kept so old links work |
 
 Balloon hero: drag letters (soft-body physics), hover lean, random idle jiggle, slow growth, a colour shader that fades in
-only while dragging (rainbow, or a glossy blue bubble on alternate visits; `?shader=bubble|rainbow` forces one), and an
+only while dragging (rainbow, or a glossy blue bubble, picked at random on each page load; `?shader=bubble|rainbow` forces one), and an
 Info modal that clears space in the middle. It respects `prefers-reduced-motion`.
 
 ---
@@ -106,7 +106,7 @@ Copy `.env.example` to `.env.local` for local work. For the live site, add the s
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `NEXT_PUBLIC_LAUNCHED` | `true` | `false` brings back the coming soon page at `/` and hides inner pages from search |
-| `NEXT_PUBLIC_FORMSPREE_ID` | *(empty)* | Contact form endpoint. Empty = the form opens the visitor's email app |
+| `NEXT_PUBLIC_FORMSPREE_ID` | `xnpparbe` (built in) | Contact form endpoint (Formspree). `off` = the form opens the visitor's email app |
 
 `NEXT_PUBLIC_*` values are baked in at build time: change a variable, then re-run the deploy workflow.
 If a repository variable named `NEXT_PUBLIC_LAUNCHED` is set to `false`, the live site stays on the coming soon page.
@@ -127,7 +127,7 @@ If a repository variable named `NEXT_PUBLIC_LAUNCHED` is set to `false`, the liv
 ## Launch checklist
 
 - [ ] Replace every `TODO` in `lib/site.ts` (case-study details and AI notes, About copy)
-- [ ] Create a Formspree form delivering to tylerlangebc@gmail.com, set `NEXT_PUBLIC_FORMSPREE_ID`, send a test message
+- [ ] Send a test message from /contact/ and confirm it arrives (Formspree form `xnpparbe`; confirm the first-time verification email)
 - [ ] `npm run lint` and `npm run build` pass
 - [ ] Check every page on a real phone, in dark mode, and at a narrow desktop width
 - [ ] `https://tylerlange.ca` loads with a valid certificate (and `www` redirects to it)
