@@ -2,7 +2,7 @@ import { pageMeta } from "@/lib/seo";
 import { Sections, PageHead } from "@/components/HomeSections";
 import ContactForm from "@/components/ContactForm";
 import SiteFooter from "@/components/SiteFooter";
-import { CTA_STATUS, DRIBBBLE_URL, EMAIL, LINKEDIN_URL } from "@/lib/site";
+import { CTA_STATUS, DRIBBBLE_URL, EMAIL, LINKEDIN_URL, X_URL } from "@/lib/site";
 
 export const metadata = pageMeta({
   title: "Contact",
@@ -23,10 +23,9 @@ export default function ContactPage() {
               {CTA_STATUS}
             </p>
             <a className="btn btn-outline" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+            <a className="btn btn-outline contact-handle" href={X_URL} target="_blank" rel="noreferrer">@tylerlangebc <span aria-hidden="true">↗</span></a>
             <a className="btn btn-outline" href={LINKEDIN_URL} target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
             <a className="btn btn-outline" href={DRIBBBLE_URL} target="_blank" rel="noreferrer">Dribbble <span aria-hidden="true">↗</span></a>
-            {/* TODO: make this a link once the platform is known */}
-            <span className="btn btn-outline contact-handle">@tylerlangebc</span>
           </div>
           <ContactForm />
         </section>

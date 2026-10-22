@@ -3061,13 +3061,7 @@ ul {
   height: auto;
 }
 
-/* contact page: handle button (plain text for now, not a link) */
+/* contact page: X handle button keeps its lowercase text */
 .fx .contact-handle {
   text-transform: lowercase;
-  cursor: default;
-}
-
-.fx .contact-handle:hover {
-  background: transparent;
-  color: inherit;
 }

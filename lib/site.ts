@@ -54,6 +54,7 @@ export const ABOUT_PILLARS = [
   { name: "Ship", blurb: "Launched, measured and kept improving." },
 ];
 
+export const X_URL = "https://x.com/tylerlangebc";
 export const DRIBBBLE_URL = "https://dribbble.com/tylerlange";
 
 /** From the old site (northvanweb.com/about), lightly trimmed. */
