@@ -3064,6 +3064,7 @@ ul {
 /* contact page: handle under the buttons */
 .fx .contact-handle {
   margin: 8px 0 0;
+  text-transform: lowercase;
   color: var(--muted);
   font-size: 13px;
 }
