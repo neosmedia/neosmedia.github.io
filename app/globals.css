@@ -3293,8 +3293,16 @@ ul {
   .fx .links a {
     padding: 36px 20px;
   }
+  /* no fixed ratio here: the card has overflow:hidden, so a 16:9 box would clip its own text on
+     narrow screens. It grows to fit the text and is never shorter than 16:9 (or 240px). */
   .fx .links a.has-cover {
-    aspect-ratio: 16 / 9;
-    min-height: 220px;
+    aspect-ratio: auto;
+    height: auto;
+    min-height: max(240px, 56.25vw);
+  }
+  .fx .links-sub,
+  .fx .links-url {
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
 }
