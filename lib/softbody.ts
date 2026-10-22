@@ -36,6 +36,8 @@ export type Letter = {
   phase: number;
   /** current hover nudge applied to the whole letter (px) */
   hov: { x: number; y: number };
+  /** popped (press-and-hold): hidden, no collisions, can't be grabbed, until it grows back */
+  gone: boolean;
   /** start time (world.time) of this letter's current random jiggle, or -1 */
   jigStart: number;
   /** drag stretch: current length factor along (sdx, sdy), 1 = relaxed */
@@ -289,6 +291,7 @@ export function buildWorld(W: number, H: number, opts: LayoutOpts = {}): World {
         homeCy: 0,
         phase: rand() * 6.28,
         hov: { x: 0, y: 0 },
+        gone: false,
         jigStart: -1,
         stretch: 1,
         sdx: 0,
@@ -555,7 +558,9 @@ function collide(world: World) {
   }
 
   for (let i = 0; i < n; i++) {
+    if (ls[i].gone) continue;
     for (let j = i + 1; j < n; j++) {
+      if (ls[j].gone) continue;
       if (b[i * 4 + 2] < b[j * 4] || b[j * 4 + 2] < b[i * 4]) continue;
       if (b[i * 4 + 3] < b[j * 4 + 1] || b[j * 4 + 3] < b[i * 4 + 1]) continue;
       for (const a of ls[i].particles) {
@@ -843,6 +848,7 @@ export function hitTest(world: World, x: number, y: number): Grab | null {
   let best: Grab | null = null;
   let bestD = Infinity;
   for (const L of world.letters) {
+    if (L.gone) continue;
     L.particles.forEach((p, i) => {
       const d = Math.hypot(p.x - x, p.y - y);
       if (d < p.r + 6 && d < bestD) {

@@ -113,6 +113,57 @@ function trace(ctx: CanvasRenderingContext2D, L: Letter, sc: number, step: numbe
   }
 }
 
+/* ----- press and hold a letter for POP_MS and it pops like a balloon ----- */
+const POP_MS = 4000; // how long to hold
+const POP_SWELL = 0.16; // how much the letter inflates by the time it pops
+const REGROW_MS = 2800; // it comes back (growing in again) this long after popping
+
+type Burst = { x: number; y: number; vx: number; vy: number; r: number; born: number; life: number };
+type Ring = { x: number; y: number; r0: number; r1: number; born: number; life: number };
+type Fx = {
+  swell: number[]; // per letter size multiplier while being held
+  shake: [number, number][]; // per letter tremble offset (px)
+  born: (number | null)[]; // draw-time at which a regrown letter starts popping in again
+  regrowAt: (number | null)[]; // real time at which a popped letter comes back
+  bursts: Burst[];
+  rings: Ring[];
+};
+const newFx = (n: number): Fx => ({
+  swell: Array(n).fill(1),
+  shake: Array.from({ length: n }, () => [0, 0] as [number, number]),
+  born: Array(n).fill(null),
+  regrowAt: Array(n).fill(null),
+  bursts: [],
+  rings: [],
+});
+
+/** The burst when a letter pops: ink droplets flying out and a quick expanding ring. */
+function drawBursts(ctx: CanvasRenderingContext2D, fx: Fx, nowMs: number, dark: boolean) {
+  const ink = dark ? FILL.dark : FILL.light;
+  fx.rings = fx.rings.filter((r) => nowMs - r.born < r.life);
+  fx.bursts = fx.bursts.filter((b) => nowMs - b.born < b.life);
+  ctx.save();
+  for (const r of fx.rings) {
+    const u = (nowMs - r.born) / r.life;
+    ctx.globalAlpha = 0.55 * (1 - u);
+    ctx.lineWidth = 3 * (1 - u) + 0.5;
+    ctx.strokeStyle = ink;
+    ctx.beginPath();
+    ctx.arc(r.x, r.y, r.r0 + (r.r1 - r.r0) * (1 - (1 - u) ** 3), 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.fillStyle = ink;
+  for (const b of fx.bursts) {
+    const t = (nowMs - b.born) / 1000;
+    const u = (nowMs - b.born) / b.life;
+    ctx.globalAlpha = 1 - u * u;
+    ctx.beginPath();
+    ctx.arc(b.x + b.vx * t, b.y + b.vy * t + 700 * t * t, b.r * (1 - 0.6 * u), 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
 /** Draw every letter: a white halo first, then the black body, so each letter has its own border. */
 function draw(
   ctx: CanvasRenderingContext2D,
@@ -120,16 +171,25 @@ function draw(
   now: number,
   dark: boolean,
   borderPx = BORDER_PX,
-  maskOnly = false // body shapes only, opaque black: the stencil for the rainbow shader
+  maskOnly = false, // body shapes only, opaque black: the stencil for the rainbow shader
+  fx?: Fx
 ) {
   const mode = dark ? "dark" : "light";
   const step = Math.max(2, world.baseR * 0.11);
 
   for (const L of world.letters) {
-    // staggered pop-in, scaled about the letter's centroid
-    const t = Math.min(1, Math.max(0, (now - 150 - L.index * 70) / 800));
+    if (L.gone) continue; // popped, waiting to grow back
+    // staggered pop-in, scaled about the letter's centroid (a regrown letter pops in again on its own)
+    const bornAt = fx?.born[L.index];
+    const t =
+      bornAt != null
+        ? Math.min(1, Math.max(0, (now - bornAt) / 800))
+        : Math.min(1, Math.max(0, (now - 150 - L.index * 70) / 800));
     if (t <= 0) continue;
-    const sc = easeOutBack(t);
+    const sc = easeOutBack(t) * (fx?.swell[L.index] ?? 1);
+    const [sx, sy] = fx?.shake[L.index] ?? [0, 0];
+    ctx.save();
+    if (sx || sy) ctx.translate(sx, sy);
 
     if (!maskOnly) {
       ctx.beginPath();
@@ -142,6 +202,7 @@ function draw(
     trace(ctx, L, sc, step, 0);
     ctx.fillStyle = maskOnly ? "#000" : FILL[mode];
     ctx.fill();
+    ctx.restore();
   }
 }
 
@@ -183,7 +244,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
     const maskCanvas = document.createElement("canvas"); // stencil of the letter bodies
     const mctx = maskCanvas.getContext("2d");
 
-    let world: World;
+    let world!: World;
     let dpr = 1;
     let raf = 0;
     let last = performance.now();
@@ -230,6 +291,10 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
     setup();
 
 
+    // press-and-hold pop state (see POP_MS)
+    const fx = newFx(world.letters.length);
+    const hold = { idx: -1, t0: 0, pointerId: -1 };
+
     let rainbowOn = false;
     let forcePaint = true; // paint at least once, and again after a resize
     let lastGrowth = -1;
@@ -245,7 +310,8 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
     const paint = (now: number) => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, world.W, world.H);
-      draw(ctx, world, now - start, isDark());
+      draw(ctx, world, now - start, isDark(), BORDER_PX, false, fx);
+      drawBursts(ctx, fx, now, isDark());
       if (!mctx) return;
       const since = now - growStart;
       const mixAmt = reduceMotion ? 0 : smooth(shaderMix);
@@ -265,7 +331,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
       }
       mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       mctx.clearRect(0, 0, world.W, world.H);
-      draw(mctx, world, now - start, isDark(), 0, true);
+      draw(mctx, world, now - start, isDark(), 0, true, fx);
       shader.render(maskCanvas, mixAmt, since / 1000, 1.5, Math.max(8, world.baseR * 1.1));
     };
 
@@ -279,6 +345,44 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
           // letters shrink as the Info clearing opens, so they tuck neatly around it
           const shrink = world.W < 700 ? CLEAR_SHRINK_MOBILE : CLEAR_SHRINK;
           setGrowth(world, (1 + GROW_BY * gt) * (1 - shrink * world.clearT));
+        }
+        // ----- press and hold: swell + tremble, then pop -----
+        {
+          const held = world.grab ? world.grab.letter : -1;
+          if (held >= 0 && hold.idx === held) {
+            const p = Math.min(1, (now - hold.t0) / POP_MS);
+            fx.swell[held] = 1 + POP_SWELL * p * p;
+            const amp = p > 0.5 ? ((p - 0.5) / 0.5) ** 2 * world.baseR * 0.14 : 0;
+            fx.shake[held] = [(Math.random() - 0.5) * 2 * amp, (Math.random() - 0.5) * 2 * amp];
+            world.dirty = true;
+            if (p >= 1) popLetter(held, now);
+          }
+          // letters that are not being held relax back to normal size
+          for (let i = 0; i < fx.swell.length; i++) {
+            if (i === held && hold.idx === held) continue;
+            if (fx.swell[i] !== 1 || fx.shake[i][0] || fx.shake[i][1]) {
+              fx.swell[i] += (1 - fx.swell[i]) * 0.25;
+              fx.shake[i] = [0, 0];
+              if (Math.abs(fx.swell[i] - 1) < 0.002) fx.swell[i] = 1;
+              world.dirty = true;
+            }
+            // popped letters grow back after a few seconds
+            const at = fx.regrowAt[i];
+            if (at != null && now >= at) {
+              const L = world.letters[i];
+              for (const q of L.particles) {
+                q.x = q.hx;
+                q.y = q.hy;
+                q.px = q.hx;
+                q.py = q.hy;
+              }
+              L.gone = false;
+              fx.regrowAt[i] = null;
+              fx.born[i] = now - start;
+              world.dirty = true;
+            }
+          }
+          if (fx.bursts.length || fx.rings.length || fx.born.some((b) => b != null && now - start - b < 900)) world.dirty = true;
         }
         stepWorld(world, dt);
         // turn the shader up slowly while a letter is held; fade back when let go
@@ -319,6 +423,54 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
         : null;
     io?.observe(stage);
 
+    /** Pop a letter: it vanishes in a burst of ink droplets and a ring, then grows back later. */
+    const popLetter = (idx: number, now: number) => {
+      const L = world.letters[idx];
+      let cx = 0;
+      let cy = 0;
+      for (const q of L.particles) {
+        cx += q.x;
+        cy += q.y;
+      }
+      cx /= L.particles.length;
+      cy /= L.particles.length;
+      if (!reduceMotion) {
+        let reach = 0;
+        for (const q of L.particles) reach = Math.max(reach, Math.hypot(q.x - cx, q.y - cy));
+        fx.rings.push({ x: cx, y: cy, r0: reach * 0.6, r1: reach * 1.6 + world.baseR, born: now, life: 520 });
+        for (let i = 0; i < 34; i++) {
+          const q = L.particles[Math.floor(Math.random() * L.particles.length)];
+          const ang = Math.atan2(q.y - cy, q.x - cx) + (Math.random() - 0.5) * 1.1;
+          const sp = 160 + Math.random() * 420;
+          fx.bursts.push({
+            x: q.x,
+            y: q.y,
+            vx: Math.cos(ang) * sp,
+            vy: Math.sin(ang) * sp - 120,
+            r: world.baseR * (0.14 + Math.random() * 0.32),
+            born: now,
+            life: 650 + Math.random() * 450,
+          });
+        }
+      }
+      L.gone = true;
+      fx.swell[idx] = 1;
+      fx.shake[idx] = [0, 0];
+      fx.born[idx] = null;
+      fx.regrowAt[idx] = now + REGROW_MS;
+      world.grab = null;
+      hold.idx = -1;
+      stage.style.cursor = "default";
+      if (hold.pointerId >= 0 && stage.hasPointerCapture(hold.pointerId)) stage.releasePointerCapture(hold.pointerId);
+      try {
+        navigator.vibrate?.(18);
+      } catch {
+        /* not supported */
+      }
+      world.dirty = true;
+      forcePaint = true;
+    };
+
     /* ----- pointer: drag a tube by any point ----- */
     const local = (e: PointerEvent) => {
       const b = stage.getBoundingClientRect();
@@ -331,6 +483,9 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
       const hit = hitTest(world, p.x, p.y);
       if (!hit) return;
       world.grab = hit;
+      hold.idx = hit.letter; // start the press-and-hold timer
+      hold.t0 = performance.now();
+      hold.pointerId = e.pointerId;
       onGrabRef.current?.();
       world.hoverLetter = -1;
       stage.setPointerCapture(e.pointerId);
@@ -349,6 +504,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
     const onUp = (e: PointerEvent) => {
       if (!world.grab) return;
       world.grab = null;
+      hold.idx = -1;
       if (stage.hasPointerCapture(e.pointerId)) stage.releasePointerCapture(e.pointerId);
       stage.style.cursor = "default";
     };
