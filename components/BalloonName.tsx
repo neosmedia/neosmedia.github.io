@@ -18,7 +18,6 @@ import { useEffect, useRef } from "react";
 import {
   buildWorld,
   hitTest,
-  jiggleAround,
   setGrowth,
   stepWorld,
   type Letter,
@@ -211,15 +210,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
       world.calm = reduceMotion;
       // keep the letters clear of the whole nav: photo, links and icon buttons.
       // Each element becomes a row of keep-out circles (wide links need several).
-      if (hero) {
-        // the small avatar on top of the hero: letters are pushed around it
-        const b = stage.getBoundingClientRect();
-        const av = document.querySelector(".hero-avatar");
-        if (av) {
-          const a = av.getBoundingClientRect();
-          if (a.width) world.keepOut.push({ cx: a.left + a.width / 2 - b.left, cy: a.top + a.height / 2 - b.top, r: a.width / 2 + 14 });
-        }
-      } else {
+      if (!hero) {
         const b = stage.getBoundingClientRect();
         document.querySelectorAll(".nav .nav-avatar, .nav-links a, .nav-actions > *").forEach((el) => {
           const a = el.getBoundingClientRect();
@@ -238,16 +229,6 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
     };
     setup();
 
-    // the hero avatar opening / closing makes the nearby letters jiggle
-    const onAvatarPulse = () => {
-      if (!hero) return;
-      const av = document.querySelector(".hero-avatar");
-      if (!av) return;
-      const b = stage.getBoundingClientRect();
-      const a = av.getBoundingClientRect();
-      jiggleAround(world, a.left + a.width / 2 - b.left, a.top + a.height / 2 - b.top);
-    };
-    window.addEventListener("hero-avatar-pulse", onAvatarPulse);
 
     let rainbowOn = false;
     let forcePaint = true; // paint at least once, and again after a resize
@@ -409,7 +390,6 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
       (rb as Rainbow | null)?.destroy();
       io?.disconnect();
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("hero-avatar-pulse", onAvatarPulse);
       stage.removeEventListener("pointerdown", onDown);
       stage.removeEventListener("pointermove", onMove);
       stage.removeEventListener("pointerup", onUp);

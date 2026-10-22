@@ -7,10 +7,8 @@ const SHOW_AFTER_MS = 900; // let the balloons pop in first
 const SHOW_FOR_MS = 2000; // the title fades away again after this long
 
 /**
- * Small photo that sits on top of the hero balloons. The balloons treat it as a keep-out circle
- * (see BalloonName), so they get pushed aside.
+ * Small photo that sits on top of the hero balloons (it doesn't interact with them).
  * The job title shows briefly on load, then fades; hover / tap / focus shows it again.
- * Every open and close fires "hero-avatar-pulse", which makes the nearby letters jiggle.
  */
 export default function HeroAvatar() {
   const [open, setOpen] = useState(false);
@@ -21,7 +19,6 @@ export default function HeroAvatar() {
     if (openRef.current === next) return;
     openRef.current = next;
     setOpen(next);
-    window.dispatchEvent(new Event("hero-avatar-pulse"));
   }, []);
 
   // default: appear once, then fade after 2s
