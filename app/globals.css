@@ -3061,7 +3061,41 @@ ul {
   height: auto;
 }
 
-/* contact page: X handle button keeps its lowercase text */
-.fx .contact-handle {
-  text-transform: lowercase;
+/* contact page: email pill, then round social icon buttons */
+.fx .contact-side {
+  gap: 20px;
+}
+
+.fx .social-row {
+  display: flex;
+  gap: 10px;
+}
+
+.fx .social-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--ink);
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.fx .social-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.fx .social-btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .fx .social-btn:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
 }
