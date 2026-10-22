@@ -3325,3 +3325,8 @@ ul {
     letter-spacing: 0.04em;
   }
 }
+
+/* a bit more room under the design stack icons, before the copyright line */
+.footer-top > div:last-child {
+  padding-bottom: 24px;
+}
