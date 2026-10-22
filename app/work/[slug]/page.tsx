@@ -79,7 +79,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
         <section className="container project-body">
           {project.gallery && !project.galleryBelow ? (
-            <div className={`project-bento bento-n${project.gallery.length}${project.bentoLayout ? ` bento-${project.bentoLayout}` : ""}`}>
+            <div
+              className={`project-bento bento-n${project.gallery.length}${project.bentoLayout ? ` bento-${project.bentoLayout}` : ""}${project.bentoTopHeight ? " bento-top-h" : ""}`}
+              style={project.bentoTopHeight ? ({ "--bento-top-h": `${project.bentoTopHeight}px` } as React.CSSProperties) : undefined}
+            >
               {project.gallery.map((src, i) => (
                 <div key={src} className={`bento-tile bento-${i + 1}`}>
                   {src.endsWith(".mp4") ? (
@@ -103,7 +106,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           )}
 
           {project.gallery && project.galleryBelow && (
-            <div className={`project-bento bento-n${project.gallery.length}${project.bentoLayout ? ` bento-${project.bentoLayout}` : ""}`}>
+            <div
+              className={`project-bento bento-n${project.gallery.length}${project.bentoLayout ? ` bento-${project.bentoLayout}` : ""}${project.bentoTopHeight ? " bento-top-h" : ""}`}
+              style={project.bentoTopHeight ? ({ "--bento-top-h": `${project.bentoTopHeight}px` } as React.CSSProperties) : undefined}
+            >
               {project.gallery.map((src, i) => (
                 <div key={src} className={`bento-tile bento-${i + 1}`}>
                   {src.endsWith(".mp4") ? (
