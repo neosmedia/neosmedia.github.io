@@ -138,10 +138,13 @@ const newFx = (n: number): Fx => ({
 });
 
 /** The burst when a letter pops: ink droplets flying out and a quick expanding ring. */
-function drawBursts(ctx: CanvasRenderingContext2D, fx: Fx, nowMs: number, dark: boolean) {
-  const ink = dark ? FILL.dark : FILL.light;
-  fx.rings = fx.rings.filter((r) => nowMs - r.born < r.life);
-  fx.bursts = fx.bursts.filter((b) => nowMs - b.born < b.life);
+function drawBursts(ctx: CanvasRenderingContext2D, fx: Fx, nowMs: number, dark: boolean, maskOnly = false) {
+  const ink = maskOnly ? "#000" : dark ? FILL.dark : FILL.light; // the rainbow shader stencil is plain black
+  if (!maskOnly) {
+    // (the plain pass runs first and clears out the finished ones)
+    fx.rings = fx.rings.filter((r) => nowMs - r.born < r.life);
+    fx.bursts = fx.bursts.filter((b) => nowMs - b.born < b.life);
+  }
   ctx.save();
   for (const r of fx.rings) {
     const u = (nowMs - r.born) / r.life;
@@ -332,6 +335,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
       mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       mctx.clearRect(0, 0, world.W, world.H);
       draw(mctx, world, now - start, isDark(), 0, true, fx);
+      drawBursts(mctx, fx, now, isDark(), true); // the popping droplets get the rainbow too
       shader.render(maskCanvas, mixAmt, since / 1000, 1.5, Math.max(8, world.baseR * 1.1));
     };
 
@@ -387,7 +391,8 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
         stepWorld(world, dt);
         // turn the shader up slowly while a letter is held; fade back when let go
         const dtc = Math.min(dt, 0.05);
-        shaderMix = world.grab
+        const popping = fx.bursts.length > 0 || fx.rings.length > 0; // keep the shader on while the pop plays out
+        shaderMix = world.grab || popping
           ? Math.min(1, shaderMix + dtc / SHADER_RISE_S)
           : Math.max(0, shaderMix - dtc / SHADER_FALL_S);
         // Repaint only when something visibly changed. A resting scene costs no drawing.
