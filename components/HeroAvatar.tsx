@@ -48,10 +48,13 @@ export default function HeroAvatar() {
       onFocus={() => hold(true)}
       onBlur={() => hold(false)}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element -- static export, no image optimizer */}
-      <img src="/ty-color.jpg" alt="Tyler Lange" width={48} height={48} decoding="async" />
+      <span className="hero-avatar-photo">
+        {/* eslint-disable-next-line @next/next/no-img-element -- static export, no image optimizer */}
+        <img src="/ty-color.jpg" alt="Tyler Lange" width={40} height={40} decoding="async" />
+      </span>
       <span id="hero-avatar-tip" role="tooltip" className="hero-avatar-tip">
-        {ROLE_TITLE}
+        <span className="hero-avatar-name">Tyler Lange</span>
+        <span className="hero-avatar-title">{ROLE_TITLE}</span>
       </span>
     </button>
   );
