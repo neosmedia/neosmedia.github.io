@@ -2082,7 +2082,7 @@ ul {
 }
 
 .fx .archive-row {
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1.4fr) auto; /* wider name column, so longer names stay on one line */
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.5fr) auto;
   gap: 8px 24px;
 }
 
@@ -2146,7 +2146,7 @@ ul {
 
 .fx .archive-main .exp-company {
   margin: 0;
-  font-size: clamp(15px, 1.4vw, 17px); /* smaller than the Experience company names */
+  font-size: clamp(14px, 1.25vw, 16px); /* smaller than the Experience company names */
   font-weight: 400;
 }
 
