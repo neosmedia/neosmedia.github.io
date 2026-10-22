@@ -25,7 +25,7 @@ export default function ContactPage() {
               <span className="dot" aria-hidden="true" />
               {CTA_STATUS}
             </p>
-            <NameChip />
+            <NameChip showName={false} />
             <Button href={`mailto:${EMAIL}`} iconLeft="mail">{EMAIL}</Button>
             <SocialLinks />
           </div>
