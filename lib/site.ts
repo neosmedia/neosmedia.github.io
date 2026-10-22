@@ -273,7 +273,7 @@ export const ARCHIVE: { name: string; year?: string; blurb: string; url?: string
   { name: "GE Vernova", color: "#005e60", initials: "GE", year: "2016 — 2017", blurb: "Industrial software that turns machine data into things operators can act on.", url: "https://www.gevernova.com/" },
   { name: "EA Sports FC", color: "#111111", initials: "EA", icon: "/archive/ea-sports.webp", iconFill: true, year: "2013 — 2015", blurb: "Menus and interfaces for the football franchise millions of players love.", url: "https://www.ea.com/games/ea-sports-fc" },
   { name: "AutoTrader", color: "#d5001c", initials: "AT", year: "2012", blurb: "Making car shopping simpler, from the first search to the right listing.", url: "https://autotrader.ca" },
-  { name: "Modo Car Share", color: "#ffffff", fg: "#00a14b", initials: "Mo", year: "2011", blurb: "Helping a Vancouver car-share co-op make finding and booking a car feel easy.", url: "https://www.modo.coop/" },
+  { name: "Modo Car Share", color: "#ffffff", fg: "#00a14b", initials: "Mo", icon: "/archive/modo.svg", iconFill: true, year: "2011", blurb: "Helping a Vancouver car-share co-op make finding and booking a car feel easy.", url: "https://www.modo.coop/" },
   { name: "SAP Analytics Cloud", color: "#0070f2", initials: "SAP", year: "2010", blurb: "Analytics and planning software that helps teams turn data into decisions.", url: "https://www.sap.com/products/data-cloud/cloud-analytics.html" },
 ];
 
