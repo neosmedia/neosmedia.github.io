@@ -2883,7 +2883,7 @@ ul {
   font-size: 20px;
 }
 
-/* name chip dot: green (same as the "Booking new projects" dot) with a soft pulse */
+/* name chip dot: green (same as the "Booking new projects" dot) */
 .fx .name-chip-dot {
   background: rgba(46, 160, 90, 0.18);
 }
