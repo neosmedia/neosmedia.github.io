@@ -17,7 +17,13 @@
 - Contact page: removed the Book a call button.
 - Work, About, Contact pages and 9 case studies (bento image grids, per-project copy), archive list, T logo in the nav, About portrait + name chip.
 
-## Unreleased (launch prep, after v0.4.0)
+## v0.5.0
+- Work grid is 2 per row (1 on phones), 16:9 covers, 8 projects (secureWISE hidden for now); Finning bento with banner, laptop and phones.
+- Hero avatar that opens into a speech bubble (job title), dark/light aware; big static TYLER LANGE (10% opacity) under the footer; footer page links, design-stack icons, contact icons.
+- Press and hold a balloon letter for 4s to pop it (with the shader on the droplets); the shader (rainbow or bubble) is now picked at random on every page load.
+- Contact page redesigned (Vancouver chip with live GMT offset, email pill, X / LinkedIn / Dribbble icons); contact form delivers through Formspree (`xnpparbe`).
+- About: bio, philosophy, specialties, "Dive into my work" cards; archive list with company icon tiles and years; 404 reads "Error 404: Poof!".
+- SEO, mobile/touch and hover fixes (see below).
 - SEO pass: `lang="en-CA"`, keyword titles for Work / About / Contact, unique case-study titles and descriptions (from each write-up), Twitter handle, Person schema (job title, current employer, X + Dribbble in `sameAs`, portrait), ProfilePage / CollectionPage+ItemList / ContactPage JSON-LD.
 - Archive list: AutoTrader and Modo added, placeholder rows removed, ordered newest first, relaxed copy.
 - Case studies: Aurora, Cimetrix and Finning written; fallback copy no longer Lorem ipsum.
