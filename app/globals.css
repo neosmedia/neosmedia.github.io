@@ -3265,3 +3265,17 @@ ul {
     display: none; /* the arrow only makes sense beside the card */
   }
 }
+
+/* phones: work cards go one per row (tablets and up keep two) */
+@media (max-width: 600px) {
+  .fx .links {
+    grid-template-columns: 1fr;
+  }
+  .fx .links a {
+    padding: 36px 20px;
+  }
+  .fx .links a.has-cover {
+    aspect-ratio: 16 / 9;
+    min-height: 220px;
+  }
+}
