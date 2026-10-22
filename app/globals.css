@@ -2985,17 +2985,10 @@ ul {
   pointer-events: none;
 }
 
-.hero-avatar:focus .hero-avatar-tip,
-.hero-avatar:focus-visible .hero-avatar-tip {
+/* opened by HeroAvatar.tsx: briefly on load, then on hover / focus / tap */
+.hero-avatar.is-open .hero-avatar-tip {
   opacity: 1;
   transform: translate(0, -50%);
-}
-
-@media (hover: hover) {
-  .hero-avatar:hover .hero-avatar-tip {
-    opacity: 1;
-    transform: translate(0, -50%);
-  }
 }
 
 @media (pointer: coarse) {

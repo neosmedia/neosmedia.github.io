@@ -598,6 +598,38 @@ function triggerJiggle(world: World) {
 }
 
 /**
+ * Jiggle the letters around a point (the hero avatar opening / closing): each letter gets a soft wobble
+ * and a small shove away from (cx, cy), stronger for the nearest ones. Does nothing in calm mode.
+ */
+export function jiggleAround(world: World, cx: number, cy: number) {
+  if (world.calm) return;
+  const reach = Math.max(world.W * 0.55, 320);
+  for (const L of world.letters) {
+    if (world.grab && world.grab.letter === L.index) continue;
+    let mx = 0;
+    let my = 0;
+    for (const p of L.particles) {
+      mx += p.x;
+      my += p.y;
+    }
+    mx /= L.particles.length;
+    my /= L.particles.length;
+    const dx = mx - cx;
+    const dy = my - cy;
+    const d = Math.hypot(dx, dy) || 1;
+    const w = Math.max(0, 1 - d / reach);
+    if (w < 0.12) continue;
+    L.jigStart = world.time + (d / reach) * 0.35; // ripples outward from the avatar
+    const kick = world.baseR * 0.55 * w;
+    for (const p of L.particles) {
+      p.px -= (dx / d) * kick;
+      p.py -= (dy / d) * kick;
+    }
+  }
+  world.dirty = true;
+}
+
+/**
  * Hovering a letter (mouse only) makes it lean a tiny bit toward the cursor;
  * moving away eases it back. The whole letter shifts, so its shape is kept.
  */
