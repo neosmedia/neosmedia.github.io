@@ -89,7 +89,7 @@ Rules:
 - TODO: keyboard alternative for dragging letters.
 
 ## Voice
-First person, short, confident, no fluff. Titles: "Product Designer & UX Engineer", "UX Design Engineer". Booking line: "Booking new projects — Nov ’26".
+First person, short, confident, no fluff. Titles: "Product Designer & UX Engineer", "UX Design Engineer". Booking line: "Booking new projects".
 
 ## Work and case-study pages
 - **Archive list** (`/work/`): same grey tray and white row cards as the Experience list. Row = name (17–20px mono) + optional year, short blurb, pill "Website ↗" button.
