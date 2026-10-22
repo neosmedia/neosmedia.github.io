@@ -2968,7 +2968,7 @@ ul {
   padding: 0;
   border: 4px solid var(--av-border);
   border-radius: 24px 24px 24px 0; /* round, with a pointed bottom-left corner */
-  background: var(--surface, #eee);
+  background: var(--av-border); /* closed: same grey as the border (--surface isn't defined outside .fx, it fell back to light grey and flashed in dark mode) */
   color: var(--av-fg);
   font: inherit;
   text-align: left;
@@ -3044,6 +3044,12 @@ ul {
   font-size: 12px;
   line-height: 1.2;
   opacity: 0.7;
+}
+
+@media (max-width: 700px) {
+  .hero-avatar {
+    bottom: calc(clamp(16px, 4vw, 56px) - 24px); /* 24px lower on phones */
+  }
 }
 
 @media (pointer: coarse) {
