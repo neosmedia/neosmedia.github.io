@@ -1,4 +1,4 @@
-import BalloonName from "./BalloonName";
+import FooterName from "./FooterName";
 import ContactIcons from "./ContactIcons";
 import FooterLinks from "./FooterLinks";
 import { EMAIL, TOOLS } from "@/lib/site";
@@ -47,12 +47,7 @@ export default function SiteFooter() {
         <span>Thoughtfully made in Canada.</span>
       </div>
     </footer>
-    {/* big balloon name under the footer, cut off at about 80% */}
-    <div className="footer-name" aria-hidden="true">
-      <div className="footer-name-inner">
-        <BalloonName mode="hero" />
-      </div>
-    </div>
+    <FooterName />
     </>
   );
 }

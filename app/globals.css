@@ -3114,20 +3114,17 @@ ul {
   margin-bottom: 0;
 }
 
-/* big balloon name under the footer: the stage keeps its full height, only the top 80% shows */
+/* big static name under the footer (components/FooterName.tsx) */
 .footer-name {
-  --name-h: clamp(380px, 42vw, 640px);
-  height: calc(var(--name-h) * 0.8);
+  padding-inline: var(--pad);
   margin-top: 8px;
+  color: var(--ink);
   overflow: hidden;
 }
 
-.footer-name-inner {
-  height: var(--name-h);
-}
-
-@media (max-width: 700px) {
-  .footer-name {
-    --name-h: 108vw;
-  }
+.footer-name svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
 }

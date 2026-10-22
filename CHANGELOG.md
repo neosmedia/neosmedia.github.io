@@ -23,6 +23,6 @@
 - Footer year is now automatic; custom 404 page; `public/.nojekyll`; Aurora image recompressed.
 - README rewritten (pages, adding a project, launch checklist, domain/HTTPS setup); DESIGN.md covers work/case-study pages.
 - Hero: 20px space below, small avatar over the balloons with a job-title tooltip (shows on load, fades, then on hover) (`components/HeroAvatar.tsx`, `ROLE_TITLE` in `lib/site.ts`). Footer: email / phone / LinkedIn icons (`components/ContactIcons.tsx`, shared with the nav).
-- Footer: big balloon name under the footer, cropped at 80% (`.footer-name`). Name chip is now `components/NameChip.tsx` (About + Contact) and shows the live Vancouver GMT offset.
+- Footer: big static one-line TYLER LANGE under the footer, cropped at 80% (`components/FooterName.tsx`, same glyphs as the hero, no animation). Name chip is now `components/NameChip.tsx` (About + Contact) and shows the live Vancouver GMT offset.
 - 404 page: balloon-letter "404" using the hero physics (`buildWorld` accepts custom `letters`; new "4" and "0" glyphs).
 - 404: Contact button removed, "See the work" is the primary button. New `Button` component and pill-button system (primary/outline, sm/md/lg, icon left/right/only), documented in DESIGN.md with a noindex `/styleguide/` specimen page.
