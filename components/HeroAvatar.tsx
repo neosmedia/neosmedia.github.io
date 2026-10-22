@@ -39,6 +39,7 @@ export default function HeroAvatar() {
   };
 
   return (
+    <div className="hero-avatar-wrap">
     <button
       type="button"
       className={`hero-avatar${open ? " is-open" : ""}`}
@@ -57,5 +58,6 @@ export default function HeroAvatar() {
         <span className="hero-avatar-title">{ROLE_TITLE}</span>
       </span>
     </button>
+    </div>
   );
 }

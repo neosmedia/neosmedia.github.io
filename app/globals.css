@@ -2948,9 +2948,19 @@ ul {
 }
 
 /* hero avatar: a 48px circle (4px grey border, pointed bottom-left corner) that opens into ONE grey
-   speech-bubble piece holding the photo + name + job title. It grows to the left, so the photo stays put. */
+   speech-bubble piece holding the photo + name + job title. It grows evenly from its centre (the wrapper is
+   the fixed 48px spot, the button is centred on it), so it opens both left and right. */
 .hero {
   position: relative;
+}
+
+.hero-avatar-wrap {
+  position: absolute;
+  right: clamp(120px, 10vw, 160px); /* far enough in that the open bubble never runs off the screen */
+  bottom: clamp(16px, 4vw, 56px);
+  z-index: 2;
+  width: 48px;
+  height: 48px;
 }
 
 .hero-avatar {
@@ -2958,11 +2968,11 @@ ul {
   --av-fg: #111;
   --av-border: #c9c9c9;
   position: absolute;
-  right: clamp(24px, 6vw, 96px);
-  bottom: clamp(16px, 4vw, 56px);
-  z-index: 2;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%); /* centred on the wrapper, so growing is even on both sides */
   display: flex;
-  flex-direction: row-reverse; /* photo on the right, text grows out to the left */
+  flex-direction: row; /* photo left, name + title right */
   align-items: center;
   height: 48px;
   padding: 0;
@@ -3030,7 +3040,7 @@ ul {
 
 .hero-avatar.is-open .hero-avatar-tip {
   max-width: 280px;
-  padding: 0 10px 0 12px;
+  padding: 0 12px 0 10px;
   opacity: 1;
 }
 
@@ -3047,7 +3057,7 @@ ul {
 }
 
 @media (max-width: 700px) {
-  .hero-avatar {
+  .hero-avatar-wrap {
     bottom: calc(clamp(16px, 4vw, 56px) - 24px); /* 24px lower on phones */
   }
 }
