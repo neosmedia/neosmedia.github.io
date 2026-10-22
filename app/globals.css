@@ -3306,3 +3306,22 @@ ul {
     overflow-wrap: anywhere;
   }
 }
+
+/* phones: copyright and tagline each get their own single line */
+@media (max-width: 700px) {
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .footer-bottom span {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 360px) {
+  .fx .footer-bottom {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+}
