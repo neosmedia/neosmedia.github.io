@@ -2106,13 +2106,23 @@ ul {
   width: 44px;
   height: 44px;
   overflow: hidden;
-  border-radius: 12px;
-  box-shadow: inset 0 0 0 1px var(--line); /* keeps white tiles visible */
+  position: relative;
+  border-radius: 14px; /* rounded like an app icon */
   color: #fff;
   font-family: var(--font-mono), ui-monospace, Menlo, monospace;
   font-size: 15px;
   font-weight: 500;
   letter-spacing: -0.02em;
+}
+
+/* hairline outline drawn on top, so white logos stay visible against the card */
+.fx .archive-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--line);
+  pointer-events: none;
 }
 
 .fx .archive-icon img {
