@@ -3262,7 +3262,6 @@ ul {
     transform: none;
   }
   .fx .principle-note svg {
-    transform: rotate(60deg) scale(0.7);
-    width: 60px;
+    display: none; /* the arrow only makes sense beside the card */
   }
 }
