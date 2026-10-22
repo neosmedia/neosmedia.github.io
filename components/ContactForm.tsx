@@ -45,7 +45,6 @@ export default function ContactForm() {
   return (
     <form className="form" onSubmit={onSubmit}>
       <h3 className="form-title">Or, drop me a note.</h3>
-      <p className="form-to">To: {EMAIL}</p>
 
       <label className="field">
         <span>Your name</span>
