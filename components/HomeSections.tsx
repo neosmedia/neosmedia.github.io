@@ -8,6 +8,7 @@ import ShaderText from "./ShaderText";
 import Link from "next/link";
 import Toolbox from "./Toolbox";
 import NameChip from "./NameChip";
+import Button from "./Button";
 import {
   ABOUT_BIO,
   ABOUT_DETAILS,
@@ -289,9 +290,9 @@ export function LetsBuild() {
         </em>
       </h2>
       <div className="build-actions">
-        <a className="btn btn-solid" href={`mailto:${EMAIL}`}>
+        <Button href={`mailto:${EMAIL}`} iconLeft="mail">
           {EMAIL}
-        </a>
+        </Button>
         <a className="btn btn-outline" href={LINKEDIN_URL} target="_blank" rel="noreferrer">
           LinkedIn <span aria-hidden="true">↗</span>
         </a>
