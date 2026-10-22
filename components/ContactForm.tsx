@@ -63,7 +63,7 @@ export default function ContactForm() {
       {/* honeypot */}
       <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" className="sr-only" aria-hidden="true" />
 
-      <button className="btn btn-solid" type="submit" disabled={status === "sending"}>
+      <button className="btn btn-outline" type="submit" disabled={status === "sending"}>
         {status === "sending" ? "Sending…" : "Send message"} <span aria-hidden="true">↗</span>
       </button>
 

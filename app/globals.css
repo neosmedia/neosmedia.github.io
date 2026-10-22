@@ -2890,7 +2890,6 @@ ul {
 
 .fx .name-chip-dot::after {
   background: #2a8a52;
-  animation: chip-pulse 2s ease-out infinite;
 }
 
 :root[data-theme="dark"] .fx .name-chip-dot {
@@ -2899,23 +2898,10 @@ ul {
 
 :root[data-theme="dark"] .fx .name-chip-dot::after {
   background: #5bd08a;
-  --pulse: rgba(91, 208, 138, 0.55);
 }
 
-.fx .name-chip-dot::after {
-  --pulse: rgba(42, 138, 82, 0.5);
-}
 
-@keyframes chip-pulse {
-  0% { box-shadow: 0 0 0 0 var(--pulse); }
-  70%, 100% { box-shadow: 0 0 0 10px transparent; }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .fx .name-chip-dot::after {
-    animation: none;
-  }
-}
 
 /* ---------- Touch ---------- */
 /* finger-sized targets (44px) on touch screens */
