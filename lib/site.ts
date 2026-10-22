@@ -99,7 +99,7 @@ export type CaseStudy = {
 };
 
 /** Selected work: a simple list of links for now. Replace these placeholders with real URLs. */
-export const WORK_LINKS: { slug: string; title: string; subtitle?: string; url: string; /** shown instead of the URL when set */ label?: string; /** card cover shown at rest (public/work/*); hover reveals the text card */ image?: string; /** case-study copy; falls back to the CASE_STUDY_* placeholders */ study?: CaseStudy; /** images for a bento grid on the case study. 4 images: [wide, tall, short, short]. 3 images: [wide, half, half] */ gallery?: string[]; /** wide hero image for the case study (falls back to `image`) */ cover?: string; /** CSS aspect-ratio for the case study cover (default 16 / 9) */ coverRatio?: string; /** show the cover first and the bento below it */ galleryBelow?: boolean; /** named bento arrangement, see app/globals.css (.bento-split) */ bentoLayout?: "split" }[] = [
+export const WORK_LINKS: { slug: string; title: string; subtitle?: string; url: string; /** shown instead of the URL when set */ label?: string; /** card cover shown at rest (public/work/*); hover reveals the text card */ image?: string; /** case-study copy; falls back to the CASE_STUDY_* placeholders */ study?: CaseStudy; /** images for a bento grid on the case study. 4 images: [wide, tall, short, short]. 3 images: [wide, half, half] */ gallery?: string[]; /** wide hero image for the case study (falls back to `image`) */ cover?: string; /** CSS aspect-ratio for the case study cover (default 16 / 9) */ coverRatio?: string; /** show the cover first and the bento below it */ galleryBelow?: boolean; /** named bento arrangement, see app/globals.css (.bento-split) */ bentoLayout?: "split" | "pair" }[] = [
   {
     slug: "aurora", title: "Aurora", subtitle: "Microchip analysis, AI workflows and Design System", url: "https://pdf.com",
     image: "/work/aurora.webp",
@@ -243,7 +243,7 @@ export const WORK_LINKS: { slug: string; title: string; subtitle?: string; url: 
     },
   },
   {
-    slug: "finning", title: "Finning", subtitle: "24/7 Customer Platform", url: "https://www.finning.com/en_CA/technology/finning-customer-portal.html", label: "finning.com/en/technology/customer-portal", image: "/work/finning.webp",
+    slug: "finning", title: "Finning", subtitle: "24/7 Customer Platform", gallery: ["/work/finning-1.webp", "/work/finning-2.webp"], bentoLayout: "pair", url: "https://www.finning.com/en_CA/technology/finning-customer-portal.html", label: "finning.com/en/technology/customer-portal", image: "/work/finning.webp",
     study: {
       role: "Lead UX Designer",
       year: "2017 — 2019",

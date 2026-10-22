@@ -3054,3 +3054,14 @@ ul {
   border-color: rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
+
+/* "pair" bento (Finning): laptop + phones, column widths from the image ratios so both tiles end up the same height */
+.fx .project-bento.bento-n2.bento-pair {
+  grid-template-columns: 1.81fr 1fr;
+}
+
+@media (max-width: 700px) {
+  .fx .project-bento.bento-n2.bento-pair {
+    grid-template-columns: 1fr;
+  }
+}
