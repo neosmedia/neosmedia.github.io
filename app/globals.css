@@ -2082,7 +2082,7 @@ ul {
 }
 
 .fx .archive-row {
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.5fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 120px; /* name and blurb get equal halves; fixed button column */
   gap: 8px 24px;
 }
 
@@ -2146,7 +2146,7 @@ ul {
 
 .fx .archive-main .exp-company {
   margin: 0;
-  font-size: clamp(14px, 1.25vw, 16px); /* smaller than the Experience company names */
+  font-size: 14px; /* smaller than the Experience company names */
   font-weight: 400;
 }
 
@@ -2159,6 +2159,10 @@ ul {
   margin: 0;
   color: var(--muted);
   font-size: 14px;
+}
+
+.fx .archive-btn {
+  justify-self: end;
 }
 
 .fx .archive-btn[aria-disabled="true"] {
