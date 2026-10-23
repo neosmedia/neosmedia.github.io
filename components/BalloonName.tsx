@@ -14,7 +14,17 @@
  * TODO: keyboard alternative for dragging (letters are pointer-only today).
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
+import {
+  beginGrab,
+  createBalloon,
+  drawBalloon,
+  endGrab,
+  hitBalloon,
+  moveGrab,
+  stepBalloon,
+  type Balloon,
+} from "@/lib/balloon";
 import {
   buildWorld,
   hitTest,
@@ -37,6 +47,12 @@ type Props = {
   onGrab?: () => void;
   /** Spell "404" instead of the name (404 page). Uses the same balloon letters, physics and shader. */
   word?: "404";
+  /** Hero only: add the little drifting info balloon (tied to a string you can pull). */
+  balloon?: boolean;
+  /** Hero only: the info panel. While `clearing` is on, the letters open a hole sized to it. */
+  infoRef?: RefObject<HTMLElement | null>;
+  /** Called when the balloon is clicked or tapped (a press that did not drag). */
+  onBalloonClick?: () => void;
 };
 
 // A slow "inflating" effect: letters swell by GROW_BY over GROW_MS, then hold.
@@ -209,9 +225,20 @@ function draw(
   }
 }
 
-export default function BalloonName({ mode = "fullscreen", clearing = false, onGrab, word }: Props) {
+export default function BalloonName({
+  mode = "fullscreen",
+  clearing = false,
+  onGrab,
+  word,
+  balloon: withBalloon = false,
+  infoRef,
+  onBalloonClick,
+}: Props) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const balloonCanvasRef = useRef<HTMLCanvasElement>(null);
+  const onBalloonClickRef = useRef(onBalloonClick);
+  onBalloonClickRef.current = onBalloonClick;
   const clearingRef = useRef(clearing);
   clearingRef.current = clearing;
   const onGrabRef = useRef(onGrab);
@@ -225,6 +252,12 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
     if (!ctx) return;
 
     const hero = mode === "hero";
+    const bcanvas = hero && withBalloon ? balloonCanvasRef.current : null;
+    const bctx = bcanvas ? bcanvas.getContext("2d") : null;
+    let bal: Balloon | null = null;
+    let balKeep = -1; // index of the balloon's circle in world.keepOut
+    let balKind: "body" | "string" = "body";
+    let balBorn = performance.now();
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
@@ -294,6 +327,15 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
           }
         });
       }
+      // the info balloon: a fresh one for each layout; letters keep out of it
+      if (bcanvas && bctx) {
+        bcanvas.width = Math.round(W * dpr);
+        bcanvas.height = Math.round(H * dpr);
+        bal = createBalloon(W, H);
+        balBorn = performance.now();
+        world.keepOut.push({ cx: bal.cx, cy: bal.cy, r: bal.r * 1.1 });
+        balKeep = world.keepOut.length - 1;
+      }
     };
     setup();
 
@@ -348,6 +390,36 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
       last = now;
       if (visible) {
         world.clearTarget = clearingRef.current ? 1 : 0;
+        // size the hole to the info panel while it is open (kept as-is while it closes)
+        const panel = infoRef?.current;
+        if (hero && panel && clearingRef.current) {
+          world.clear = {
+            cx: world.W / 2,
+            cy: world.H / 2,
+            rx: (panel.offsetWidth / 2) * 1.3 + 16,
+            ry: (panel.offsetHeight / 2) * 1.3 + 16,
+          };
+        }
+        // the balloon drifts, then is drawn on its own canvas above the letters
+        if (bal && bctx && bcanvas) {
+          stepBalloon(bal, dt, {
+            calm: reduceMotion,
+            clear: clearingRef.current || world.clearT > 0.05 ? world.clear : null,
+          });
+          if (balKeep >= 0 && world.keepOut[balKeep]) {
+            world.keepOut[balKeep].cx = bal.cx;
+            world.keepOut[balKeep].cy = bal.cy;
+          }
+          bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          bctx.clearRect(0, 0, world.W, world.H);
+          const age = (now - balBorn - 900) / 800; // fades in after the letters pop in
+          if (age > 0) {
+            bctx.globalAlpha = Math.min(1, age);
+            const dk = isDark();
+            drawBalloon(bctx, bal, dk ? FILL.dark : FILL.light, dk ? BORDER.dark : BORDER.light);
+            bctx.globalAlpha = 1;
+          }
+        }
         if (!world.grab || world.clearT > 0.001) {
           const gt = reduceMotion ? 0 : Math.min(1, (now - growStart) / GROW_MS);
           // letters shrink as the Info clearing opens, so they tuck neatly around it
@@ -489,6 +561,18 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
     const onDown = (e: PointerEvent) => {
       const p = local(e);
       world.pointer = p;
+      // the balloon (and its string) sit above the letters
+      if (bal && !world.grab) {
+        const bh = hitBalloon(bal, p.x, p.y, e.pointerType !== "mouse");
+        if (bh) {
+          beginGrab(bal, bh, p.x, p.y, e.pointerId, performance.now());
+          balKind = bh.kind;
+          world.hoverLetter = -1;
+          stage.setPointerCapture(e.pointerId);
+          stage.style.cursor = CURSOR_GRABBING;
+          return;
+        }
+      }
       const hit = hitTest(world, p.x, p.y);
       if (!hit) return;
       world.grab = hit;
@@ -504,13 +588,30 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
     const onMove = (e: PointerEvent) => {
       const p = local(e);
       world.pointer = p;
+      if (bal?.grab) {
+        moveGrab(bal, p.x, p.y);
+        return;
+      }
       if (!world.grab && e.pointerType === "mouse") {
+        const bh = bal ? hitBalloon(bal, p.x, p.y) : null;
+        if (bh) {
+          world.hoverLetter = -1;
+          stage.style.cursor = bh.kind === "body" ? "pointer" : CURSOR_GRAB;
+          return;
+        }
         const hit = hitTest(world, p.x, p.y);
         world.hoverLetter = hit ? hit.letter : -1;
         stage.style.cursor = hit ? CURSOR_GRAB : "default";
       }
     };
     const onUp = (e: PointerEvent) => {
+      if (bal?.grab) {
+        const clicked = endGrab(bal, performance.now()) && e.type === "pointerup" && balKind === "body";
+        if (stage.hasPointerCapture(e.pointerId)) stage.releasePointerCapture(e.pointerId);
+        stage.style.cursor = "default";
+        if (clicked) onBalloonClickRef.current?.();
+        return;
+      }
       if (!world.grab) return;
       world.grab = null;
       hold.idx = -1;
@@ -519,7 +620,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
     };
     // Touching a letter drags it; touching anywhere else scrolls the page.
     const onTouchStart = (e: TouchEvent) => {
-      if (world.grab) e.preventDefault();
+      if (world.grab || bal?.grab) e.preventDefault();
     };
 
     stage.addEventListener("pointerdown", onDown);
@@ -571,7 +672,8 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
       stage.removeEventListener("pointerleave", onLeave);
       stage.removeEventListener("touchstart", onTouchStart);
     };
-  }, [mode, word]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, word, withBalloon]);
 
   return (
     <div
@@ -580,6 +682,7 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
       aria-hidden="true"
     >
       <canvas ref={canvasRef} />
+      {mode === "hero" && withBalloon && <canvas ref={balloonCanvasRef} className="balloon-layer" />}
     </div>
   );
 }

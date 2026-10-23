@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Hero info balloon: a slow-drifting balloon with an info icon and a pullable string. Click or tap it to open a short "how to play" note; the letters move aside and open a hole for it. Esc or a tap elsewhere closes it.
+
 ## v0.1.0 — coming soon page
 
 - Full-screen coming soon page with interactive "inner tube" balloon letters:

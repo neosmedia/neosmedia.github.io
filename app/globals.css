@@ -3402,3 +3402,78 @@ ul {
     letter-spacing: 0.05em;
   }
 }
+
+/* hero info balloon: its own canvas above the letters (pointer events are handled on the stage) */
+.balloon-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* the info panel: plain text in the hole the letters open in the middle of the hero */
+.hero-info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  width: min(72vw, 360px);
+  transform: translate(-50%, -48%) scale(0.96);
+  opacity: 0;
+  text-align: center;
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+  pointer-events: none;
+  transition: opacity 0.35s ease 0.1s, transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2) 0.1s;
+}
+.hero-info p + p {
+  margin-top: 0.6em;
+}
+.hero-info-title {
+  color: var(--ink);
+  font-size: 16px;
+}
+.hero-info.is-open {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* visually hidden until keyboard-focused */
+.hero-info-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+  padding: 6px 12px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--bg, #fff);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.hero-info-btn:focus-visible {
+  clip-path: none;
+  width: auto;
+  height: auto;
+  overflow: visible;
+}
+
+@media (max-width: 700px) {
+  .hero-info {
+    width: min(64vw, 280px);
+    font-size: 13px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-info {
+    transition: opacity 0.2s ease;
+  }
+}
