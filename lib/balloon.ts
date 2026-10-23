@@ -60,7 +60,7 @@ const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 export function createBalloon(W: number, H: number): Balloon {
   const r = clamp(W * 0.024, 17, 29);
   const ry = r * 1.22;
-  const knot = r * 0.42;
+  const knot = r * 0.3;
   const len = r * 3.8;
   const b: Balloon = {
     W,
@@ -338,10 +338,12 @@ export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: stri
   };
   const tie = () => {
     ctx.beginPath();
-    ctx.moveTo(-r * 0.12, ry * 0.97);
-    ctx.lineTo(r * 0.12, ry * 0.97);
-    ctx.lineTo(r * 0.2, ry + knot);
-    ctx.lineTo(-r * 0.2, ry + knot);
+    // a small, soft knot: rounded at the bottom, no hard corners
+    ctx.moveTo(-r * 0.09, ry * 0.97);
+    ctx.lineTo(r * 0.09, ry * 0.97);
+    ctx.quadraticCurveTo(r * 0.2, ry + knot * 0.55, r * 0.1, ry + knot * 0.95);
+    ctx.quadraticCurveTo(0, ry + knot * 1.15, -r * 0.1, ry + knot * 0.95);
+    ctx.quadraticCurveTo(-r * 0.2, ry + knot * 0.55, -r * 0.09, ry * 0.97);
     ctx.closePath();
   };
 
