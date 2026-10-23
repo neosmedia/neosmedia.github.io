@@ -337,8 +337,8 @@ export default function BalloonName({
         bcanvas.height = Math.round(H * dpr);
         bal = createBalloon(W, H);
         balBorn = performance.now();
-        world.keepOut.push({ cx: bal.cx, cy: bal.cy, r: bal.r * 1.1 });
-        balKeep = world.keepOut.length - 1;
+        // (no keep-out circle: the balloon floats over the letters without shoving them apart)
+        balKeep = -1;
       }
     };
     setup();
