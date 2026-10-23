@@ -3071,13 +3071,13 @@ ul {
 @media (max-width: 700px) {
   /* phones: centred under the letters, in its own gap, so the bubble opens evenly and never covers the name */
   .hero {
-    margin-bottom: 44px;
+    margin-bottom: 28px;
   }
   .hero-avatar-wrap {
     left: 50%;
     right: auto;
     margin-left: -24px;
-    bottom: -28px;
+    bottom: -4px;
   }
 }
 
