@@ -22,9 +22,8 @@ export default function Hero() {
   }, []);
 
   const onBalloonClick = useCallback(() => {
-    if (openRef.current) return; // the outside-click handler closes it
-    openedAt.current = performance.now();
-    set(true);
+    openedAt.current = performance.now(); // (stops the outside-tap handler from also firing)
+    set(!openRef.current);
   }, [set]);
 
   useEffect(() => {

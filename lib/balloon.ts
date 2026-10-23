@@ -316,7 +316,7 @@ export function endGrab(b: Balloon, nowMs: number): boolean {
  * Draw the balloon and its string. `ink` is the balloon colour, `halo` the thin outline around it
  * (and the colour of the "i"), the same pairing the letters use. The caller sets the dpr transform.
  */
-export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: string, halo: string) {
+export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: string, halo: string, icon: "info" | "close" = "info") {
   const { pts, r, ry, knot } = b;
 
   // string
@@ -387,23 +387,37 @@ export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: stri
   ctx.fill();
   ctx.restore();
 
-  // the "i"
   ctx.fillStyle = halo;
-  ctx.beginPath();
-  ctx.arc(0, -ry * 0.36, r * 0.13, 0, Math.PI * 2);
-  ctx.fill();
-  const sw = r * 0.2;
-  const top = -ry * 0.14;
-  const bot = ry * 0.4;
-  ctx.beginPath();
-  ctx.moveTo(-sw / 2 + sw * 0.25, top);
-  ctx.arcTo(sw / 2, top, sw / 2, top + sw, sw * 0.4);
-  ctx.lineTo(sw / 2, bot - sw * 0.4);
-  ctx.arcTo(sw / 2, bot, -sw / 2, bot, sw * 0.4);
-  ctx.arcTo(-sw / 2, bot, -sw / 2, top, sw * 0.4);
-  ctx.arcTo(-sw / 2, top, sw / 2, top, sw * 0.4);
-  ctx.closePath();
-  ctx.fill();
+  if (icon === "close") {
+    // an X
+    const k = r * 0.3;
+    ctx.strokeStyle = halo;
+    ctx.lineWidth = r * 0.17;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(-k, -ry * 0.14 - k);
+    ctx.lineTo(k, -ry * 0.14 + k);
+    ctx.moveTo(k, -ry * 0.14 - k);
+    ctx.lineTo(-k, -ry * 0.14 + k);
+    ctx.stroke();
+  } else {
+    // the "i"
+    ctx.beginPath();
+    ctx.arc(0, -ry * 0.36, r * 0.13, 0, Math.PI * 2);
+    ctx.fill();
+    const sw = r * 0.2;
+    const top = -ry * 0.14;
+    const bot = ry * 0.4;
+    ctx.beginPath();
+    ctx.moveTo(-sw / 2 + sw * 0.25, top);
+    ctx.arcTo(sw / 2, top, sw / 2, top + sw, sw * 0.4);
+    ctx.lineTo(sw / 2, bot - sw * 0.4);
+    ctx.arcTo(sw / 2, bot, -sw / 2, bot, sw * 0.4);
+    ctx.arcTo(-sw / 2, bot, -sw / 2, top, sw * 0.4);
+    ctx.arcTo(-sw / 2, top, sw / 2, top, sw * 0.4);
+    ctx.closePath();
+    ctx.fill();
+  }
 
   ctx.restore();
 }

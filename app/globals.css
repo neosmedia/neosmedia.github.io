@@ -3407,7 +3407,7 @@ ul {
 .balloon-layer {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 3; /* above the letters, the shader overlay and the info text */
   pointer-events: none;
 }
 

@@ -396,8 +396,9 @@ export default function BalloonName({
           world.clear = {
             cx: world.W / 2,
             cy: world.H / 2,
-            rx: (panel.offsetWidth / 2) * 1.3 + 16,
-            ry: (panel.offsetHeight / 2) * 1.3 + 16,
+            // a big open middle: the letters get pushed out to the edges, around the text
+            rx: Math.max((panel.offsetWidth / 2) * 1.3 + 16, world.W * (world.W < 700 ? 0.36 : 0.3)),
+            ry: Math.max((panel.offsetHeight / 2) * 1.3 + 16, world.H * 0.34),
           };
         }
         // the balloon drifts, then is drawn on its own canvas above the letters
@@ -416,14 +417,14 @@ export default function BalloonName({
           if (age > 0) {
             bctx.globalAlpha = Math.min(1, age);
             const dk = isDark();
-            drawBalloon(bctx, bal, dk ? FILL.dark : FILL.light, dk ? BORDER.dark : BORDER.light);
+            drawBalloon(bctx, bal, dk ? FILL.dark : FILL.light, dk ? BORDER.dark : BORDER.light, clearingRef.current ? "close" : "info");
             bctx.globalAlpha = 1;
           }
         }
         if (!world.grab || world.clearT > 0.001) {
           const gt = reduceMotion ? 0 : Math.min(1, (now - growStart) / GROW_MS);
           // letters shrink as the Info clearing opens, so they tuck neatly around it
-          const shrink = world.W < 700 ? CLEAR_SHRINK_MOBILE : CLEAR_SHRINK;
+          const shrink = world.W < 700 ? CLEAR_SHRINK_MOBILE : hero ? 0.36 : CLEAR_SHRINK;
           setGrowth(world, (1 + GROW_BY * gt) * (1 - shrink * world.clearT));
         }
         // ----- press and hold: swell + tremble, then pop -----
