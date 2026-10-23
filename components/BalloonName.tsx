@@ -258,6 +258,7 @@ export default function BalloonName({
     let balKeep = -1; // index of the balloon's circle in world.keepOut
     let balKind: "body" | "string" = "body";
     let balBorn = performance.now();
+    let balRegrowAt: number | null = null; // while popped: when a new balloon floats back in
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
@@ -401,6 +402,13 @@ export default function BalloonName({
             ry: Math.max((panel.offsetHeight / 2) * 1.12 + 10, world.H * 0.22),
           };
         }
+        // a popped balloon floats back in after a few seconds
+        if (!bal && balRegrowAt != null && now >= balRegrowAt && bcanvas) {
+          bal = createBalloon(world.W, world.H);
+          balBorn = now;
+          balRegrowAt = null;
+          if (balKeep >= 0 && world.keepOut[balKeep]) world.keepOut[balKeep].r = bal.r * 1.1;
+        }
         // the balloon drifts, then is drawn on its own canvas above the letters
         if (bal && bctx && bcanvas) {
           stepBalloon(bal, dt, {
@@ -420,6 +428,9 @@ export default function BalloonName({
             drawBalloon(bctx, bal, dk ? FILL.dark : FILL.light, dk ? BORDER.dark : BORDER.light, clearingRef.current ? "close" : "info");
             bctx.globalAlpha = 1;
           }
+        } else if (bctx && bcanvas && balKeep >= 0 && world.keepOut[balKeep]) {
+          if (world.keepOut[balKeep].cx > -1000) bctx.clearRect(0, 0, world.W, world.H);
+          world.keepOut[balKeep].cx = -9999; // nothing to keep out of while it is popped
         }
         if (!world.grab || world.clearT > 0.001) {
           const gt = reduceMotion ? 0 : Math.min(1, (now - growStart) / GROW_MS);
@@ -554,6 +565,39 @@ export default function BalloonName({
       forcePaint = true;
     };
 
+    /** Pop the info balloon: droplets + a ring, like a letter; a new one floats back in a few seconds later. */
+    const popBalloon = (now: number) => {
+      if (!bal) return;
+      const { cx, cy, r, ry } = bal;
+      if (!reduceMotion) {
+        fx.rings.push({ x: cx, y: cy, r0: r * 0.7, r1: r * 2.6, born: now, life: 520 });
+        for (let i = 0; i < 26; i++) {
+          const ang = Math.random() * Math.PI * 2;
+          const d = Math.random();
+          const sp = 110 + Math.random() * 300;
+          fx.bursts.push({
+            x: cx + Math.cos(ang) * r * 0.8 * d,
+            y: cy + Math.sin(ang) * ry * 0.8 * d,
+            vx: Math.cos(ang) * sp,
+            vy: Math.sin(ang) * sp - 90,
+            r: r * (0.12 + Math.random() * 0.22),
+            born: now,
+            life: 600 + Math.random() * 400,
+          });
+        }
+      }
+      bal = null;
+      balRegrowAt = now + REGROW_MS;
+      stage.style.cursor = "default";
+      try {
+        navigator.vibrate?.(18);
+      } catch {
+        /* not supported */
+      }
+      world.dirty = true;
+      forcePaint = true;
+    };
+
     /* ----- pointer: drag a tube by any point ----- */
     const local = (e: PointerEvent) => {
       const b = stage.getBoundingClientRect();
@@ -611,7 +655,11 @@ export default function BalloonName({
         const clicked = endGrab(bal, performance.now()) && e.type === "pointerup" && balKind === "body";
         if (stage.hasPointerCapture(e.pointerId)) stage.releasePointerCapture(e.pointerId);
         stage.style.cursor = "default";
-        if (clicked) onBalloonClickRef.current?.();
+        if (clicked) {
+          const wasOpen = clearingRef.current;
+          onBalloonClickRef.current?.();
+          if (wasOpen) popBalloon(performance.now()); // closing with the X pops it
+        }
         return;
       }
       if (!world.grab) return;
