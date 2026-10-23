@@ -91,21 +91,18 @@ export function createBalloon(W: number, H: number): Balloon {
 }
 
 /** Re-derive the body centre and its (smoothed) up direction from the string. */
-function updateBody(b: Balloon, ease: number) {
+function updateBody(b: Balloon, ease: number, h = 1 / 60) {
   const p0 = b.pts[0];
-  const p1 = b.pts[1];
-  let rx = p0.x - p1.x;
-  let ry = p0.y - p1.y;
-  const m = Math.hypot(rx, ry);
-  if (m > 1e-3) {
-    rx /= m;
-    ry /= m;
-    b.ux += (rx - b.ux) * ease;
-    b.uy += (ry - b.uy) * ease;
-    const n = Math.hypot(b.ux, b.uy) || 1;
-    b.ux /= n;
-    b.uy /= n;
-  }
+  // A helium balloon: it always points up. It only leans a little with how fast it is moving sideways, and sways gently.
+  const vx = (p0.x - p0.px) / h;
+  const a = clamp(vx * 0.0018, -0.4, 0.4) + Math.sin(b.time * 0.8 + b.phase) * 0.05;
+  const tx = Math.sin(a);
+  const ty = -Math.cos(a);
+  b.ux += (tx - b.ux) * ease;
+  b.uy += (ty - b.uy) * ease;
+  const n = Math.hypot(b.ux, b.uy) || 1;
+  b.ux /= n;
+  b.uy /= n;
   b.cx = p0.x + b.ux * (b.ry + b.knot);
   b.cy = p0.y + b.uy * (b.ry + b.knot);
 }
@@ -270,7 +267,7 @@ export function stepBalloon(b: Balloon, dtSeconds: number, opts: { calm: boolean
       p.x = clamp(p.x, 4, b.W - 4);
       p.y = clamp(p.y, 4, b.H - 4);
     }
-    updateBody(b, 0.05);
+    updateBody(b, 0.06, h);
   }
 }
 
@@ -310,8 +307,8 @@ export function endGrab(b: Balloon, nowMs: number): boolean {
  * Draw the balloon and its string. `ink` is the balloon colour, `halo` the thin outline around it
  * (and the colour of the "i"), the same pairing the letters use. The caller sets the dpr transform.
  */
-export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: string, halo: string, icon: "info" | "close" = "info") {
-  const { pts, r, ry, knot } = b;
+export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: string, halo: string, icon: "info" | "close" = "info", maskOnly = false) {
+  const { r, ry, knot } = b;
 
   // (the string is no longer drawn; it still hangs and sways underneath so the balloon tilts and bobs)
 
@@ -348,19 +345,24 @@ export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: stri
   };
 
   ctx.lineJoin = "round";
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = halo;
-  tie();
-  ctx.stroke();
-  body();
-  ctx.stroke();
-  ctx.fillStyle = ink;
+  if (!maskOnly) {
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = halo;
+    tie();
+    ctx.stroke();
+    body();
+    ctx.stroke();
+  }
+  ctx.fillStyle = maskOnly ? "#000" : ink;
   tie();
   ctx.fill();
   body();
   ctx.fill();
+  // the shader stencil: the icon is cut out, so it stays plain white on top of the shaded body
+  if (maskOnly) ctx.globalCompositeOperation = "destination-out";
 
   // soft highlight
+  if (!maskOnly) {
   ctx.save();
   ctx.globalAlpha = 0.2;
   ctx.fillStyle = halo;
@@ -368,6 +370,7 @@ export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: stri
   ctx.ellipse(-r * 0.4, -ry * 0.45, r * 0.15, r * 0.3, -0.35, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
+  }
 
   ctx.fillStyle = halo;
   if (icon === "close") {
@@ -401,5 +404,5 @@ export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: stri
     ctx.fill();
   }
 
-  ctx.restore();
+  ctx.restore(); // (also resets the composite mode)
 }

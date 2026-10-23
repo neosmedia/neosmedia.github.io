@@ -274,6 +274,9 @@ export default function BalloonName({
         if (rb) {
           stage.appendChild(rb.canvas);
           rb.resize(world.W, world.H, Math.min(dpr, 1.5));
+          // above the balloon layer too, so the balloon gets the shader like the letters
+          rb.canvas.style.zIndex = "4";
+          rb.canvas.style.pointerEvents = "none";
         }
       }
       return rb;
@@ -383,6 +386,12 @@ export default function BalloonName({
       mctx.clearRect(0, 0, world.W, world.H);
       draw(mctx, world, now - start, isDark(), 0, true, fx);
       drawBursts(mctx, fx, now, isDark(), true); // the popping droplets get the rainbow too
+      if (bal) {
+        mctx.save();
+        mctx.globalAlpha = Math.min(1, Math.max(0, (now - balBorn - 900) / 800));
+        drawBalloon(mctx, bal, "#000", "#000", clearingRef.current ? "close" : "info", true);
+        mctx.restore();
+      }
       shader.render(maskCanvas, mixAmt, since / 1000, 1.5, Math.max(8, world.baseR * 1.1));
     };
 
@@ -474,7 +483,7 @@ export default function BalloonName({
         // turn the shader up slowly while a letter is held; fade back when let go
         const dtc = Math.min(dt, 0.05);
         const popping = fx.bursts.length > 0 || fx.rings.length > 0; // keep the shader on while the pop plays out
-        shaderMix = world.grab || popping
+        shaderMix = world.grab || bal?.grab || popping
           ? Math.min(1, shaderMix + dtc / SHADER_RISE_S)
           : Math.max(0, shaderMix - dtc / SHADER_FALL_S);
         // Repaint only when something visibly changed. A resting scene costs no drawing.
