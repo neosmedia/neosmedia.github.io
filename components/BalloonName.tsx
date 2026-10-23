@@ -424,7 +424,8 @@ export default function BalloonName({
         if (!world.grab || world.clearT > 0.001) {
           const gt = reduceMotion ? 0 : Math.min(1, (now - growStart) / GROW_MS);
           // letters shrink as the Info clearing opens, so they tuck neatly around it
-          const shrink = world.W < 700 ? CLEAR_SHRINK_MOBILE : hero ? 0.36 : CLEAR_SHRINK;
+          // (hero: no shrinking, the letters just squish out to the edges)
+          const shrink = hero ? 0 : world.W < 700 ? CLEAR_SHRINK_MOBILE : CLEAR_SHRINK;
           setGrowth(world, (1 + GROW_BY * gt) * (1 - shrink * world.clearT));
         }
         // ----- press and hold: swell + tremble, then pop -----
