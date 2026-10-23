@@ -412,8 +412,8 @@ export default function BalloonName({
             cx: world.W / 2,
             cy: world.H / 2,
             // a big open middle: the letters get pushed out to the edges, around the text
-            rx: Math.max((panel.offsetWidth / 2) * 1.12 + 10, world.W * (world.W < 700 ? 0.3 : 0.19)),
-            ry: Math.max((panel.offsetHeight / 2) * 1.12 + 10, world.H * 0.22),
+            rx: Math.max((panel.offsetWidth / 2) * 1.25 + 16, world.W * (world.W < 700 ? 0.34 : 0.24)),
+            ry: Math.max((panel.offsetHeight / 2) * 1.25 + 16, world.H * 0.28),
           };
         }
         // the balloon drifts, then is drawn on its own canvas above the letters
