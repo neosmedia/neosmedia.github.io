@@ -3383,3 +3383,22 @@ ul {
     display: none;
   }
 }
+
+/* phones: more air between the menu links */
+@media (max-width: 560px) {
+  .nav-links {
+    gap: 28px;
+  }
+  .nav-links a {
+    letter-spacing: 0.08em;
+  }
+}
+
+@media (max-width: 380px) {
+  .nav-links {
+    gap: 20px;
+  }
+  .nav-links a {
+    letter-spacing: 0.05em;
+  }
+}
