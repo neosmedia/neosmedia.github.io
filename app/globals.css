@@ -3433,7 +3433,10 @@ ul {
 }
 .hero-info-title {
   color: var(--ink);
-  font-size: 16px;
+  font-family: var(--font-serif), "Comic Sans MS", cursive; /* the handwritten display font, as in "Let's build" */
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.05;
+  font-weight: 400;
 }
 .hero-info.is-open {
   opacity: 1;
