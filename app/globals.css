@@ -3347,3 +3347,39 @@ ul {
     white-space: nowrap;
   }
 }
+
+/* phones: a smaller, tighter name chip so it fits on one line */
+@media (max-width: 560px) {
+  .fx .name-chip {
+    gap: 8px;
+    margin-bottom: 28px;
+    padding: 6px 14px 6px 8px;
+    font-size: 12px;
+  }
+  .fx .name-chip-dot {
+    width: 20px;
+    height: 20px;
+  }
+  .fx .name-chip-dot::after {
+    width: 10px;
+    height: 10px;
+  }
+  .fx .name-chip svg {
+    width: 14px;
+    height: 14px;
+  }
+  .fx .name-chip-sep {
+    height: 14px;
+  }
+  .fx .name-chip-place {
+    margin-left: -2px;
+    white-space: nowrap;
+  }
+}
+
+/* very narrow phones: drop the GMT part */
+@media (max-width: 360px) {
+  .fx .name-chip-gmt {
+    display: none;
+  }
+}
