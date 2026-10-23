@@ -307,7 +307,7 @@ export function endGrab(b: Balloon, nowMs: number): boolean {
  * Draw the balloon and its string. `ink` is the balloon colour, `halo` the thin outline around it
  * (and the colour of the "i"), the same pairing the letters use. The caller sets the dpr transform.
  */
-export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: string, halo: string, icon: "info" | "close" = "info", maskOnly = false) {
+export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: string, halo: string, icon: "info" | "close" = "info", maskOnly = false, grow = 1) {
   const { r, ry, knot } = b;
 
   // (the string is no longer drawn; it still hangs and sways underneath so the balloon tilts and bobs)
@@ -316,6 +316,12 @@ export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: stri
   ctx.save();
   ctx.translate(b.cx, b.cy);
   ctx.rotate(Math.atan2(b.ux, -b.uy));
+  if (grow !== 1) {
+    // inflating: it swells up from the knot
+    ctx.translate(0, ry + knot);
+    ctx.scale(grow, grow);
+    ctx.translate(0, -(ry + knot));
+  }
 
   const body = () => {
     ctx.beginPath();

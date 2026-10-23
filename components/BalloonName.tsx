@@ -359,6 +359,13 @@ export default function BalloonName({
       return t * t * (3 - 2 * t);
     };
 
+    /** Size of the balloon while it inflates: 0 -> 1 with a little overshoot, quickly. */
+    const inflate = (now: number) => {
+      if (reduceMotion) return now - balBorn > 900 ? 1 : 0;
+      const t = Math.min(1, Math.max(0, (now - balBorn - 900) / 550));
+      return t <= 0 ? 0 : easeOutBack(t);
+    };
+
     /** Draw the letters, then (once it has faded in) the rainbow on top of them. */
     const paint = (now: number) => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -387,10 +394,8 @@ export default function BalloonName({
       draw(mctx, world, now - start, isDark(), 0, true, fx);
       drawBursts(mctx, fx, now, isDark(), true); // the popping droplets get the rainbow too
       if (bal) {
-        mctx.save();
-        mctx.globalAlpha = Math.min(1, Math.max(0, (now - balBorn - 900) / 800));
-        drawBalloon(mctx, bal, "#000", "#000", clearingRef.current ? "close" : "info", true);
-        mctx.restore();
+        const g = inflate(now);
+        if (g > 0) drawBalloon(mctx, bal, "#000", "#000", clearingRef.current ? "close" : "info", true, g);
       }
       shader.render(maskCanvas, mixAmt, since / 1000, 1.5, Math.max(8, world.baseR * 1.1));
     };
@@ -423,12 +428,10 @@ export default function BalloonName({
           }
           bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
           bctx.clearRect(0, 0, world.W, world.H);
-          const age = (now - balBorn - 900) / 800; // fades in after the letters pop in
-          if (age > 0) {
-            bctx.globalAlpha = Math.min(1, age);
+          const g = inflate(now); // fills with air shortly after the letters pop in
+          if (g > 0) {
             const dk = isDark();
-            drawBalloon(bctx, bal, dk ? FILL.dark : FILL.light, dk ? BORDER.dark : BORDER.light, clearingRef.current ? "close" : "info");
-            bctx.globalAlpha = 1;
+            drawBalloon(bctx, bal, dk ? FILL.dark : FILL.light, dk ? BORDER.dark : BORDER.light, clearingRef.current ? "close" : "info", false, g);
           }
         } else if (bctx && bcanvas && balKeep >= 0 && world.keepOut[balKeep]) {
           if (world.keepOut[balKeep].cx > -1000) bctx.clearRect(0, 0, world.W, world.H);
