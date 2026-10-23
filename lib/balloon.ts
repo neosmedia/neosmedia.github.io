@@ -60,7 +60,7 @@ const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 export function createBalloon(W: number, H: number): Balloon {
   const r = clamp(W * 0.024, 17, 29);
   const ry = r * 1.22;
-  const knot = r * 0.24;
+  const knot = r * 0.42;
   const len = r * 3.8;
   const b: Balloon = {
     W,
@@ -326,8 +326,11 @@ export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: stri
     for (let i = 0; i <= steps; i++) {
       const th = (i / steps) * Math.PI * 2;
       const wob = 1 + 0.02 * Math.sin(3 * th + b.phase);
-      const x = r * Math.sin(th) * (1 + 0.07 * Math.cos(th)) * wob; // a touch fuller at the top
-      const y = -ry * Math.cos(th) * (1 + 0.015 * Math.sin(2 * th + b.phase));
+      const c = Math.cos(th); // 1 = top, -1 = bottom
+      // fuller shoulders, a slightly tapered, pinched bottom: a real balloon, not an ellipse
+      const taper = 1 + 0.1 * c - 0.2 * Math.pow(Math.max(0, -c), 5);
+      const x = r * Math.sin(th) * taper * wob;
+      const y = -ry * c * (1 + 0.015 * Math.sin(2 * th + b.phase));
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
@@ -335,9 +338,10 @@ export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: stri
   };
   const tie = () => {
     ctx.beginPath();
-    ctx.moveTo(-r * 0.14, ry * 0.96);
-    ctx.lineTo(r * 0.14, ry * 0.96);
-    ctx.lineTo(0, ry + knot);
+    ctx.moveTo(-r * 0.12, ry * 0.97);
+    ctx.lineTo(r * 0.12, ry * 0.97);
+    ctx.lineTo(r * 0.2, ry + knot);
+    ctx.lineTo(-r * 0.2, ry + knot);
     ctx.closePath();
   };
 
@@ -351,15 +355,8 @@ export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: stri
   ctx.fillStyle = ink;
   tie();
   ctx.fill();
-  // soft shadow below, so it reads as floating above the page
-  ctx.shadowColor = "rgba(0,0,0,0.32)";
-  ctx.shadowBlur = 16;
-  ctx.shadowOffsetY = 14;
   body();
   ctx.fill();
-  ctx.shadowColor = "transparent";
-  ctx.shadowBlur = 0;
-  ctx.shadowOffsetY = 0;
 
   // soft highlight
   ctx.save();
