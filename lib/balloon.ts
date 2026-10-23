@@ -58,10 +58,10 @@ const CLICK_PX = 7; // a press that moves less than this is a click, not a drag
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
 export function createBalloon(W: number, H: number): Balloon {
-  const r = clamp(W * 0.04, 28, 50);
+  const r = clamp(W * 0.024, 17, 29);
   const ry = r * 1.22;
   const knot = r * 0.24;
-  const len = r * 3.6;
+  const len = r * 3.8;
   const b: Balloon = {
     W,
     H,
@@ -82,9 +82,8 @@ export function createBalloon(W: number, H: number): Balloon {
     pointer: { x: 0, y: 0 },
     grab: null,
   };
-  const x = W * (0.2 + Math.random() * 0.6);
-  const cy = clamp(H * (0.25 + Math.random() * 0.2), ry + 24, Math.max(ry + 24, H - len - ry));
-  const y0 = cy + ry + knot;
+  const x = W * (0.72 + Math.random() * 0.2);
+  const y0 = zoneTop(b) + Math.random() * zoneSpan(b);
   for (let i = 0; i <= N; i++) b.pts.push({ x, y: y0 + i * b.seg, px: x, py: y0 + i * b.seg });
   b.target = { x, y: y0 };
   updateBody(b, 1);
@@ -111,11 +110,15 @@ function updateBody(b: Balloon, ease: number) {
   b.cy = p0.y + b.uy * (b.ry + b.knot);
 }
 
+/** The balloon lives in the top-right corner of the hero: the knot stays inside this box. */
+const zoneLeft = (b: Balloon) => Math.max(b.W * 0.66, b.r + 16);
+const zoneTop = (b: Balloon) => 2 * b.ry + b.knot + 14; // knot y, with the whole body visible
+const zoneSpan = (b: Balloon) => Math.max(10, Math.min(b.H * 0.16, b.len * 0.9));
+
 function pickTarget(b: Balloon, clear: Clear | null) {
   for (let tries = 0; tries < 8; tries++) {
-    const x = b.r + 24 + Math.random() * Math.max(1, b.W - 2 * (b.r + 24));
-    const cyMax = Math.max(b.ry + 24, b.H - b.len - b.ry * 0.4);
-    const cy = b.ry + 24 + Math.random() * Math.max(1, cyMax - (b.ry + 24));
+    const x = zoneLeft(b) + Math.random() * Math.max(1, b.W - b.r - 16 - zoneLeft(b));
+    const cy = zoneTop(b) + Math.random() * zoneSpan(b) - b.ry - b.knot;
     if (clear) {
       // while the info panel is open, stay out of its hole
       const q = ((x - clear.cx) / (clear.rx + b.r)) ** 2 + ((cy - clear.cy) / (clear.ry + b.ry)) ** 2;
@@ -232,8 +235,18 @@ export function stepBalloon(b: Balloon, dtSeconds: number, opts: { calm: boolean
     }
 
     // ---- stay inside the hero; stay out of the open info panel ----
-    p0.x = clamp(p0.x, b.r + 8, b.W - b.r - 8);
-    p0.y = clamp(p0.y, 2 * b.ry + b.knot + 8, b.H - 8);
+    if (g) {
+      // being pulled, it can go anywhere
+      p0.x = clamp(p0.x, b.r + 8, b.W - b.r - 8);
+      p0.y = clamp(p0.y, 2 * b.ry + b.knot + 8, b.H - 8);
+    } else {
+      // free: it floats back to its corner
+      p0.x = clamp(p0.x, b.r + 8, b.W - b.r - 8);
+      p0.y = clamp(p0.y, 2 * b.ry + b.knot + 8, b.H - 8);
+      if (p0.x < zoneLeft(b) - b.W * 0.1 || p0.y > zoneTop(b) + zoneSpan(b) + b.len) {
+        b.target = { x: zoneLeft(b) + (b.W - zoneLeft(b)) / 2, y: zoneTop(b) + zoneSpan(b) / 2 };
+      }
+    }
     if (opts.clear && !g) {
       const c = opts.clear;
       const ex = c.rx + b.r;
@@ -375,8 +388,15 @@ export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: stri
   ctx.fillStyle = ink;
   tie();
   ctx.fill();
+  // soft shadow below, so it reads as floating above the page
+  ctx.shadowColor = "rgba(0,0,0,0.32)";
+  ctx.shadowBlur = 16;
+  ctx.shadowOffsetY = 14;
   body();
   ctx.fill();
+  ctx.shadowColor = "transparent";
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
 
   // soft highlight
   ctx.save();
