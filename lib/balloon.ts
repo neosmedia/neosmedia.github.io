@@ -284,26 +284,7 @@ export function hitBalloon(b: Balloon, x: number, y: number, touch = false): { i
   if ((across / (b.r + pad)) ** 2 + (along / (b.ry + pad)) ** 2 <= 1) {
     return { idx: 0, ox: x - b.pts[0].x, oy: y - b.pts[0].y, kind: "body" };
   }
-  const reach = touch ? 20 : 12;
-  let best = -1;
-  let bestD = reach;
-  for (let i = 0; i < N; i++) {
-    const a = b.pts[i];
-    const c = b.pts[i + 1];
-    const vx = c.x - a.x;
-    const vy = c.y - a.y;
-    const l2 = vx * vx + vy * vy || 1;
-    const t = clamp(((x - a.x) * vx + (y - a.y) * vy) / l2, 0, 1);
-    const d = Math.hypot(x - (a.x + vx * t), y - (a.y + vy * t));
-    if (d < bestD) {
-      bestD = d;
-      best = t < 0.5 ? i : i + 1;
-    }
-  }
-  if (best < 0) return null;
-  if (best === 0) best = 1; // the knot belongs to the balloon, hold the first bit of string instead
-  const p = b.pts[best];
-  return { idx: best, ox: x - p.x, oy: y - p.y, kind: "string" };
+  return null; // the string is invisible now, so only the balloon itself can be grabbed
 }
 
 export function beginGrab(b: Balloon, hit: { idx: number; ox: number; oy: number }, x: number, y: number, pointerId: number, nowMs: number) {
@@ -332,25 +313,7 @@ export function endGrab(b: Balloon, nowMs: number): boolean {
 export function drawBalloon(ctx: CanvasRenderingContext2D, b: Balloon, ink: string, halo: string, icon: "info" | "close" = "info") {
   const { pts, r, ry, knot } = b;
 
-  // string
-  ctx.save();
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-  ctx.beginPath();
-  ctx.moveTo(pts[0].x, pts[0].y);
-  for (let i = 1; i < N; i++) {
-    const mx = (pts[i].x + pts[i + 1].x) / 2;
-    const my = (pts[i].y + pts[i + 1].y) / 2;
-    ctx.quadraticCurveTo(pts[i].x, pts[i].y, mx, my);
-  }
-  ctx.lineTo(pts[N].x, pts[N].y);
-  ctx.strokeStyle = halo;
-  ctx.lineWidth = 4.5;
-  ctx.stroke();
-  ctx.strokeStyle = ink;
-  ctx.lineWidth = 2.2;
-  ctx.stroke();
-  ctx.restore();
+  // (the string is no longer drawn; it still hangs and sways underneath so the balloon tilts and bobs)
 
   // body, in a frame where "up" is -y
   ctx.save();
