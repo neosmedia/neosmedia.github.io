@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Removed the blue water shader and the random pick: the rainbow is the only shader.
 - Hero info balloon: a slow-drifting balloon with an info icon and a pullable string. Click or tap it to open a short "how to play" note; the letters move aside and open a hole for it. Esc or a tap elsewhere closes it.
 
 ## v0.1.0 — coming soon page

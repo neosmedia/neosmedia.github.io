@@ -37,7 +37,7 @@ Node 20+ (CI uses 22). `next/font` downloads the fonts at build time, so the fir
 | Preview | `/preview/` | Old duplicate of the home page. `noindex`, kept so old links work |
 
 Balloon hero: drag letters (soft-body physics), hover lean, random idle jiggle, slow growth, a colour shader that fades in
-only while dragging (rainbow, or a glossy blue bubble, picked at random on each page load; `?shader=bubble|rainbow` forces one), and an
+only while dragging (rainbow), and an
 Info modal that clears space in the middle. It respects `prefers-reduced-motion`.
 
 ---

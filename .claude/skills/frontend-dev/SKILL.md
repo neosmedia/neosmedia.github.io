@@ -33,4 +33,4 @@ Next.js 16 (App Router, `output: "export"`, `trailingSlash`), React 19, TypeScri
 `NEXT_PUBLIC_LAUNCHED`, `NEXT_PUBLIC_FORMSPREE_ID` (see `.env.example`).
 
 ## Before finishing
-Type-check, test light + dark, 375px + desktop, reduced motion, and `?shader=bubble` / `?shader=rainbow`.
+Type-check, test light + dark, 375px + desktop, reduced motion.

@@ -1,5 +1,5 @@
 /**
- * Shader overlay for the balloon letters (rainbow, or a glossy blue bubble on every second visit).
+ * Shader overlay for the balloon letters (rainbow).
  *
  * A second, transparent WebGL canvas sits on top of the letters. The letters' shape is
  * uploaded as a mask texture every frame, and the fragment shader paints a slowly moving
@@ -104,119 +104,11 @@ void main() {
 }`;
 
 
-/**
- * The "bubble" look (second variant): a glossy blue water balloon.
- * The letter mask is blurred in-shader to get a soft "inflated" height, whose gradient
- * gives a normal for a puffy 3D look: fresnel rim, sharp window-style specular
- * highlights, a sky reflection, deep-to-shallow water colour and drifting caustics.
- * (The same "inflate a 2D shape into a glossy blob" trick used in many trending
- * bubble / jelly / water-balloon shaders.)
- */
-const BUBBLE_FRAG = `
-#ifdef GL_FRAGMENT_PRECISION_HIGH
-precision highp float;
-#else
-precision mediump float;
-#endif
-varying vec2 v_uv;
-uniform sampler2D u_mask;
-uniform float u_time;
-uniform float u_mix;
-uniform float u_aspect;
-uniform vec2 u_texel;
-uniform float u_bevel;
-uniform float u_scale;
+export type ShaderVariant = "rainbow";
 
-float hash(vec2 p) {
-  p = fract(p * vec2(123.34, 456.21));
-  p += dot(p, p + 45.32);
-  return fract(p.x * p.y);
-}
-
-float noise(vec2 p) {
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  f = f * f * (3.0 - 2.0 * f);
-  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
-             mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
-}
-
-void main() {
-  float a0 = texture2D(u_mask, v_uv).a;
-  if (a0 < 0.004) {
-    gl_FragColor = vec4(0.0);
-    return;
-  }
-
-  // blur the stencil on a spiral of taps: height = how "deep inside" the shape we are,
-  // gradient = which way the surface tilts
-  float h = 0.0;
-  vec2 g = vec2(0.0);
-  for (int i = 0; i < 16; i++) {
-    float fi = float(i);
-    float ang = fi * 2.39996;
-    vec2 d = vec2(cos(ang), sin(ang));
-    float rad = sqrt((fi + 0.5) / 16.0) * u_bevel;
-    float a = texture2D(u_mask, v_uv + d * rad * u_texel).a;
-    h += a;
-    g += d * a;
-  }
-  h /= 16.0;
-  g /= 16.0;
-
-  // puffy normal
-  vec3 n = normalize(vec3(-g * 2.6, 0.55));
-  vec3 v = vec3(0.0, 0.0, 1.0);
-  vec3 L1 = normalize(vec3(-0.45, 0.65, 0.6));
-  vec3 L2 = normalize(vec3(0.6, -0.35, 0.5));
-
-  // water colour: deep blue core, bright cyan where it is thin / at the rim
-  float fres = pow(1.0 - clamp(n.z, 0.0, 1.0), 2.2);
-  vec3 deep = vec3(0.02, 0.17, 0.66);
-  vec3 shallow = vec3(0.10, 0.62, 0.98);
-  vec3 col = mix(deep, shallow, clamp(pow(1.0 - h, 1.4) * 1.4 + fres * 0.6, 0.0, 1.0));
-  col *= 0.70 + 0.45 * (dot(n, L1) * 0.5 + 0.5);
-
-  // drifting caustics inside the water
-  vec2 p = vec2(v_uv.x * u_aspect, v_uv.y) * (9.33 * u_scale); // caustic size: lower u_scale = zoomed in
-  float t = u_time * 0.35;
-  float c = noise(p + vec2(t, -t * 0.7)) * noise(p * 1.3 - vec2(t * 0.8, t * 0.5) + 7.0);
-  col += vec3(0.25, 0.55, 0.9) * pow(c, 2.0) * 1.6 * (0.25 + h);
-
-  // sky reflection on the surface (stronger toward the rim)
-  vec3 sky = mix(vec3(0.55, 0.82, 1.0), vec3(1.0), smoothstep(-0.2, 0.9, n.y));
-  col = mix(col, sky, fres * 0.55);
-
-  // glossy window highlights
-  vec3 r1 = reflect(-L1, n);
-  float s1 = pow(max(dot(r1, v), 0.0), 70.0);
-  float s2 = pow(max(dot(reflect(-L2, n), v), 0.0), 40.0) * 0.45;
-  col += vec3(1.0) * (s1 * 1.25 + s2);
-
-  // a hint of soap-film iridescence at the very rim
-  col += (0.5 + 0.5 * cos(6.28318 * (fres * 1.2 + vec3(0.0, 0.33, 0.67) + u_time * 0.03))) * fres * 0.18;
-
-  float m = u_mix * a0;
-  gl_FragColor = vec4(clamp(col, 0.0, 1.0) * m, m);
-}`;
-
-export type ShaderVariant = "rainbow" | "bubble";
-
-let cachedVariant: ShaderVariant | null = null;
-
-/**
- * Which shader this page load gets: picked at random (50 / 50) every time the page loads.
- * Add ?shader=bubble or ?shader=rainbow to the URL to force one.
- */
+/** There is a single shader now: the rainbow. */
 export function getShaderVariant(): ShaderVariant {
-  if (cachedVariant) return cachedVariant;
-  try {
-    const forced = new URLSearchParams(window.location.search).get("shader");
-    if (forced === "bubble" || forced === "rainbow") return (cachedVariant = forced);
-  } catch {
-    /* no URL access: fall through to random */
-  }
-  return (cachedVariant = Math.random() < 0.5 ? "rainbow" : "bubble");
+  return "rainbow";
 }
 
 export type Rainbow = {
@@ -255,7 +147,7 @@ export function createRainbow(): Rainbow | null {
   };
   const vs = compile(gl.VERTEX_SHADER, VERT);
   const variant = getShaderVariant();
-  const fs = compile(gl.FRAGMENT_SHADER, variant === "bubble" ? BUBBLE_FRAG : RAINBOW_FRAG);
+  const fs = compile(gl.FRAGMENT_SHADER, RAINBOW_FRAG);
   if (!vs || !fs) return null;
   const prog = gl.createProgram()!;
   gl.attachShader(prog, vs);
