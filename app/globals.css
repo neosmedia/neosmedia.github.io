@@ -3337,3 +3337,13 @@ ul {
 .tools {
   margin-top: 16px;
 }
+
+/* phones: the menu links sit in the middle of the bar, logo on the left, theme toggle on the right */
+@media (max-width: 560px) {
+  .nav-links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+}
