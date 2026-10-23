@@ -258,7 +258,7 @@ export default function BalloonName({
     let balKeep = -1; // index of the balloon's circle in world.keepOut
     let balKind: "body" | "string" = "body";
     let balBorn = performance.now();
-    let balRegrowAt: number | null = null; // while popped: when a new balloon floats back in
+    let balGone = false; // popped by the X: it does not come back
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
@@ -329,7 +329,7 @@ export default function BalloonName({
         });
       }
       // the info balloon: a fresh one for each layout; letters keep out of it
-      if (bcanvas && bctx) {
+      if (bcanvas && bctx && !balGone) {
         bcanvas.width = Math.round(W * dpr);
         bcanvas.height = Math.round(H * dpr);
         bal = createBalloon(W, H);
@@ -401,13 +401,6 @@ export default function BalloonName({
             rx: Math.max((panel.offsetWidth / 2) * 1.12 + 10, world.W * (world.W < 700 ? 0.3 : 0.19)),
             ry: Math.max((panel.offsetHeight / 2) * 1.12 + 10, world.H * 0.22),
           };
-        }
-        // a popped balloon floats back in after a few seconds
-        if (!bal && balRegrowAt != null && now >= balRegrowAt && bcanvas) {
-          bal = createBalloon(world.W, world.H);
-          balBorn = now;
-          balRegrowAt = null;
-          if (balKeep >= 0 && world.keepOut[balKeep]) world.keepOut[balKeep].r = bal.r * 1.1;
         }
         // the balloon drifts, then is drawn on its own canvas above the letters
         if (bal && bctx && bcanvas) {
@@ -565,7 +558,7 @@ export default function BalloonName({
       forcePaint = true;
     };
 
-    /** Pop the info balloon: droplets + a ring, like a letter; a new one floats back in a few seconds later. */
+    /** Pop the info balloon: droplets + a ring, like a letter; it does not come back. */
     const popBalloon = (now: number) => {
       if (!bal) return;
       const { cx, cy, r, ry } = bal;
@@ -587,7 +580,7 @@ export default function BalloonName({
         }
       }
       bal = null;
-      balRegrowAt = now + REGROW_MS;
+      balGone = true;
       stage.style.cursor = "default";
       try {
         navigator.vibrate?.(18);
