@@ -58,7 +58,7 @@ const CLICK_PX = 7; // a press that moves less than this is a click, not a drag
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
 export function createBalloon(W: number, H: number): Balloon {
-  const r = clamp(W * 0.024, 17, 29);
+  const r = clamp(W * 0.0192, 13.5, 23.5);
   const ry = r * 1.22;
   const knot = r * 0.3;
   const len = r * 3.8;

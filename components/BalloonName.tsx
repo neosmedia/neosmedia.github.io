@@ -593,6 +593,7 @@ export default function BalloonName({
       }
       bal = null;
       balGone = true;
+      bctx?.clearRect(0, 0, world.W, world.H); // wipe its last frame off the overlay
       stage.style.cursor = "default";
       try {
         navigator.vibrate?.(18);
