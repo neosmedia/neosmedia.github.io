@@ -20,7 +20,7 @@
 ## v0.5.0
 - Work grid is 2 per row (1 on phones), 16:9 covers, 8 projects (secureWISE hidden for now); Finning bento with banner, laptop and phones.
 - Hero avatar that opens into a speech bubble (job title), dark/light aware; big static TYLER LANGE (10% opacity) under the footer; footer page links, design-stack icons, contact icons.
-- Press and hold a balloon letter for 4s to pop it (with the shader on the droplets); the shader (rainbow or bubble) is now picked at random on every page load.
+- Press and hold a balloon letter for 3s to pop it (with the shader on the droplets); the shader (rainbow or bubble) is now picked at random on every page load.
 - Contact page redesigned (Vancouver chip with live GMT offset, email pill, X / LinkedIn / Dribbble icons); contact form delivers through Formspree (`xnpparbe`).
 - About: bio, philosophy, specialties, "Dive into my work" cards; archive list with company icon tiles and years; 404 reads "Error 404: Poof!".
 - SEO, mobile/touch and hover fixes (see below).
@@ -30,7 +30,7 @@
 - Footer year is now automatic; custom 404 page; `public/.nojekyll`; Aurora image recompressed.
 - README rewritten (pages, adding a project, launch checklist, domain/HTTPS setup); DESIGN.md covers work/case-study pages.
 - Hero: 20px space below, small avatar over the balloons with a job-title tooltip (shows on load, fades, then on hover) (`components/HeroAvatar.tsx`, `ROLE_TITLE` in `lib/site.ts`). Footer: email / phone / LinkedIn icons (`components/ContactIcons.tsx`, shared with the nav).
-- Balloon letters (home hero, 404): press and hold a letter for 4 seconds and it swells, trembles, then pops (ink droplets + ring); it grows back after ~3s. Tunables `POP_MS`, `POP_SWELL`, `REGROW_MS` in `components/BalloonName.tsx`.
+- Balloon letters (home hero, 404): press and hold a letter for 3 seconds and it swells, trembles, then pops (ink droplets + ring); it grows back after ~3s. Tunables `POP_MS`, `POP_SWELL`, `REGROW_MS` in `components/BalloonName.tsx`.
 - Footer: big static one-line TYLER LANGE under the footer, cropped at 80% (`components/FooterName.tsx`, the hero's exact letters, 10% opacity, no animation). Name chip is now `components/NameChip.tsx` (About + Contact) and shows the live Vancouver GMT offset.
 - 404 page: balloon-letter "404" using the hero physics (`buildWorld` accepts custom `letters`; new "4" and "0" glyphs).
 - 404: Contact button removed, "See the work" is the primary button. New `Button` component and pill-button system (primary/outline, sm/md/lg, icon left/right/only), documented in DESIGN.md with a noindex `/styleguide/` specimen page.

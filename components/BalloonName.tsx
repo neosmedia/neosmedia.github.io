@@ -114,7 +114,7 @@ function trace(ctx: CanvasRenderingContext2D, L: Letter, sc: number, step: numbe
 }
 
 /* ----- press and hold a letter for POP_MS and it pops like a balloon ----- */
-const POP_MS = 4000; // how long to hold
+const POP_MS = 3000; // how long to hold
 const POP_SWELL = 0.16; // how much the letter inflates by the time it pops
 const REGROW_MS = 2800; // it comes back (growing in again) this long after popping
 
@@ -255,10 +255,14 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
     const growStart = last;
     let visible = true;
 
+    let builtW = 0; // stage size the current world was built for
+    let builtH = 0;
     const setup = () => {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       const W = stage.clientWidth;
       const H = stage.clientHeight;
+      builtW = W;
+      builtH = H;
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
       (rb as Rainbow | null)?.resize(W, H, Math.min(dpr, 1.5));
@@ -535,7 +539,16 @@ export default function BalloonName({ mode = "fullscreen", clearing = false, onG
       if (resizeRaf) return;
       resizeRaf = requestAnimationFrame(() => {
         resizeRaf = 0;
+        // Phones fire "resize" while scrolling (the address bar slides away). The stage itself is the
+        // same size, so rebuilding would only reset the letters: skip it.
+        if (stage.clientWidth === builtW && stage.clientHeight === builtH) return;
         setup();
+        // keep the pop effects consistent with the new world: letters that are still popped stay hidden,
+        // and old "grow back" start times (measured from the old clock) must not hide letters
+        for (let i = 0; i < fx.born.length; i++) {
+          fx.born[i] = null;
+          if (fx.regrowAt[i] != null && world.letters[i]) world.letters[i].gone = true;
+        }
         start = performance.now() - 2000; // skip intro on resize
         if (!reduceMotion) setGrowth(world, 1 + GROW_BY * Math.min(1, (performance.now() - growStart) / GROW_MS));
         // setting the canvas size clears it, so repaint straight away (no white flash)
