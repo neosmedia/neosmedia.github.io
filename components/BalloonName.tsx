@@ -632,6 +632,7 @@ export default function BalloonName({
       hold.t0 = performance.now();
       hold.pointerId = e.pointerId;
       onGrabRef.current?.();
+      popBalloon(performance.now()); // they've found the letters: the hint balloon is done
       world.hoverLetter = -1;
       stage.setPointerCapture(e.pointerId);
       stage.style.cursor = CURSOR_GRABBING;
